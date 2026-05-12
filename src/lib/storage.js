@@ -29,7 +29,7 @@ export async function upsertTasks(tasks) {
   if (USE_SUPABASE) {
     const res = await fetch(`${URL}/rest/v1/tasks`, {
       method: "POST",
-      headers: { ...headers, "Prefer": "resolution=merge-duplicates,return=representation" },
+      headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
       body: JSON.stringify(tasks),
     });
     if (!res.ok) throw new Error(`Supabase error: ${res.status}`);
