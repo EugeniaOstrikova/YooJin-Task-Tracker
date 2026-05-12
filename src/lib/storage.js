@@ -27,7 +27,7 @@ export async function upsertTasks(tasks) {
   if (!Array.isArray(tasks) || tasks.length === 0) return;
 
   if (USE_SUPABASE) {
-    const res = await fetch(`${URL}/rest/v1/tasks`, {
+    const res = await fetch(`${URL}/rest/v1/tasks?on_conflict=id`, {
       method: "POST",
       headers: { ...headers, "Prefer": "resolution=merge-duplicates" },
       body: JSON.stringify(tasks),
