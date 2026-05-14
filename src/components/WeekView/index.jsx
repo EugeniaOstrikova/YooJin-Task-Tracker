@@ -7,6 +7,7 @@ import {
   isCycleWeek,
 } from "../../lib/weekUtils";
 import { getTrimesterForWeek } from "../../config/trimesters";
+import HabitTracker from "./HabitTracker";
 
 export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
   const [unscheduledOpen, setUnscheduledOpen] = useState(true);
@@ -125,6 +126,7 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
           <span style={{ fontSize: 12 }}>Добавь их через кнопку «Импорт» ↑</span>
         </div>
       )}
+      <HabitTracker weekId={weekId} />
     </div>
   );
 }
