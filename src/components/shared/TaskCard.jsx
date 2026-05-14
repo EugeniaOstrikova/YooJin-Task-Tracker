@@ -36,7 +36,7 @@ export default function TaskCard({ task, onToggle, compact = false }) {
           borderRadius:   4,
           flexShrink:     0,
           marginTop:      2,
-          border:         done ? "none" : "1.5px solid #CBD5E1",
+          border:         done ? "none" : "1.5px solid #0F172A",
           background:     done ? "#0F172A" : "transparent",
           display:        "flex",
           alignItems:     "center",
