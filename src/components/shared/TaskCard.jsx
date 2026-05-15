@@ -1,6 +1,7 @@
 import PriorityIcon from "./PriorityIcon";
 import CategoryTag  from "./CategoryTag";
 import { CATS } from "../../config/categories";
+import { formatDuration } from "../../lib/weekUtils";
 
 /**
  * Карточка задачи.
@@ -9,24 +10,25 @@ import { CATS } from "../../config/categories";
 export default function TaskCard({ task, onToggle, compact = false }) {
   const { text, cat, done, important = false, urgent = false, deadline = false } = task;
   const catStyle = CATS[cat] ?? CATS.music;
+  const durationLabel = formatDuration(task.duration);
 
   return (
     <div
       onClick={() => onToggle(task.id)}
       style={{
-        display:       "flex",
-        alignItems:    "flex-start",
-        gap:           8,
-        padding:       compact ? "6px 8px" : "8px 10px",
-        borderRadius:  8,
-        marginBottom:  3,
-        cursor:        "pointer",
-        background: done ? catStyle.bg + "66" : catStyle.bg,
-        border:     deadline && !done ? `1px solid ${catStyle.dot}` : "0.5px solid transparent",
-        userSelect:    "none",
-        transition:    "opacity 0.15s",
-        opacity:       done ? 0.55 : 1,
-      }}
+      display:       "flex",
+      alignItems:    "flex-start",
+      gap:           8,
+      padding:       compact ? "5px 10px 5px 6px" : "7px 10px 7px 6px",
+      borderRadius:  6,
+      marginBottom:  2,
+      cursor:        "pointer",
+      background:  cat === "other" ? "transparent" : `linear-gradient(to left, ${catStyle.bg}, transparent)`,
+      borderRight: cat === "other" ? "none" : `3px solid ${catStyle.dot}`,
+      userSelect:    "none",
+      opacity:       done ? 0.45 : 1,
+      transition:    "opacity 0.15s",
+    }}
     >
       {/* Чекбокс */}
       <div
@@ -37,7 +39,7 @@ export default function TaskCard({ task, onToggle, compact = false }) {
           flexShrink:     0,
           marginTop:      2,
           border:         done ? "none" : "1.5px solid #0F172A",
-          background:     done ? "#0F172A" : "transparent",
+          background:     done ? catStyle.dot : "transparent",
           display:        "flex",
           alignItems:     "center",
           justifyContent: "center",
@@ -77,6 +79,11 @@ export default function TaskCard({ task, onToggle, compact = false }) {
           >
             {text}
           </span>
+          {durationLabel && (
+            <span style={{ fontSize: 11, color: "#94A3B8", whiteSpace: "nowrap", flexShrink: 0 }}>
+              {durationLabel}
+            </span>
+          )}
         </div>
 
         {/* Теги */}

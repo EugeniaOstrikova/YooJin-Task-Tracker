@@ -164,3 +164,13 @@ export function getMonthLabel(weekId) {
   return `${RU_MONTHS_FULL[s.getMonth()]} ${s.getFullYear()}`;
 }
 
+/** 1.5 → "1시간 30분",  2 → "2시간",  0.5 → "30분" */
+export function formatDuration(hours) {
+  if (!hours || hours <= 0) return null;
+  const h = Math.floor(hours);
+  const m = Math.round((hours - h) * 60);
+  if (h === 0) return `${m}분`;
+  if (m === 0) return `${h}시간`;
+  return `${h}시간 ${m}분`;
+}
+

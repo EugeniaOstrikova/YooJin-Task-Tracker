@@ -21,7 +21,7 @@ export default function HabitTracker({ weekId }) {
     <div style={{ marginTop: 24 }}>
       {/* Заголовок */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <span style={{ fontSize: 12, fontWeight: 600, color: "#4A7A85", textTransform: "uppercase", marginLeft: 4, letterSpacing: "0.06em" }}>
           Привычки
         </span>
         <button
@@ -111,8 +111,8 @@ export default function HabitTracker({ weekId }) {
                       borderRadius: 6,
                       margin: "0 auto",
                       cursor: "pointer",
-                      background: checked ? "#0F172A" : "#F1F5F9",
-                      border: days[di]?.isToday ? "1.5px solid #0EA5E9" : "1.5px solid transparent",
+                      background: checked ? "#76A5AF" : "#F1F5F9",
+                      border: days[di]?.isToday ? "1.5px solid #4A7A85" : "1.5px solid transparent",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

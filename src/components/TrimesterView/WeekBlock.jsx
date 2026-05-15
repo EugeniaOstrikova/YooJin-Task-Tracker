@@ -11,8 +11,8 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
   return (
     <div
       style={{
-        background:   isCycle ? "#FEF2F2" : "#fff",
-        border:       isCycle ? "1px solid #FECACA" : "1px solid #E2E8F0",
+        background: "#fff",
+        border:     isCycle ? "1.5px solid #E8B5A8" : "1px solid #E2E8F0",
         borderRadius: 12,
         padding:      "12px 14px",
         marginBottom: 8,
@@ -20,7 +20,14 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
       }}
     >
       {/* Заголовок недели */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+      <div 
+        style={{ 
+          display: "flex", alignItems: "center", gap: 8, marginBottom: 8,
+          background: isCycle ? "#FAE8E5" : "#EAF3F5",
+          borderRadius: 8,
+          padding: "5px 8px",
+          margin: "-2px -2px 8px -2px",
+        }}>
         <button
           onClick={() => onNavigate(weekId)}
           style={{ background: "none", border: "none", cursor: "pointer", padding: 0, textAlign: "left" }}
@@ -34,7 +41,7 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
         </button>
 
         {isCycle && (
-          <span style={{ fontSize: 10, background: "#FEE2E2", color: "#DC2626", borderRadius: 20, padding: "1px 7px", fontWeight: 600 }}>
+          <span style={{ fontSize: 10, background: "#FAE8E5", color: "#C0614F", borderRadius: 20, padding: "1px 7px", fontWeight: 600 }}>
             🌀 цикл
           </span>
         )}
@@ -44,7 +51,7 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
           {total > 0 && (
             <>
               <div style={{ width: 60, height: 3, background: "#E2E8F0", borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ height: "100%", background: allDone ? "#059669" : "#7C3AED", width: `${pct}%`, borderRadius: 3 }} />
+                <div style={{ height: "100%", background: allDone ? "#82B5A0" : "#76A5AF", width: `${pct}%`, borderRadius: 3 }} />
               </div>
               <span style={{ fontSize: 11, color: allDone ? "#059669" : "#94A3B8", fontWeight: 500 }}>
                 {done}/{total}

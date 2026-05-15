@@ -1,15 +1,18 @@
 import TaskCard from "../shared/TaskCard";
+import { formatDuration } from "../../lib/weekUtils";
 
 export default function DayColumn({ day, tasks, onToggle }) {
   const { shortLabel, isToday } = day;
+  const totalHours = tasks.reduce((sum, t) => sum + (t.duration ?? 0), 0);
+  const totalLabel = formatDuration(totalHours);
 
   return (
     <div
       style={{
-        flex:          "0 0 200px",
-        minWidth:      180,
-        background:    isToday ? "#F0F9FF" : "#fff",
-        border:        isToday ? "1px solid #BAE6FD" : "1px solid #E2E8F0",
+        flex: "0 0 260px",
+        minWidth: 240,
+        background: isToday ? "#EAF3F5" : "#fff",
+        border:     isToday ? "1px solid #B8D6DC" : "1px solid #E2E8F0",
         borderRadius:  12,
         padding:       "10px 10px 12px",
         display:       "flex",
@@ -22,7 +25,7 @@ export default function DayColumn({ day, tasks, onToggle }) {
         style={{
           fontSize:     12,
           fontWeight:   600,
-          color:        isToday ? "#0369A1" : "#64748B",
+          color: isToday ? "#4A7A85" : "#64748B",
           marginBottom: 8,
           textTransform: "uppercase",
           letterSpacing: "0.04em",
@@ -33,7 +36,7 @@ export default function DayColumn({ day, tasks, onToggle }) {
       >
         {shortLabel}
         {isToday && (
-          <span style={{ background: "#0EA5E9", color: "#fff", borderRadius: 20, fontSize: 9, padding: "1px 6px", fontWeight: 700 }}>
+          <span style={{ background: "#76A5AF", color: "#fff", borderRadius: 20, fontSize: 9, padding: "1px 6px", fontWeight: 700 }}>
             сегодня
           </span>
         )}
@@ -49,6 +52,13 @@ export default function DayColumn({ day, tasks, onToggle }) {
           <TaskCard key={t.id} task={t} onToggle={onToggle} />
         ))
       )}
+
+      {totalLabel && (
+        <div style={{ marginTop: 8, paddingTop: 6, borderTop: "1px solid #F1F5F9", fontSize: 11, color: "#94A3B8", textAlign: "right" }}>
+          총 {totalLabel}
+        </div>
+      )}
+
     </div>
   );
 }
