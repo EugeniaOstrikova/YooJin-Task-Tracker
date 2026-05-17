@@ -17,32 +17,17 @@ export default function WeekGoals({ weekId }) {
   }
 
   return (
-    <div style={{
-      background: "#EAF3F5",
-      border: "1px solid #B8D6DC",
-      borderRadius: 12,
-      padding: "12px 16px",
-      marginBottom: 16,
-    }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: "#4A7A85", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>
-        Главное на неделю
-      </div>
+    <div className="week-goals">
+      <div className="week-goals__title">Главное на неделю</div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <div className="week-goals__list">
         {goals.map((goal, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div key={i} className="goal-row">
 
-            {/* Чекбокс */}
             <div
               onClick={() => goal && toggleDone(i)}
-              style={{
-                width: 18, height: 18, borderRadius: 5, flexShrink: 0,
-                border: done[i] ? "none" : "1.5px solid #76A5AF",
-                background: done[i] ? "#76A5AF" : "transparent",
-                cursor: goal ? "pointer" : "default",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "background 0.15s",
-              }}
+              className={`goal-cb${done[i] ? " goal-cb--done" : ""}`}
+              style={{ cursor: goal ? "pointer" : "default" }}
             >
               {done[i] && (
                 <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
@@ -51,12 +36,8 @@ export default function WeekGoals({ weekId }) {
               )}
             </div>
 
-            {/* Номер */}
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#4A7A85", flexShrink: 0 }}>
-              {i + 1}.
-            </span>
+            <span className="goal-num">{i + 1}.</span>
 
-            {/* Текст / инпут */}
             {editingIndex === i ? (
               <input
                 autoFocus
@@ -64,37 +45,17 @@ export default function WeekGoals({ weekId }) {
                 onChange={e => setDraft(e.target.value)}
                 onBlur={() => commitEdit(i)}
                 onKeyDown={e => {
-                  if (e.key === "Enter") commitEdit(i);
+                  if (e.key === "Enter")  commitEdit(i);
                   if (e.key === "Escape") setEditingIndex(null);
                 }}
                 placeholder={`Цель ${i + 1}...`}
-                style={{
-                  flex: 1,
-                  background: "#fff",
-                  border: "1px solid #A5B4FC",
-                  borderRadius: 8,
-                  padding: "5px 10px",
-                  fontSize: 13,
-                  color: "#1E293B",
-                  outline: "none",
-                }}
+                className="goal-input"
               />
             ) : (
               <div
                 onClick={() => startEdit(i)}
-                style={{
-                  flex: 1,
-                  padding: "5px 10px",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: goal ? 500 : 400,
-                  color: done[i] ? "#94A3B8" : goal ? "#1E293B" : "#9BBFC6",
-                  textDecoration: done[i] ? "line-through" : "none",
-                  cursor: "text",
-                  border: "1px solid transparent",
-                  transition: "border 0.15s",
-                }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = "#B8D6DC"}
+                className={`goal-text${done[i] ? " goal-text--done" : goal ? " goal-text--filled" : " goal-text--empty"}`}
+                onMouseEnter={e => e.currentTarget.style.borderColor = "var(--c-teal-bd)"}
                 onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}
               >
                 {goal || `Цель ${i + 1}...`}

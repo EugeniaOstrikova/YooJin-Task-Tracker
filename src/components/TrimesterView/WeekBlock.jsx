@@ -9,62 +9,34 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
   const allDone = total > 0 && done === total;
 
   return (
-    <div
-      style={{
-        background: "#fff",
-        border:     isCycle ? "1.5px solid #E8B5A8" : "1px solid #E2E8F0",
-        borderRadius: 12,
-        padding:      "12px 14px",
-        marginBottom: 8,
-        opacity:      allDone ? 0.7 : 1,
-      }}
-    >
-      {/* Заголовок недели */}
-      <div 
-        style={{ 
-          display: "flex", alignItems: "center", gap: 8, marginBottom: 8,
-          background: isCycle ? "#FAE8E5" : "#EAF3F5",
-          borderRadius: 8,
-          padding: "5px 8px",
-          margin: "-2px -2px 8px -2px",
-        }}>
-        <button
-          onClick={() => onNavigate(weekId)}
-          style={{ background: "none", border: "none", cursor: "pointer", padding: 0, textAlign: "left" }}
-        >
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#0F172A", fontFamily: "monospace" }}>
-            {weekId}
-          </span>
-          <span style={{ fontSize: 12, color: "#64748B", marginLeft: 6 }}>
-            {formatWeekRange(weekId)}
-          </span>
+    <div className={`week-block${isCycle ? " week-block--cycle" : ""}${allDone ? " week-block--done" : ""}`}>
+
+      <div className={`week-block__head${isCycle ? " week-block__head--cycle" : ""}`}>
+        <button onClick={() => onNavigate(weekId)} className="week-block__nav">
+          <span className="week-block__id">{weekId}</span>
+          <span className="week-block__range">{formatWeekRange(weekId)}</span>
         </button>
 
-        {isCycle && (
-          <span style={{ fontSize: 10, background: "#FAE8E5", color: "#C0614F", borderRadius: 20, padding: "1px 7px", fontWeight: 600 }}>
-            🌀 цикл
-          </span>
-        )}
+        {isCycle && <span className="badge--cycle-sm">🌀 цикл</span>}
 
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
-          {/* Мини прогресс-бар */}
+        <div className="week-block__meta">
           {total > 0 && (
             <>
-              <div style={{ width: 60, height: 3, background: "#E2E8F0", borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ height: "100%", background: allDone ? "#82B5A0" : "#76A5AF", width: `${pct}%`, borderRadius: 3 }} />
+              <div className="week-block__mini-track">
+                <div
+                  className={`week-block__mini-fill${allDone ? " week-block__mini-fill--done" : ""}`}
+                  style={{ width: `${pct}%` }}
+                />
               </div>
-              <span style={{ fontSize: 11, color: allDone ? "#059669" : "#94A3B8", fontWeight: 500 }}>
+              <span className={`week-block__count${allDone ? " week-block__count--done" : ""}`}>
                 {done}/{total}
               </span>
             </>
           )}
-          {total === 0 && (
-            <span style={{ fontSize: 11, color: "#CBD5E1" }}>нет задач</span>
-          )}
+          {total === 0 && <span className="week-block__no-tasks">нет задач</span>}
         </div>
       </div>
 
-      {/* Задачи */}
       {tasks.map(t => (
         <TaskCard key={t.id} task={t} onToggle={onToggle} compact />
       ))}

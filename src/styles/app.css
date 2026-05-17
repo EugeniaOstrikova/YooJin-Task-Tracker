@@ -1,0 +1,640 @@
+/* ════════════════════════════════════════════
+   app.css  —  Weekly Tracker global styles
+   ════════════════════════════════════════════ */
+
+/* ── 1. CSS-переменные (цвета и радиусы) ─── */
+:root {
+  /* Primary teal palette */
+  --c-nav:      #2C5F6A;   /* nav bar / dark buttons */
+  --c-accent:   #4A7A85;   /* headings, icons        */
+  --c-teal:     #76A5AF;   /* active states          */
+  --c-teal-bg:  #EAF3F5;   /* subtle teal fill       */
+  --c-teal-bd:  #B8D6DC;   /* teal border            */
+
+  /* Text */
+  --c-ink:   #0F172A;
+  --c-mid:   #64748B;
+  --c-dim:   #94A3B8;
+  --c-faint: #CBD5E1;
+
+  /* Surface */
+  --c-border: #E2E8F0;
+  --c-bg:     #F8F7F5;
+  --c-white:  #ffffff;
+
+  /* Status — cycle */
+  --c-cycle:    #C0614F;
+  --c-cycle-bg: #FAE8E5;
+  --c-cycle-bd: #E8B5A8;
+
+  /* Status — missed (same hue as cycle) */
+  --c-missed:    #C0614F;
+  --c-missed-bg: #FAE8E5;
+
+  /* Status — late */
+  --c-late:    #A07C2A;
+  --c-late-bg: #FEF9EC;
+  --c-late-bd: #F0D080;
+
+  /* Success */
+  --c-ok:    #059669;
+  --c-ok-bg: #F0FDF4;
+  --c-ok-bd: #86EFAC;
+
+  /* Error */
+  --c-err:    #DC2626;
+  --c-err-bg: #FEF2F2;
+  --c-err-bd: #FECACA;
+
+  /* Radii */
+  --r-sm:   6px;
+  --r-md:   8px;
+  --r-lg:  12px;
+  --r-xl:  16px;
+  --r-pill: 20px;
+}
+
+/* ── 2. Reset / Base ─────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Montserrat", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  color: var(--c-ink);
+  background: var(--c-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+
+/* ── 3. App shell ────────────────────────── */
+.app-root   { min-height: 100vh; background: var(--c-bg); }
+
+.screen-loading { padding: 32px; font-size: 14px; color: var(--c-dim); }
+.screen-error   { padding: 32px; font-size: 14px; color: var(--c-err); }
+
+/* ── 4. Top nav ──────────────────────────── */
+.top-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--c-nav);
+  padding: 12px 16px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+}
+.top-nav__logo {
+  font-size: 15px; font-weight: 700;
+  color: #fff; letter-spacing: -0.01em; flex-shrink: 0;
+}
+.top-nav__tabs {
+  display: flex;
+  background: rgba(255,255,255,.10);
+  border-radius: 10px; padding: 3px; gap: 2px;
+}
+.top-nav__actions { display: flex; gap: 8px; align-items: center; }
+
+.tab-btn {
+  padding: 6px 14px; font-size: 13px;
+  border-radius: var(--r-md); border: none;
+  font-weight: 500; cursor: pointer;
+  background: transparent; color: rgba(255,255,255,.55);
+  transition: background .15s, color .15s;
+}
+.tab-btn.is-active { background: var(--c-teal); color: #fff; }
+
+.badge-storage          { font-size: 10px; font-weight: 500; flex-shrink: 0; }
+.badge-storage--cloud   { color: #B8D6DC; }
+.badge-storage--local   { color: #FCD34D; }
+
+.btn-export {
+  background: rgba(255,255,255,.12); border: none;
+  border-radius: var(--r-md); padding: 6px 10px;
+  color: #fff; font-size: 12px; cursor: pointer; font-weight: 500;
+}
+.btn-import {
+  background: var(--c-teal); border: none;
+  border-radius: var(--r-md); padding: 6px 12px;
+  color: #fff; font-size: 12px; cursor: pointer; font-weight: 600;
+}
+.btn-icon-nav {
+  background: transparent; border: none;
+  border-radius: var(--r-md); padding: 4px; cursor: pointer;
+}
+
+/* ── 5. Cards ────────────────────────────── */
+.card {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+}
+.card-light {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+}
+
+/* ── 6. Buttons ──────────────────────────── */
+.btn-primary {
+  background: var(--c-nav); color: var(--c-white);
+  border: none; border-radius: 10px;
+  padding: 8px 16px; font-size: 13px;
+  font-weight: 600; cursor: pointer;
+}
+.btn-secondary {
+  background: var(--c-white); color: var(--c-mid);
+  border: 1px solid var(--c-border); border-radius: 10px;
+  padding: 8px 16px; font-size: 13px;
+  font-weight: 500; cursor: pointer;
+}
+.btn-ghost {
+  background: transparent; color: var(--c-dim);
+  border: none; padding: 4px 8px;
+  font-size: 12px; cursor: pointer;
+}
+.btn-nav {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md); padding: 6px 12px;
+  cursor: pointer; font-size: 16px;
+  color: var(--c-ink); flex-shrink: 0;
+}
+.btn-nav-today {
+  font-size: 11px; padding: 6px 10px;
+  background: #F1F5F9; color: var(--c-mid);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md); cursor: pointer; flex-shrink: 0;
+}
+.btn-add-habit {
+  background: none; border: 1px solid var(--c-border);
+  border-radius: var(--r-md); padding: 3px 10px;
+  font-size: 12px; color: var(--c-mid); cursor: pointer;
+}
+.btn-ok {
+  background: var(--c-ink); color: #fff;
+  border: none; border-radius: var(--r-md);
+  padding: 7px 14px; font-size: 13px; cursor: pointer;
+}
+.btn-close {
+  background: #F1F5F9; border: none;
+  border-radius: var(--r-md); width: 30px; height: 30px;
+  cursor: pointer; font-size: 15px; color: var(--c-mid);
+}
+.btn-example {
+  background: none; border: none;
+  color: #7C3AED; font-size: 12px;
+  cursor: pointer; padding: 0; margin-bottom: 8px; font-weight: 500;
+}
+.btn-add-theme {
+  background: var(--c-nav); color: #fff;
+  border: none; border-radius: var(--r-md);
+  padding: 7px 14px; font-size: 13px; cursor: pointer;
+}
+.btn-full {
+  width: 100%; padding: 13px;
+  border-radius: var(--r-lg); font-size: 14px;
+  font-weight: 600; border: none; cursor: pointer;
+  margin-top: 12px;
+}
+.btn-full--dark   { background: var(--c-ink); color: #fff; }
+.btn-full--teal   { background: var(--c-nav);  color: #fff; }
+.btn-full--danger { background: var(--c-err);  color: #fff; }
+
+/* Trimester / Stats selector */
+.trim-btn {
+  padding: 6px 14px; font-size: 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--c-border);
+  background: var(--c-white); color: var(--c-mid);
+  font-weight: 400; cursor: pointer; transition: all .15s;
+}
+.trim-btn.is-active {
+  border: 1.5px solid var(--c-teal);
+  background: var(--c-teal-bg);
+  color: var(--c-accent); font-weight: 600;
+}
+
+/* ── 7. Badges ───────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  border-radius: var(--r-pill);
+  padding: 2px 9px; font-size: 11px;
+  font-weight: 600; white-space: nowrap;
+}
+.badge--primary  { background: var(--c-teal-bg);  color: var(--c-accent); }
+.badge--cycle    { background: var(--c-cycle-bg); color: var(--c-cycle); }
+.badge--missed   { background: var(--c-missed-bg); color: var(--c-missed); }
+.badge--late     { background: var(--c-late-bg);   color: var(--c-late); }
+.badge--deadline {
+  font-size: 9px; padding: 1px 7px;
+  letter-spacing: .04em;
+  background: #FEE2E2; color: var(--c-err);
+}
+.badge--today {
+  font-size: 9px; padding: 1px 6px; font-weight: 700;
+  background: var(--c-teal); color: #fff;
+}
+.badge--cycle-sm {
+  font-size: 10px; padding: 1px 7px; font-weight: 600;
+  background: var(--c-cycle-bg); color: var(--c-cycle);
+  border-radius: var(--r-pill);
+}
+
+/* ── 8. Section title ────────────────────── */
+.section-title {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 8px;
+}
+.section-title--accent { color: var(--c-accent); }
+.section-title--faint  { color: var(--c-faint); }
+.section-title--mid    { color: var(--c-mid); }
+
+/* ── 9. Progress bar ─────────────────────── */
+.progress-track {
+  height: 4px; background: var(--c-border);
+  border-radius: 4px; overflow: hidden;
+}
+.progress-track--thick { height: 6px; }
+.progress-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--c-teal); transition: width .3s;
+}
+.progress-fill--done { background: var(--c-ok); }
+
+/* ── 10. Modal ───────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,.45);
+  display: flex; align-items: center;
+  justify-content: center;
+  z-index: 300; backdrop-filter: blur(2px);
+}
+.modal-overlay--bottom { align-items: flex-end; }
+.modal-container {
+  background: var(--c-white); border-radius: var(--r-xl);
+  padding: 20px 18px 28px;
+  width: 100%; max-width: 540px;
+  max-height: 85vh; overflow-y: auto;
+}
+.modal-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 16px;
+}
+.modal-title { font-size: 17px; font-weight: 700; color: var(--c-ink); }
+
+/* ── 11. Input / Textarea / Select ──────── */
+.input, .textarea, .select {
+  width: 100%; padding: 8px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  font-size: 13px; outline: none;
+  color: var(--c-ink); background: var(--c-white);
+}
+.input:focus, .textarea:focus, .select:focus {
+  border-color: var(--c-teal-bd);
+}
+.textarea { resize: vertical; line-height: 1.5; }
+.textarea--error { border: 1.5px solid #FCA5A5; }
+.input--mono { font-family: monospace; }
+.input--inline { flex: 1; width: auto; }
+
+/* ── 12. Field / Label ───────────────────── */
+.field { margin-bottom: 10px; }
+.field-label {
+  display: block; font-size: 11px;
+  font-weight: 600; color: var(--c-mid); margin-bottom: 4px;
+}
+
+/* ── 13. Alert boxes ─────────────────────── */
+.alert {
+  border-radius: var(--r-md); padding: 10px 12px;
+  line-height: 1.7; margin-top: 8px;
+}
+.alert--error   { background: var(--c-err-bg); border: 1px solid var(--c-err-bd); font-size: 12px; color: var(--c-err); }
+.alert--success { background: var(--c-ok-bg);  border: 1px solid var(--c-ok-bd);  font-size: 13px; font-weight: 500; color: var(--c-ok); }
+
+/* ── 14. Empty state ─────────────────────── */
+.empty {
+  font-size: 12px; color: var(--c-faint);
+  text-align: center; margin-top: 16px; font-style: italic;
+}
+.empty--lg     { font-size: 14px; margin-top: 48px; }
+.empty--center { font-size: 14px; margin-top: 60px; text-align: center; color: var(--c-faint); }
+
+/* ── 15. Week view layout ────────────────── */
+.week-view { padding: 16px 16px 40px; max-width: 1400px; margin: 0 auto; }
+
+.week-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.week-nav__info    { flex: 1; }
+.week-nav__heading { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.week-nav__id    { font-size: 16px; font-weight: 600; color: var(--c-ink); }
+.week-nav__range { font-size: 14px; color: var(--c-mid); }
+.week-nav__tri   { font-size: 11px; color: var(--c-dim); }
+
+.week-nav__progress     { margin-top: 6px; }
+.week-nav__progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.week-nav__meta         { font-size: 12px; color: var(--c-dim); }
+.week-nav__meta--done   { color: var(--c-ok); }
+
+.cycle-warning {
+  background: var(--c-cycle-bg);
+  border: 1px solid var(--c-cycle-bd);
+  border-radius: 10px; padding: 8px 14px;
+  margin-bottom: 14px; font-size: 13px; color: var(--c-cycle);
+}
+
+.week-layout       { display: flex; gap: 0; }
+.week-layout__left {
+  flex: 0 0 260px; min-width: 240px;
+  padding-right: 16px; margin-right: 16px;
+  border-right: 2px solid var(--c-teal);
+}
+.week-layout__left-title {
+  font-size: 12px; font-weight: 600;
+  color: var(--c-accent); margin-bottom: 8px; margin-left: 4px;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.week-layout__right { flex: 1; min-width: 0; }
+
+.days-row           { display: flex; gap: 10px; margin-bottom: 10px; }
+.days-row:last-child { margin-bottom: 0; }
+
+/* ── 16. Day column ──────────────────────── */
+.day-col {
+  flex: 0 0 260px; min-width: 240px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 10px 10px 12px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.day-col--today { background: var(--c-teal-bg); border-color: var(--c-teal-bd); }
+
+.day-col__header {
+  font-size: 12px; font-weight: 600; color: var(--c-mid);
+  margin-bottom: 8px; text-transform: uppercase; letter-spacing: .04em;
+  display: flex; align-items: center; gap: 6px;
+}
+.day-col__header--today { color: var(--c-accent); }
+
+.day-col__footer {
+  margin-top: 8px; padding-top: 6px;
+  border-top: 1px solid #F1F5F9;
+  font-size: 11px; color: var(--c-dim); text-align: right;
+}
+
+/* ── 17. Task card ───────────────────────── */
+.task-card {
+  display: flex; align-items: flex-start;
+  gap: 8px; padding: 7px 10px 7px 6px;
+  border-radius: var(--r-sm); margin-bottom: 2px;
+  cursor: pointer; user-select: none; transition: opacity .15s;
+}
+.task-card--compact { padding: 5px 10px 5px 6px; }
+.task-card--done    { opacity: .45; }
+
+.task-card__cb {
+  width: 16px; height: 16px; border-radius: 4px;
+  flex-shrink: 0; margin-top: 2px;
+  border: 1.5px solid var(--c-ink); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.task-card__cb--done { border: none; }
+
+.task-card__body { flex: 1; min-width: 0; }
+.task-card__row  { display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
+
+.task-card__text         { font-size: 13px; font-weight: 500; color: var(--c-ink); line-height: 1.4; flex: 1; }
+.task-card__text--compact { font-size: 12px; }
+.task-card__text--done   { color: var(--c-dim); text-decoration: line-through; }
+
+.task-card__dur  { font-size: 11px; color: var(--c-dim); white-space: nowrap; flex-shrink: 0; }
+.task-card__tags { margin-top: 4px; }
+
+/* ── 18. Habit tracker ───────────────────── */
+.habit-wrap { margin-top: 24px; }
+.habit-head {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 10px;
+}
+.habit-head__title {
+  font-size: 12px; font-weight: 600; color: var(--c-accent);
+  text-transform: uppercase; margin-left: 4px; letter-spacing: .06em;
+}
+.habit-add-row { display: flex; gap: 8px; margin-bottom: 10px; }
+
+.habit-table {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg); overflow: hidden; max-width: 520px;
+}
+.habit-table__header {
+  display: grid;
+  grid-template-columns: 1fr repeat(7, 36px);
+  gap: 4px; padding: 8px 12px;
+  border-bottom: 1px solid #F1F5F9; background: #F8FAFC;
+}
+.habit-table__day          { text-align: center; font-size: 10px; font-weight: 600; color: var(--c-dim); text-transform: uppercase; }
+.habit-table__day--today   { color: #0369A1; }
+
+.habit-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(7, 36px);
+  gap: 4px; padding: 8px 12px;
+  align-items: center; border-bottom: 1px solid #F1F5F9;
+}
+.habit-row:last-child { border-bottom: none; }
+
+.habit-row__name  { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.habit-row__text  { font-size: 13px; font-weight: 500; color: var(--c-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.habit-row__count { font-size: 10px; color: var(--c-dim); flex-shrink: 0; }
+.habit-row__del   { background: none; border: none; color: var(--c-faint); cursor: pointer; font-size: 12px; padding: 0; flex-shrink: 0; margin-left: auto; }
+
+.habit-cell {
+  width: 28px; height: 28px; border-radius: 6px; margin: 0 auto;
+  cursor: pointer; background: #F1F5F9;
+  border: 1.5px solid transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.habit-cell--on    { background: var(--c-teal); }
+.habit-cell--today { border-color: var(--c-accent); }
+
+/* ── 19. Week goals ──────────────────────── */
+.week-goals {
+  background: var(--c-teal-bg);
+  border: 1px solid var(--c-teal-bd);
+  border-radius: var(--r-lg);
+  padding: 12px 16px; margin-bottom: 16px;
+}
+.week-goals__title {
+  font-size: 12px; font-weight: 600; color: var(--c-accent);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px;
+}
+.week-goals__list { display: flex; flex-direction: column; gap: 6px; }
+
+.goal-row { display: flex; align-items: center; gap: 10px; }
+.goal-cb  {
+  width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
+  border: 1.5px solid var(--c-teal); background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.goal-cb--done { border: none; background: var(--c-teal); }
+
+.goal-num {
+  font-size: 13px; font-weight: 700; color: var(--c-accent); flex-shrink: 0;
+}
+.goal-text {
+  flex: 1; padding: 5px 10px; border-radius: var(--r-md);
+  font-size: 13px; cursor: text;
+  border: 1px solid transparent; transition: border .15s;
+}
+.goal-text:hover         { border-color: var(--c-teal-bd); }
+.goal-text--done         { color: var(--c-dim); text-decoration: line-through; font-weight: 500; }
+.goal-text--empty        { color: #9BBFC6; font-weight: 400; }
+.goal-text--filled       { color: #1E293B; font-weight: 500; }
+.goal-input {
+  flex: 1; background: var(--c-white); border: 1px solid #A5B4FC;
+  border-radius: var(--r-md); padding: 5px 10px;
+  font-size: 13px; color: #1E293B; outline: none;
+}
+
+/* ── 20. Trimester view ──────────────────── */
+.trim-view      { padding: 16px 16px 40px; }
+.trim-selector  { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.trim-progress  { padding: 0 8px; margin-bottom: 20px; }
+.trim-progress__row   { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.trim-progress__label { font-size: 16px; font-weight: 600; color: var(--c-ink); }
+.trim-progress__pct   { font-size: 12px; font-weight: 500; color: var(--c-dim); }
+.trim-progress__pct--done { color: var(--c-ok); }
+
+.trim-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+
+/* ── 21. Week block (trimester) ──────────── */
+.week-block {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 12px 14px; margin-bottom: 8px;
+}
+.week-block--cycle { border: 1.5px solid var(--c-cycle-bd); }
+.week-block--done  { opacity: .7; }
+
+.week-block__head {
+  display: flex; align-items: center; gap: 8px;
+  border-radius: var(--r-md); padding: 5px 8px;
+  margin: -2px -2px 8px -2px;
+  background: var(--c-teal-bg);
+}
+.week-block__head--cycle { background: var(--c-cycle-bg); }
+
+.week-block__nav   { background: none; border: none; cursor: pointer; padding: 0; text-align: left; }
+.week-block__id    { font-size: 13px; font-weight: 700; color: var(--c-ink); font-family: monospace; }
+.week-block__range { font-size: 12px; color: var(--c-mid); margin-left: 6px; }
+
+.week-block__meta  { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.week-block__mini-track { width: 60px; height: 3px; background: var(--c-border); border-radius: 3px; overflow: hidden; }
+.week-block__mini-fill        { height: 100%; border-radius: 3px; background: var(--c-teal); }
+.week-block__mini-fill--done  { background: #82B5A0; }
+.week-block__count            { font-size: 11px; color: var(--c-dim); font-weight: 500; }
+.week-block__count--done      { color: var(--c-ok); }
+.week-block__no-tasks         { font-size: 11px; color: var(--c-faint); }
+
+/* ── 22. Stats view ──────────────────────── */
+.stats-view  { padding: 16px 20px 40px; }
+.stats-cards { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+
+.stat-card     { background: var(--c-white); border: 1px solid var(--c-border); border-radius: var(--r-lg); padding: 12px 18px; min-width: 160px; }
+.stat-card__lbl { font-size: 11px; color: var(--c-dim); margin-bottom: 4px; }
+.stat-card__val { font-size: 22px; font-weight: 700; color: var(--c-nav); }
+
+.chart-legend        { display: flex; gap: 16px; margin-bottom: 12px; align-items: center; }
+.chart-legend__item  { display: flex; align-items: center; gap: 6px; }
+.chart-legend__swatch { width: 24px; height: 10px; border-radius: 2px; }
+.chart-legend__label  { font-size: 11px; color: var(--c-mid); }
+
+.chart-wrap { background: var(--c-white); border: 1px solid var(--c-border); border-radius: 14px; padding: 20px 10px 10px; }
+
+.cat-legend      { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+.cat-legend__item { display: flex; align-items: center; gap: 5px; }
+.cat-legend__dot  { width: 10px; height: 10px; border-radius: 3px; }
+.cat-legend__lbl  { font-size: 11px; color: var(--c-mid); }
+
+/* ── 23. Review view ─────────────────────── */
+.review-view { padding: 16px 20px 40px; max-width: 800px; margin: 0 auto; }
+
+.review-summary    { display: flex; gap: 10px; margin-bottom: 20px; }
+.review-sum-card   { border-radius: var(--r-lg); padding: 12px 18px; flex: 1; }
+.review-sum-card__lbl { font-size: 11px; margin-bottom: 4px; }
+.review-sum-card__val { font-size: 26px; font-weight: 700; }
+
+.review-week-group { margin-bottom: 28px; }
+.review-week-title { font-size: 13px; font-weight: 700; color: var(--c-accent); margin-bottom: 12px; }
+.review-cols       { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.review-col__title           { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.review-col__title--missed   { color: var(--c-missed); }
+.review-col__title--late     { color: var(--c-late); }
+.review-col__empty           { font-size: 12px; color: var(--c-faint); font-style: italic; }
+
+.review-task       { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-radius: var(--r-md); margin-bottom: 3px; cursor: pointer; }
+.review-task__body { flex: 1; min-width: 0; }
+.review-task__text { font-size: 13px; font-weight: 500; color: var(--c-ink); line-height: 1.4; }
+.review-task__meta { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+.review-task__arrow { font-size: 11px; flex-shrink: 0; }
+
+.theme-group       { margin-bottom: 10px; }
+.theme-group__label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em;
+  margin-bottom: 4px; padding-left: 2px;
+  color: var(--c-teal);
+}
+
+/* ── 24. Import modal ────────────────────── */
+.import-sheet {
+  background: var(--c-white); border-radius: 20px 20px 0 0;
+  padding: 20px 18px 40px; width: 100%; max-width: 580px;
+  max-height: 90vh; overflow-y: auto;
+}
+.import-tabs { display: flex; background: #F1F5F9; border-radius: 10px; padding: 4px; margin-bottom: 14px; gap: 4px; }
+.import-tab     { flex: 1; padding: 7px; font-size: 13px; border-radius: var(--r-md); border: none; font-weight: 500; cursor: pointer; }
+.import-tab--on  { background: var(--c-ink); color: #fff; }
+.import-tab--off { background: transparent; color: var(--c-dim); }
+
+.import-hint        { font-size: 12px; color: var(--c-mid); margin-bottom: 10px; line-height: 1.5; }
+.import-example     { background: #F8FAFC; border: 1px solid var(--c-border); border-radius: var(--r-md); padding: 10px 12px; font-size: 11px; color: var(--c-mid); font-family: monospace; white-space: pre-wrap; line-height: 1.6; margin-bottom: 10px; }
+.import-file-label  { display: block; margin-bottom: 8px; font-size: 12px; color: var(--c-mid); }
+.import-meta        { margin-top: 12px; font-size: 11px; color: var(--c-dim); line-height: 1.7; }
+
+/* ── 25. Settings modal ──────────────────── */
+.settings-section { font-size: 12px; font-weight: 700; color: var(--c-dim); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+
+.cat-row         { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--c-border); }
+.cat-row__info   { flex: 1; }
+.cat-row__label  { font-size: 13px; font-weight: 600; color: var(--c-ink); }
+.cat-row__colors { font-size: 10px; color: var(--c-dim); font-family: monospace; }
+
+.cat-form        { background: var(--c-teal-bg); border-radius: 10px; padding: 14px 14px 10px; margin-top: 10px; }
+.cat-form__title { font-size: 13px; font-weight: 700; color: var(--c-accent); margin-bottom: 12px; }
+
+.color-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,.08); }
+
+/* ── 26. Task edit modal (Review) ────────── */
+.task-edit-header  { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.task-edit-title   { font-size: 15px; font-weight: 600; color: var(--c-ink); margin-bottom: 6px; }
+.task-edit-badges  { display: flex; gap: 8px; }
+.task-edit-section { margin-bottom: 14px; }
+.task-edit-label   { font-size: 12px; font-weight: 600; color: var(--c-mid); display: block; margin-bottom: 6px; }
+.task-edit-row     { display: flex; gap: 8px; }
+
+/* ── 27. Color legend ────────────────────── */
+.color-legend {
+  padding: 6px 16px; display: flex; gap: 10px; flex-wrap: wrap;
+  background: var(--c-bg); border-bottom: 1px solid var(--c-border);
+}

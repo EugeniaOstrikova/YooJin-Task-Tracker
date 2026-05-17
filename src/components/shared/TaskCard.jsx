@@ -3,10 +3,6 @@ import CategoryTag  from "./CategoryTag";
 import { useCategories } from "../../context/CategoriesContext";
 import { formatDuration } from "../../lib/weekUtils";
 
-/**
- * Карточка задачи.
- * compact=true — для триместр-вью (меньше отступы)
- */
 export default function TaskCard({ task, onToggle, compact = false }) {
   const { cats } = useCategories();
   const { text, cat, done, important = false, urgent = false, deadline = false } = task;
@@ -16,36 +12,16 @@ export default function TaskCard({ task, onToggle, compact = false }) {
   return (
     <div
       onClick={() => onToggle(task.id)}
+      className={`task-card${compact ? " task-card--compact" : ""}${done ? " task-card--done" : ""}`}
       style={{
-      display:       "flex",
-      alignItems:    "flex-start",
-      gap:           8,
-      padding:       compact ? "5px 10px 5px 6px" : "7px 10px 7px 6px",
-      borderRadius:  6,
-      marginBottom:  2,
-      cursor:        "pointer",
-      background:  cat === "other" ? "transparent" : `linear-gradient(to left, ${catStyle.bg}, transparent)`,
-      borderRight: cat === "other" ? "none" : `3px solid ${catStyle.dot}`,
-      userSelect:    "none",
-      opacity:       done ? 0.45 : 1,
-      transition:    "opacity 0.15s",
-    }}
+        background:  cat === "other" ? "transparent" : `linear-gradient(to left, ${catStyle.bg}, transparent)`,
+        borderRight: cat === "other" ? "none" : `3px solid ${catStyle.dot}`,
+      }}
     >
       {/* Чекбокс */}
       <div
-        style={{
-          width:          16,
-          height:         16,
-          borderRadius:   4,
-          flexShrink:     0,
-          marginTop:      2,
-          border:         done ? "none" : "1.5px solid #0F172A",
-          background:     done ? catStyle.dot : "transparent",
-          display:        "flex",
-          alignItems:     "center",
-          justifyContent: "center",
-          transition:     "background 0.15s",
-        }}
+        className={`task-card__cb${done ? " task-card__cb--done" : ""}`}
+        style={{ background: done ? catStyle.dot : "transparent" }}
       >
         {done && (
           <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
@@ -55,47 +31,22 @@ export default function TaskCard({ task, onToggle, compact = false }) {
       </div>
 
       {/* Контент */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            display:        "flex",
-            alignItems:     "flex-start",
-            gap:            5,
-            flexWrap:       "wrap",
-          }}
-        >
-          {/* Приоритет */}
+      <div className="task-card__body">
+        <div className="task-card__row">
           <PriorityIcon important={important} urgent={urgent} size={12} />
-
-          {/* Текст */}
-          <span
-            style={{
-              fontSize:       compact ? 12 : 13,
-              fontWeight:     500,
-              color:          done ? "#94A3B8" : "#0F172A",
-              textDecoration: done ? "line-through" : "none",
-              lineHeight:     1.4,
-              flex:           1,
-            }}
-          >
+          <span className={`task-card__text${compact ? " task-card__text--compact" : ""}${done ? " task-card__text--done" : ""}`}>
             {text}
           </span>
           {durationLabel && (
-            <span style={{ fontSize: 11, color: "#94A3B8", whiteSpace: "nowrap", flexShrink: 0 }}>
-              {durationLabel}
-            </span>
+            <span className="task-card__dur">{durationLabel}</span>
           )}
         </div>
 
-        {/* Теги */}
         {deadline && !done && (
-          <div style={{ marginTop: 4 }}>
-            <span style={{ fontSize: 9, fontWeight: 700, color: "#DC2626", background: "#FEE2E2", borderRadius: 20, padding: "1px 7px", letterSpacing: "0.04em" }}>
-              ДЕДЛАЙН
-            </span>
+          <div className="task-card__tags">
+            <span className="badge badge--deadline">ДЕДЛАЙН</span>
           </div>
         )}
-   
       </div>
     </div>
   );
