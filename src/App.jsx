@@ -9,8 +9,12 @@ import ColorLegend from "./components/shared/ColorLegend";
 import StatsView from "./components/StatsView";
 import ReviewView from "./components/ReviewView";
 import { CategoriesProvider } from "./context/CategoriesContext";
+import { useAuth }      from "./hooks/useAuth";
+import LoginScreen      from "./components/Auth/LoginScreen";
+import { signOut } from "./lib/auth";
 
 export default function App() {
+  const { user, loading: authLoading } = useAuth();
   const { tasks, loading, error, toggleDone, importTasks, restoreFromJson, exportTasks, updateTaskLocally } = useTasks();
 
   const [view,        setView]        = useState("week");
@@ -21,9 +25,14 @@ export default function App() {
     setWeekId(id);
     setView("week");
   }
-
-  if (loading) return <div className="screen-loading">Загрузка...</div>;
+  
+  if (authLoading) return (
+    <div className="screen-auth-loading">Загрузка...</div>
+  );
+  // if (loading) return <div className="screen-loading">Загрузка...</div>;
   if (error)   return <div className="screen-error">Ошибка: {error}</div>;
+
+  if (!user) return <LoginScreen />;
 
   return (
     <CategoriesProvider>
@@ -33,6 +42,7 @@ export default function App() {
           onViewChange={setView}
           onImport={() => setShowImport(true)}
           onExport={exportTasks}
+          onSignOut={signOut}
         />
         <ColorLegend />
 

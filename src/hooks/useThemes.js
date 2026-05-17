@@ -23,5 +23,13 @@ export function useThemes() {
     setThemes(prev => prev.filter(t => t.id !== id));
   }, []);
 
-  return { themes, addTheme, removeTheme };
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadThemes()
+      .then(data => { setThemes(data); setLoading(false); })
+      .catch(console.error);
+  }, []);
+
+  return { themes, loading, addTheme, removeTheme };
 }

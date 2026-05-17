@@ -149,10 +149,13 @@ function ReviewTaskCard({ task, status, onEdit, cats }) {
 function groupByTheme(tasks, themes) {
   const map = {};
   tasks.forEach(task => {
-    const key = task.theme_id ?? "__none__";
+    // Используем theme_id как ключ только если тема реально найдена
+    const found = themes.find(t => t.id === task.theme_id);
+    const key = found ? task.theme_id : "__none__";
     if (!map[key]) map[key] = [];
     map[key].push(task);
   });
+
   return [
     ...Object.entries(map).filter(([k]) => k !== "__none__"),
     ...Object.entries(map).filter(([k]) => k === "__none__"),
@@ -181,19 +184,18 @@ export default function ReviewView({ tasks, onTaskUpdate }) {
   const [editingTask, setEditingTask] = useState(null);
   const { cats } = useCategories();
 
-  const reviewTasks = tasks
-    .filter(t => t.week < currentWeekId)
-    .map(t => ({ ...t, status: getStatus(t, currentWeekId) }))
-    .filter(t => t.status !== null)
-    .sort((a, b) => b.week.localeCompare(a.week));
+  const reviewTasks = [...new Map(
+    tasks
+      .filter(t => t.week < currentWeekId)
+      .map(t => ({ ...t, status: getStatus(t, currentWeekId) }))
+      .filter(t => t.status !== null)
+      .map(t => [t.id, t])
+  ).values()].sort((a, b) => b.week.localeCompare(a.week));
+  console.log("reviewTasks ids:", reviewTasks.map(t => t.id));
+console.log("weekMissed для W20:", reviewTasks.filter(t => t.week === "2026W20" && t.status === "missed").map(t => ({ id: t.id, text: t.text, theme_id: t.theme_id })));
 
-  const grouped = {};
-  reviewTasks.forEach(task => {
-    if (!grouped[task.week]) grouped[task.week] = {};
-    const themeKey = task.theme_id ?? "__none__";
-    if (!grouped[task.week][themeKey]) grouped[task.week][themeKey] = [];
-    grouped[task.week][themeKey].push(task);
-  });
+  const uniqueWeeks = [...new Set(reviewTasks.map(t => t.week))]
+    .sort((a, b) => b.localeCompare(a));
 
   const handleSave = useCallback(async (id, updates) => {
     await patchTask(id, updates);
@@ -226,9 +228,12 @@ export default function ReviewView({ tasks, onTaskUpdate }) {
         <div className="empty--center">Всё выполнено вовремя 🎉</div>
       )}
 
-      {Object.entries(grouped).map(([weekId, themeGroups]) => {
-        const weekMissed = Object.values(themeGroups).flat().filter(t => t.status === "missed");
-        const weekLate   = Object.values(themeGroups).flat().filter(t => t.status === "late");
+      {uniqueWeeks.map(weekId => {
+        const weekMissed = reviewTasks.filter(t => t.week === weekId && t.status === "missed");
+        const weekLate   = reviewTasks.filter(t => t.week === weekId && t.status === "late");
+        const { themes, loading: themesLoading, addTheme } = useThemes();
+
+        if (themesLoading) return <div className="empty--center">Загрузка...</div>;
 
         return (
           <div key={weekId} className="review-week-group">
