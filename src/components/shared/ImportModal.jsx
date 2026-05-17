@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { CATS } from "../../config/categories";
+import { useCategories } from "../../context/CategoriesContext";
 import { isValidWeekId } from "../../lib/weekUtils";
-
-const CAT_KEYS = Object.keys(CATS);
 
 const EXAMPLE = JSON.stringify([
   {
@@ -50,6 +48,8 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
   const [errors,  setErrors]  = useState([]);
   const [success, setSuccess] = useState(false);
   const [showEx,  setShowEx]  = useState(false);
+  const { cats } = useCategories();
+  const CAT_KEYS = Object.keys(cats);
 
   function handleFile(e) {
     const file = e.target.files?.[0];

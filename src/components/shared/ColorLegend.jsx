@@ -1,6 +1,7 @@
-import { CATS } from "../../config/categories";
+import { useCategories } from "../../context/CategoriesContext";
 
 export default function ColorLegend() {
+  const { cats } = useCategories();
   return (
     <div
       style={{
@@ -12,7 +13,7 @@ export default function ColorLegend() {
         borderBottom: "1px solid #E2E8F0",
       }}
     >
-      {Object.entries(CATS).map(([key, cat]) => (
+      {Object.entries(cats).map(([key, cat]) => (
         <div key={key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <div style={{ width: 14, height: 14, borderRadius: 4, background: cat.bg, border: `1.5px solid ${cat.dot}` }} />
           <span style={{ fontSize: 11, color: "#64748B", fontWeight: 500 }}>{cat.label}</span>

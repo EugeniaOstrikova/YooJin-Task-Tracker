@@ -1,6 +1,11 @@
 import { isSupabase } from "../../lib/storage";
+import { useState } from "react";
+import SettingsModal from "./SettingsModal";
+import { Settings } from "lucide-react";
+
 
 export default function TopNav({ view, onViewChange, onImport, onExport }) {
+  const [showSettings, setShowSettings] = useState(false);
   const tabBtn = (v, label) => (
     <button
       onClick={() => onViewChange(v)}
@@ -30,6 +35,8 @@ export default function TopNav({ view, onViewChange, onImport, onExport }) {
       <div style={{ display: "flex", background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: 3, gap: 2 }}>
         {tabBtn("week", "Неделя")}
         {tabBtn("trimester", "Триместр")}
+        {tabBtn("stats", "Статистика")}
+        {tabBtn("review",    "Разбор")}
       </div>
 
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -42,7 +49,14 @@ export default function TopNav({ view, onViewChange, onImport, onExport }) {
         <button onClick={onImport} style={{ background: "#76A5AF", border: "none", borderRadius: 8, padding: "6px 12px", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>
           + Импорт
         </button>
+        <button
+          onClick={() => setShowSettings(true)}
+          style={{ background: "transparent", border: "none", borderRadius: 8, padding: "4px 4px", color: "#fff", fontSize: 12, cursor: "pointer" }}
+        >
+          <Settings size={16} color="#fff" />
+        </button>
       </div>
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import PriorityIcon from "./PriorityIcon";
 import CategoryTag  from "./CategoryTag";
-import { CATS } from "../../config/categories";
+import { useCategories } from "../../context/CategoriesContext";
 import { formatDuration } from "../../lib/weekUtils";
 
 /**
@@ -8,8 +8,9 @@ import { formatDuration } from "../../lib/weekUtils";
  * compact=true — для триместр-вью (меньше отступы)
  */
 export default function TaskCard({ task, onToggle, compact = false }) {
+  const { cats } = useCategories();
   const { text, cat, done, important = false, urgent = false, deadline = false } = task;
-  const catStyle = CATS[cat] ?? CATS.music;
+  const catStyle = cats[task.cat] ?? { bg: "#F1F5F9", text: "#64748B", dot: "#94A3B8" };
   const durationLabel = formatDuration(task.duration);
 
   return (

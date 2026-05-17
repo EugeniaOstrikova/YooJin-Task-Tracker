@@ -21,9 +21,10 @@ export function useTasks() {
   const toggleDone = useCallback(async (id) => {
     const task = tasks.find(t => t.id === id);
     if (!task) return;
-    const done = !task.done;
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, done } : t));
-    await patchTask(id, { done }).catch(console.error);
+    const done         = !task.done;
+    const completed_at = done ? new Date().toISOString() : null;
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, done, completed_at } : t));
+    await patchTask(id, { done, completed_at }).catch(console.error);
   }, [tasks]);
 
   // Импорт задач (добавить / обновить)
@@ -57,5 +58,9 @@ export function useTasks() {
     URL.revokeObjectURL(url);
   }, [tasks]);
 
-  return { tasks, loading, error, toggleDone, importTasks, restoreFromJson, removeTask, exportTasks };
+  const updateTaskLocally = useCallback((id, updates) => {
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+  }, []);
+
+  return { tasks, loading, error, toggleDone, importTasks, restoreFromJson, removeTask, exportTasks, updateTaskLocally };
 }

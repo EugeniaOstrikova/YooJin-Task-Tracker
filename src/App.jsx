@@ -6,9 +6,12 @@ import ImportModal        from "./components/shared/ImportModal";
 import WeekView           from "./components/WeekView";
 import TrimesterView      from "./components/TrimesterView";
 import ColorLegend from "./components/shared/ColorLegend";
+import StatsView from "./components/StatsView";
+import ReviewView from "./components/ReviewView";
+import { CategoriesProvider } from "./context/CategoriesContext";
 
 export default function App() {
-  const { tasks, loading, error, toggleDone, importTasks, restoreFromJson, exportTasks } = useTasks();
+  const { tasks, loading, error, toggleDone, importTasks, restoreFromJson, exportTasks, updateTaskLocally } = useTasks();
 
   const [view,        setView]        = useState("week"); // "week" | "trimester"
   const [weekId,      setWeekId]      = useState(getCurrentWeekId);
@@ -33,6 +36,7 @@ export default function App() {
   );
 
   return (
+  <CategoriesProvider>
     <div style={{ minHeight: "100vh", background: "#F8F7F5" }}>
       <TopNav
         view={view}
@@ -42,21 +46,24 @@ export default function App() {
       />
       <ColorLegend />
 
-      {view === "week" ? (
+      {view === "week" && 
         <WeekView
           weekId={weekId}
           onWeekChange={setWeekId}
           tasks={tasks}
           onToggle={toggleDone}
         />
-      ) : (
+      }
+      {view === "trimester" && 
         <TrimesterView
           tasks={tasks}
           onToggle={toggleDone}
           onNavigateWeek={handleNavigateWeek}
           currentWeekId={weekId}
         />
-      )}
+      }
+      {view === "stats"  && <StatsView tasks={tasks} currentWeekId={weekId} />}
+      {view === "review" && <ReviewView tasks={tasks} onTaskUpdate={updateTaskLocally} />}
 
       {showImport && (
         <ImportModal
@@ -66,5 +73,11 @@ export default function App() {
         />
       )}
     </div>
-  );
+  </CategoriesProvider>
+);
+  // return (
+  //   <div style={{ minHeight: "100vh", background: "#F8F7F5" }}>
+      
+  //   </div>
+  // );
 }

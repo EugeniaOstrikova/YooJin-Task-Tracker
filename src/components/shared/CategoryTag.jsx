@@ -1,7 +1,8 @@
-import { CATS } from "../../config/categories";
+import { useCategories } from "../../context/CategoriesContext";
 
 export default function CategoryTag({ cat, small = false }) {
-  const c = CATS[cat];
+  const { cats } = useCategories();
+  const c = cats[cat];
   if (!c) return null;
   return (
     <span
