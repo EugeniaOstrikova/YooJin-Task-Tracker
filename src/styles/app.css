@@ -172,6 +172,12 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--r-md); padding: 3px 10px;
   font-size: 12px; color: var(--c-mid); cursor: pointer;
 }
+.btn-habit-edit {
+  background: none; 
+  padding: 0;
+  font-size: 14px; 
+  color: var(--c-accent); cursor: pointer;
+}
 .btn-ok {
   background: var(--c-ink); color: #fff;
   border: none; border-radius: var(--r-md);
@@ -338,6 +344,8 @@ input, textarea, select { font-family: inherit; }
 .week-nav__progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .week-nav__meta         { font-size: 12px; color: var(--c-dim); }
 .week-nav__meta--done   { color: var(--c-ok); }
+.week-meta-row { display: flex; gap: 16px; margin-bottom: 16px; }
+.week-meta-row__content { flex: 1; min-width: 0; }
 
 .cycle-warning {
   background: var(--c-cycle-bg);
@@ -416,14 +424,16 @@ input, textarea, select { font-family: inherit; }
 .task-card__tags { margin-top: 4px; }
 
 /* ── 18. Habit tracker ───────────────────── */
-.habit-wrap { margin-top: 24px; }
+/* .habit-wrap { margin-top: 24px; } */
 .habit-head {
-  display: flex; align-items: center;
-  justify-content: space-between; margin-bottom: 10px;
+  display: flex; align-items: top;
+  /* justify-content: space-between; */
 }
 .habit-head__title {
   font-size: 12px; font-weight: 600; color: var(--c-accent);
   text-transform: uppercase; margin-left: 4px; letter-spacing: .06em;
+  margin-bottom: 16px;
+  margin-right: 16px;
 }
 .habit-add-row { display: flex; gap: 8px; margin-bottom: 10px; }
 
@@ -466,16 +476,21 @@ input, textarea, select { font-family: inherit; }
 
 /* ── 19. Week goals ──────────────────────── */
 .week-goals {
-  background: var(--c-teal-bg);
-  border: 1px solid var(--c-teal-bd);
-  border-radius: var(--r-lg);
-  padding: 12px 16px; margin-bottom: 16px;
+  /* margin-bottom: 16px; */
 }
 .week-goals__title {
   font-size: 12px; font-weight: 600; color: var(--c-accent);
-  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px;
+  text-transform: uppercase; letter-spacing: .06em; margin-left: 4px;
+  margin-bottom: 16px;
 }
-.week-goals__list { display: flex; flex-direction: column; gap: 6px; }
+.week-goals__list { 
+  display: flex; flex-direction: column; gap: 6px;
+  background: var(--c-teal-bg);
+  border: 1px solid var(--c-teal-bd);
+  border-radius: var(--r-lg);
+  padding: 12px 16px; 
+  /* margin-bottom: 16px; */
+ }
 
 .goal-row { display: flex; align-items: center; gap: 10px; }
 .goal-cb  {

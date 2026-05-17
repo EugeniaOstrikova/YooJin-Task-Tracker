@@ -81,7 +81,16 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
         </div>
       )}
 
-      <WeekGoals weekId={weekId} />
+      <div className="week-meta-row">
+        <div className="week-meta-row__content">
+          <WeekGoals weekId={weekId} />
+        </div>
+        <div className="week-meta-row__content">
+          <HabitTracker weekId={weekId} />
+        </div>
+      </div>
+
+      {/* <WeekGoals weekId={weekId} /> */}
 
       {/* ── Основной layout ── */}
       <div className="week-layout">
@@ -118,7 +127,7 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
         </div>
       )}
 
-      <HabitTracker weekId={weekId} />
+      {/* <HabitTracker weekId={weekId} /> */}
     </div>
   );
 }

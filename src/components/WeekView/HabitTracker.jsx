@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useHabits } from "../../hooks/useHabits";
 import { getWeekDays } from "../../lib/weekUtils";
+import { Settings2 } from 'lucide-react';
 
 export default function HabitTracker({ weekId }) {
   const { habits, logs, loading, toggleDay, createHabit, removeHabit } = useHabits(weekId);
@@ -20,10 +21,8 @@ export default function HabitTracker({ weekId }) {
   return (
     <div className="habit-wrap">
       <div className="habit-head">
-        <span className="habit-head__title">Привычки</span>
-        <button onClick={() => setAdding(v => !v)} className="btn-add-habit">
-          {adding ? "Отмена" : "+ Добавить"}
-        </button>
+        <h3 className="habit-head__title">Привычки</h3>
+        <Settings2 onClick={() => setAdding(v => !v)} size={14} className="btn-habit-edit" />
       </div>
 
       {adding && (

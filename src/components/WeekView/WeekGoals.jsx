@@ -18,7 +18,7 @@ export default function WeekGoals({ weekId }) {
 
   return (
     <div className="week-goals">
-      <div className="week-goals__title">Главное на неделю</div>
+      <h3 className="week-goals__title">Главное на неделю</h3>
 
       <div className="week-goals__list">
         {goals.map((goal, i) => (
