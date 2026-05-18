@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCategories } from "../../context/CategoriesContext";
+import { useCalendar } from "../../hooks/useCalendar";
 
 function ColorDot({ color }) {
   return <div className="color-dot" style={{ background: color }} />;
@@ -70,6 +71,7 @@ export default function SettingsModal({ onClose }) {
   const { cats, saveCategory, removeCategory } = useCategories();
   const [editing, setEditing] = useState(null);
   const catList = Object.values(cats).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+  const { connected, calendars, selectedCalendars, toggleCalendar, connectUrl } = useCalendar();
 
   async function handleSave(form) {
     await saveCategory(form);
@@ -112,6 +114,41 @@ export default function SettingsModal({ onClose }) {
             + Добавить категорию
           </button>
         )}
+        <div style={{ marginTop: 20 }}>
+        <div className="settings-section">Google Calendar</div>
+          {!connected ? (
+            <a
+              href={connectUrl}
+              className="btn-primary"
+              style={{ display: "inline-block", textDecoration: "none", marginTop: 4 }}
+            >
+              Подключить Google Calendar
+            </a>
+          ) : (
+            <div>
+              <div style={{ fontSize: 12, color: "var(--c-ok)", marginBottom: 12, fontWeight: 600 }}>
+                ✓ Подключено
+              </div>
+
+              {calendars.length === 0 && (
+                <div className="empty">Загрузка календарей...</div>
+              )}
+
+              {calendars.map(cal => (
+                <div key={cal.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderBottom: "1px solid var(--c-border)" }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedCalendars.includes(cal.id)}
+                    onChange={() => toggleCalendar(cal.id)}
+                    style={{ accentColor: cal.backgroundColor ?? "var(--c-teal)", width: 16, height: 16 }}
+                  />
+                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: cal.backgroundColor ?? "var(--c-teal)", flexShrink: 0 }} />
+                  <span style={{ fontSize: 13, color: "var(--c-ink)" }}>{cal.summary}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

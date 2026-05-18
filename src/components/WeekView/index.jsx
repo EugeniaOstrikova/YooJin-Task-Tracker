@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DayColumn from "./DayColumn";
 import TaskCard  from "../shared/TaskCard";
 import {
@@ -9,8 +9,9 @@ import {
 import { getTrimesterForWeek } from "../../config/trimesters";
 import HabitTracker from "./HabitTracker";
 import WeekGoals from "./WeekGoals";
+import { useCalendar } from "../../hooks/useCalendar";
 
-export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
+export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpdateTask }) {
   const [unscheduledOpen, setUnscheduledOpen] = useState(true);
 
   const days        = getWeekDays(weekId);
@@ -34,6 +35,13 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
   const pct   = total ? Math.round((done / total) * 100) : 0;
   const totalWeekHours    = weekTasks.reduce((sum, t) => sum + (t.duration ?? 0), 0);
   const weekDurationLabel = formatDuration(totalWeekHours);
+
+  const { getWeekEvents } = useCalendar();
+  const [calEvents, setCalEvents] = useState([]);
+
+  useEffect(() => {
+    getWeekEvents(weekId).then(setCalEvents).catch(console.error);
+  }, [weekId, getWeekEvents]);
 
   return (
     <div className="week-view">
@@ -108,12 +116,15 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle }) {
         <div className="week-layout__right">
           <div className="days-row">
             {days.slice(0, 4).map(day => (
-              <DayColumn key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} onToggle={onToggle} />
+              <DayColumn key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} 
+                onToggle={onToggle} calEvents={calEvents.filter(e => e.date === day.iso)}
+                onUpdateTask={onUpdateTask} />
             ))}
           </div>
           <div className="days-row">
             {days.slice(4).map(day => (
-              <DayColumn key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} onToggle={onToggle} />
+              <DayColumn key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} 
+                onToggle={onToggle} calEvents={calEvents.filter(e => e.date === day.iso)} />
             ))}
           </div>
         </div>

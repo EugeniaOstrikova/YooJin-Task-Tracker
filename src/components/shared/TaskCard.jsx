@@ -2,8 +2,10 @@ import PriorityIcon from "./PriorityIcon";
 import CategoryTag  from "./CategoryTag";
 import { useCategories } from "../../context/CategoriesContext";
 import { formatDuration } from "../../lib/weekUtils";
+import { Link2, X } from "lucide-react";
 
-export default function TaskCard({ task, onToggle, compact = false }) {
+
+export default function TaskCard({ task, onToggle, compact = false, linked }) {
   const { cats } = useCategories();
   const { text, cat, done, important = false, urgent = false, deadline = false } = task;
   const catStyle = cats[task.cat] ?? { bg: "#F1F5F9", text: "#64748B", dot: "#94A3B8" };
@@ -41,6 +43,12 @@ export default function TaskCard({ task, onToggle, compact = false }) {
             <span className="task-card__dur">{durationLabel}</span>
           )}
         </div>
+        {linked && (
+          <div className="calendar__linked-task">
+            <Link2 size={12} className="calendar-icon" />
+            <span className="calendar__linked-task-text">Linked to Calendar</span>
+          </div>
+        )}
 
         {deadline && !done && (
           <div className="task-card__tags">

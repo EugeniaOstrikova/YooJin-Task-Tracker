@@ -52,6 +52,7 @@ export default function App() {
             onWeekChange={setWeekId}
             tasks={tasks}
             onToggle={toggleDone}
+            onUpdateTask={updateTaskLocally}
           />
         }
         {view === "trimester" &&

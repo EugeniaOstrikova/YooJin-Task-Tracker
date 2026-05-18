@@ -122,6 +122,11 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--r-md); padding: 4px; cursor: pointer;
 }
 
+.btn-icon-tolink {
+  background: transparent; border: none;
+  border-radius: var(--r-md); padding: 4px; cursor: pointer;
+}
+
 /* ── 5. Cards ────────────────────────────── */
 .card {
   background: var(--c-white);
@@ -392,6 +397,51 @@ input, textarea, select { font-family: inherit; }
   margin-top: 8px; padding-top: 6px;
   border-top: 1px solid #F1F5F9;
   font-size: 11px; color: var(--c-dim); text-align: right;
+}
+
+.day-col__calendar {
+  margin-top: 8px; padding-top: 6px;
+  border-top: 1px solid #F1F5F9;
+}
+
+/* ── Calendar Event ───────────────────────── */
+.calendar-card__content {
+  display: flex; align-items: flex-start;
+  gap: 8px; padding: 7px 10px 7px 6px;
+  border-radius: var(--r-sm); margin-bottom: 2px;
+  cursor: pointer; user-select: none; transition: opacity .15s;
+  background: linear-gradient(to left, #d7f5f9, transparent);
+}
+
+.calendar-card__text { 
+  font-size: 13px; font-weight: 500; 
+  color: var(--c-ink); 
+  line-height: 1.4;
+}
+
+.calendar-card__name {
+  display: flex; justify-content: left;
+  gap: 4px;
+}
+
+.calendar-icon {
+  /* color: #69aab3; */
+  color: var(--c-accent);
+  flex-shrink: 0; margin-top: 2px;
+}
+
+.calendar__linked-task {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 3px 6px;
+  font-size: 11px;
+  color: var(--c-accent);
+}
+
+.calendar__linked-task-text{
+  white-space: nowrap;
 }
 
 /* ── 17. Task card ───────────────────────── */
