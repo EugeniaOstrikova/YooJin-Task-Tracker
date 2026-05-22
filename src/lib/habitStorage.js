@@ -20,7 +20,10 @@ export async function loadHabits() {
 
 export async function addHabit(habit) {
   if (supabase) {
-    const { error } = await supabase.from("habits").insert(habit);
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase
+      .from("habits")
+      .insert({ ...habit, user_id: user?.id });
     if (error) throw new Error(error.message);
     return;
   }
@@ -53,8 +56,13 @@ export async function loadWeekLogs(week) {
 
 export async function upsertLog(habitId, week, days) {
   if (supabase) {
-    const { error } = await supabase.from("habit_logs")
-      .upsert({ habit_id: habitId, week, days }, { onConflict: "habit_id,week" });
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase
+      .from("habit_logs")
+      .upsert(
+        { habit_id: habitId, week, days, user_id: user?.id },
+        { onConflict: "habit_id,week" }
+      );
     if (error) throw new Error(error.message);
     return;
   }
