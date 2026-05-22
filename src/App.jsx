@@ -15,7 +15,11 @@ import { signOut } from "./lib/auth";
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
-  const { tasks, loading, error, toggleDone, importTasks, restoreFromJson, exportTasks, updateTaskLocally } = useTasks();
+  const { 
+    tasks, loading, error, 
+    toggleDone, importTasks, 
+    restoreFromJson, exportTasks, 
+    updateTaskLocally, saveTask } = useTasks();
 
   const [view,        setView]        = useState("week");
   const [weekId,      setWeekId]      = useState(getCurrentWeekId);
@@ -52,7 +56,7 @@ export default function App() {
             onWeekChange={setWeekId}
             tasks={tasks}
             onToggle={toggleDone}
-            onUpdateTask={updateTaskLocally}
+            onUpdateTask={saveTask}
           />
         }
         {view === "trimester" &&

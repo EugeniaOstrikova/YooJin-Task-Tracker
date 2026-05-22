@@ -62,5 +62,15 @@ export function useTasks() {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
   }, []);
 
-  return { tasks, loading, error, toggleDone, importTasks, restoreFromJson, removeTask, exportTasks, updateTaskLocally };
+  const saveTask = useCallback(async (id, updates) => {
+  await patchTask(id, updates).catch(console.error);
+  setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+}, []);
+
+  return {
+    tasks, loading, error,
+    toggleDone, importTasks, restoreFromJson,
+    removeTask, exportTasks, updateTaskLocally,
+    saveTask,
+  };
 }
