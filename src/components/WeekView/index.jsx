@@ -12,9 +12,12 @@ import HabitTracker from "./HabitTracker";
 import WeekGoals from "./WeekGoals";
 import { useCalendar } from "../../hooks/useCalendar";
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { Plus, ArrowRight, ArrowLeft } from "lucide-react";
+import TaskEditModal from "../shared/TaskEditModal";
 
 export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpdateTask, onAddTask }) {
   const [unscheduledOpen, setUnscheduledOpen] = useState(true);
+  const [creating, setCreating] = useState(null); //
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
@@ -69,7 +72,9 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
     <div className="week-view">
 
       <div className="week-nav">
-        <button onClick={() => onWeekChange(getPrevWeekId(weekId))} className="btn-nav">←</button>
+        <button onClick={() => onWeekChange(getPrevWeekId(weekId))} className="btn-nav">
+          <ArrowLeft size={16} />
+        </button>
 
         <div className="week-nav__info">
           <div className="week-nav__heading">
@@ -100,7 +105,15 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
             {t("weekView.today")}
           </button>
         )}
-        <button onClick={() => onWeekChange(getNextWeekId(weekId))} className="btn-nav">→</button>
+        <button
+          className="btn-nav"
+          onClick={() => setCreating({ day: "" })}
+        >
+          <Plus size={16} />
+        </button>
+        <button onClick={() => onWeekChange(getNextWeekId(weekId))} className="btn-nav">
+          <ArrowRight size={16} />
+        </button>
       </div>
 
       {isCycle && (
@@ -126,7 +139,15 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
       <div className="week-layout">
 
         <div className="week-layout__left">
-          <div className="week-layout__left-title">{t("weekView.noDay")}</div>
+          <div className="week-layout__left-title">
+            <span>{t("weekView.noDay")}</span>
+            <button
+              className="btn-icon-nav"
+              onClick={() => setCreating({ day: "" })}
+            >
+              <Plus size={14} />
+            </button>
+          </div>
           {unscheduled.length === 0
             ? <div className="empty">—</div>
             : unscheduled.map(task => <TaskCard key={task.id} task={task} onToggle={onToggle} />)
@@ -174,6 +195,15 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
           {t("weekView.empty")}<br />
           <span style={{ fontSize: 12 }}>{t("weekView.emptyHint")}</span>
         </div>
+      )}
+
+      {creating !== null && (
+        <TaskEditModal
+          defaultDay={creating.day}
+          weekId={weekId}
+          onAdd={onAddTask}
+          onClose={() => setCreating(null)}
+        />
       )}
     </div>
   );

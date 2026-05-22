@@ -24,7 +24,9 @@ export default function HabitTracker({ weekId }) {
     <div className="habit-wrap">
       <div className="habit-head">
         <h3 className="habit-head__title">{t("habitTracker.title")}</h3>
-        <Settings2 onClick={() => setAdding(v => !v)} size={14} className="btn-habit-edit" />
+        <button className="btn-icon-nav">
+          <Settings2 onClick={() => setAdding(v => !v)} size={14} />
+        </button>
       </div>
 
       {adding && (

@@ -3,26 +3,37 @@ import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { X } from "lucide-react";
 
-export default function TaskEditModal({ task, onSave, onClose }) {
+export default function TaskEditModal({ task = null, defaultDay = "", weekId = "", onSave, onAdd, onClose }) {
   const { cats } = useCategories();
+  const isEditing = !!task?.id;
   const { t } = useTranslation();
   const [form, setForm] = useState({
-    text:      task.text      ?? "",
-    cat:       task.cat       ?? "other",
-    day:       task.day       ?? "",
-    duration:  task.duration  ?? "",
-    important: task.important ?? false,
-    urgent:    task.urgent    ?? false,
-    deadline:  task.deadline  ?? false,
+    text:      task?.text      ?? "",
+    cat:       task?.cat       ?? "other",
+    day:       task?.day       ?? defaultDay,
+    duration:  task?.duration  ?? "",
+    important: task?.important ?? false,
+    urgent:    task?.urgent    ?? false,
+    deadline:  task?.deadline  ?? false,
   });
 
   const set = (key, val) => setForm(p => ({ ...p, [key]: val }));
 
   async function handleSave() {
-    await onSave(task.id, {
+    const updates = {
       ...form,
       duration: form.duration !== "" ? parseFloat(form.duration) : null,
-    });
+    };
+    if (isEditing) {
+      await onSave(task.id, updates);
+    } else {
+      await onAdd([{
+        id:   `task_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        week: weekId,
+        done: false,
+        ...updates,
+      }]);
+    }
     onClose();
   }
 
@@ -38,7 +49,10 @@ export default function TaskEditModal({ task, onSave, onClose }) {
       <div className="modal-container task-edit-modal" onClick={e => e.stopPropagation()}>
 
         <div className="modal-header">
-          <span className="modal-title">{t("taskEdit.title")}</span>
+          <span className="modal-title">
+            {t("taskEdit.title")}
+            {/* {isEditing ? "Редактировать задачу" : "Новая задача"} */}
+        </span>
           <button className="btn-close" onClick={onClose}><X size={15} /></button>
         </div>
 
@@ -116,6 +130,7 @@ export default function TaskEditModal({ task, onSave, onClose }) {
 
         <button className="btn-full btn-full--teal" onClick={handleSave}>
           {t("taskEdit.save")}
+          {/* {isEditing ? "Сохранить" : "Добавить"} */}
         </button>
       </div>
     </div>

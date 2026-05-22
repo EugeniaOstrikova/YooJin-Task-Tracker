@@ -74,6 +74,7 @@
   },
   "taskEdit": {
     "title": "할 일 수정",
+    "CreateTitle": "Create task",
     "textLabel": "내용",
     "categoryLabel": "카테고리",
     "dayLabel": "날짜 (YYYY-MM-DD)",

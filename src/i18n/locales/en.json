@@ -74,6 +74,7 @@
   },
   "taskEdit": {
     "title": "Edit task",
+    "CreateTitle": "Create task",
     "textLabel": "Text",
     "categoryLabel": "Category",
     "dayLabel": "Day (YYYY-MM-DD)",

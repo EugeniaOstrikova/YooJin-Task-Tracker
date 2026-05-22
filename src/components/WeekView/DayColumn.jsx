@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import TaskCard from "../shared/TaskCard";
 import { formatDuration } from "../../lib/weekUtils";
-import { Calendar, Link2, X, CalendarCheck } from "lucide-react";
+import { Calendar, Link2, X, CalendarCheck, Plus } from "lucide-react";
 import TaskEditModal from "../shared/TaskEditModal";
 import { useDroppable } from "@dnd-kit/core";
 
@@ -10,6 +10,7 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
   const { shortLabel, isToday } = day;
   const [linkingEventId, setLinkingEventId] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
+  const [creating, setCreating] = useState(false);
   const { setNodeRef, isOver } = useDroppable({ id: day.iso });
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
@@ -74,6 +75,12 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
     >
       <div className={`day-col__header${isToday ? " day-col__header--today" : ""}`}>
         {shortLabel}
+        <button
+          className="btn-icon-nav"
+          onClick={() => setCreating(true)}
+        >
+          <Plus size={14} />
+        </button>
         {isToday && <span className="badge badge--today">{t("dayColumn.today")}</span>}
       </div>
 
@@ -173,6 +180,15 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
           task={editingTask}
           onSave={onUpdateTask}
           onClose={() => setEditingTask(null)}
+        />
+      )}
+
+      {creating && (
+        <TaskEditModal
+          defaultDay={day.iso}
+          weekId={weekId}
+          onAdd={onAddTask}
+          onClose={() => setCreating(false)}
         />
       )}
     </div>

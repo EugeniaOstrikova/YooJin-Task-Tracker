@@ -74,6 +74,7 @@
   },
   "taskEdit": {
     "title": "Редактировать задачу",
+    "CreateTitle": "Create task",
     "textLabel": "Текст",
     "categoryLabel": "Категория",
     "dayLabel": "День (YYYY-MM-DD)",
