@@ -1,33 +1,41 @@
-import { useState } from "react"; 
+import { useState, useCallback } from "react"; 
 import TaskCard from "../shared/TaskCard";
 import { formatDuration } from "../../lib/weekUtils";
-import { Calendar, Link2, X } from "lucide-react";
+import { Calendar, Link2, X, CalendarCheck } from "lucide-react";
+import TaskEditModal from "../shared/TaskEditModal";
+import { useDroppable } from "@dnd-kit/core";
 
-export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpdateTask }) {
+export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpdateTask, onAddTask, weekId }) {
   const { shortLabel, isToday } = day;
   const [linkingEventId, setLinkingEventId] = useState(null);
-
-  // const totalHours = tasks.reduce((sum, t) => sum + (t.duration ?? 0), 0);
-  // const totalLabel = formatDuration(totalHours);
+  const [editingTask, setEditingTask] = useState(null);
+  const { setNodeRef, isOver } = useDroppable({ id: day.iso });
 
   // ── Подсчёт времени ───────────────────────────────────
-  let totalHours = 0;
-  
-  // Ненавязанные задачи
-  tasks.filter(t => !t.linked_event_id)
-    .forEach(t => { totalHours += t.duration ?? 0; });
+  let planHours = 0;
+  let factHours = 0;
 
-  // События: связанные → max(event, task), несвязанные → event duration
+  tasks.forEach(t => {
+    if (t.linked_event_id) return;
+    planHours += t.duration ?? 0;  // все задачи в план
+    if (t.done) factHours += t.actual_duration ?? t.duration ?? 0;
+  });
+
   calEvents.forEach(e => {
-    const linked = tasks.find(t => t.linked_event_id === e.id);
+    const linked   = tasks.find(t => t.linked_event_id === e.id);
+    const eventDur = e.durationHours ?? 0;
     if (linked) {
-      totalHours += Math.max(linked.duration ?? 0, e.durationHours ?? 0);
+      const planned  = Math.max(linked.duration ?? 0, eventDur);
+      const actual   = Math.max(linked.actual_duration ?? linked.duration ?? 0, eventDur);
+      planHours += planned;
+      if (linked.done) factHours += actual;
     } else {
-      totalHours += e.durationHours ?? 0;
+      planHours += eventDur;
     }
   });
 
-  const totalLabel = formatDuration(totalHours);
+  const planLabel = formatDuration(planHours);
+  const factLabel = formatDuration(factHours);
 
   // ── Привязать задачу к событию ────────────────────────
   function handleLink(taskId, eventId) {
@@ -43,105 +51,27 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
     tasks.filter(t => t.linked_event_id).map(t => t.id)
   );
 
-//  return (
-//     <div className={`day-col${isToday ? " day-col--today" : ""}`}>
-
-//       {/* Заголовок */}
-//       <div className={`day-col__header${isToday ? " day-col__header--today" : ""}`}>
-//         {shortLabel}
-//         {isToday && <span className="badge badge--today">сегодня</span>}
-//       </div>
-
-//       {/* Задачи */}
-//       {tasks.length === 0
-//         ? <div className="empty">—</div>
-//         : tasks.map(t => (
-//             <div key={t.id}>
-//               <TaskCard
-//                 task={t}
-//                 onToggle={onToggle}
-//                 className={linkedTaskIds.has(t.id) ? "task-card--linked-to-event" : ""}
-//               />
-//               {t.linked_event_id && (
-//                 <div className="task-card__event-badge">📅 привязано к событию</div>
-//               )}
-//             </div>
-//           ))
-//       }
-
-//       {/* Итого времени */}
-//       {totalLabel && (
-//         <div className="day-col__footer">총 {totalLabel}</div>
-//       )}
-
-//       {/* События Google Calendar */}
-//       {calEvents.length > 0 && (
-//         <div className="day-col__calendar">
-//           {calEvents.map(e => {
-//             const linkedTask = tasks.find(t => t.linked_event_id === e.id);
-//             const isLinking  = linkingEventId === e.id;
-//             const unlinkableTasks = tasks.filter(t => !t.linked_event_id || t.linked_event_id === e.id);
-
-//             return (
-//               <div key={e.id} className={`cal-event${linkedTask ? " cal-event--linked" : ""}`}>
-//                 <Calendar size={14} className="cal-event__icon" color="var(--c-dim)" />
-
-//                 <div className="cal-event__body">
-//                   <div className="cal-event__title">{e.title}</div>
-//                   {e.time && <div className="cal-event__time">{e.time}</div>}
-
-//                   {/* Привязанная задача */}
-//                   {linkedTask && (
-//                     <div className="cal-event__linked-task">
-//                       <Link2 size={10} />
-//                       {linkedTask.text}
-//                       <button onClick={() => handleUnlink(linkedTask.id)}>
-//                         <X size={10} />
-//                       </button>
-//                     </div>
-//                   )}
-
-//                   {/* Выбор задачи для привязки */}
-//                   {isLinking && (
-//                     <select
-//                       className="cal-event__link-select"
-//                       defaultValue=""
-//                       onChange={e2 => e2.target.value && handleLink(e2.target.value, e.id)}
-//                     >
-//                       <option value="">— выбери задачу —</option>
-//                       {unlinkableTasks.map(t => (
-//                         <option key={t.id} value={t.id}>{t.text}</option>
-//                       ))}
-//                     </select>
-//                   )}
-//                 </div>
-
-//                 {/* Длительность */}
-//                 {e.durationHours && (
-//                   <span className="cal-event__dur">
-//                     {formatDuration(e.durationHours)}
-//                   </span>
-//                 )}
-
-//                 {/* Кнопка привязки */}
-//                 {!linkedTask && (
-//                   <button
-//                     className="cal-event__link-btn"
-//                     onClick={() => setLinkingEventId(isLinking ? null : e.id)}
-//                   >
-//                     {isLinking ? "✕" : "привязать"}
-//                   </button>
-//                 )}
-//               </div>
-//             );
-//           })}
-//         </div>
-//       )}
-//     </div>
-//   );
+  // Функция создания задачи из события:
+  function handleCompleteEvent(e) {
+    onAddTask([{
+      id:              `auto_${e.id}_${Date.now()}`,
+      text:            e.title,
+      week:            weekId,
+      day:             e.date,
+      cat:             "other",
+      duration:        e.durationHours ?? 0,
+      actual_duration: e.durationHours ?? 0,
+      done:            true,
+      completed_at:    new Date().toISOString(),
+      linked_event_id: e.id,
+    }]);
+  }
 
   return (
-    <div className={`day-col${isToday ? " day-col--today" : ""}`}>
+    <div 
+      ref={setNodeRef} 
+      className={`day-col${isToday ? " day-col--today" : ""}`
+    }>
       <div className={`day-col__header${isToday ? " day-col__header--today" : ""}`}>
         {shortLabel}
         {isToday && <span className="badge badge--today">сегодня</span>}
@@ -154,6 +84,8 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
             key={t.id} 
             task={t} 
             onToggle={onToggle} 
+            onEdit={setEditingTask}
+            onSave={onUpdateTask}
             linked={t.linked_event_id ? true : false}
           />)
       }
@@ -165,12 +97,29 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
             const linkedTask = tasks.find(t => t.linked_event_id === e.id);
             const isLinking  = linkingEventId === e.id;
             const unlinkableTasks = tasks.filter(t => !t.linked_event_id || t.linked_event_id === e.id);
+            const isCompleted = !!linkedTask?.done;
 
             return (
-              <div key={e.id} className="calendar-card">
+              <div key={e.id} className={isCompleted ? "calendar-card__completed" : ""} >
                 <div className="calendar-card__content">
-                  <Calendar size={14} className="calendar-icon" />
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  {isCompleted ? (
+                    <CalendarCheck
+                      size={14}
+                      className="calendar-icon"
+                      color="var(--c-teal)"
+                      onClick={() => onUpdateTask(linkedTask.id, { done: false, actual_duration: null })}
+                    />
+                  ) : (
+                    <Calendar
+                      size={14}
+                      className="calendar-icon"
+                      color="var(--c-dim)"
+                      onClick={() => handleCompleteEvent(e)}
+                    />
+                  )}
+                  {/* <Calendar size={14} className="calendar-icon" /> */}
+                  <div 
+                    style={{ flex: 1, minWidth: 0 }}>
                     <div className="calendar-card__name">
                       <span className="calendar-card__text">{e.title}</span>
                       {!linkedTask && (
@@ -214,150 +163,21 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
         </div>
       )}
 
-      {totalLabel && (
-        <div className="day-col__footer">총 {totalLabel}</div>
+      {(planLabel || factLabel) && (
+        <div className="day-col__footer">
+          {planLabel && <span>계획 {planLabel}</span>}
+          {planLabel && factLabel && <span> · </span>}
+          {factLabel && <span>실제 {factLabel}</span>}
+        </div>
+      )}
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onSave={onUpdateTask}
+          onClose={() => setEditingTask(null)}
+        />
       )}
     </div>
   );
 }
-
-// ---------
-// import { useState } from "react";
-// import { Calendar, Link2, X } from "lucide-react";
-// import TaskCard       from "../shared/TaskCard";
-// import { formatDuration } from "../../lib/weekUtils";
-
-// export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpdateTask }) {
-//   const { shortLabel, isToday } = day;
-//   const [linkingEventId, setLinkingEventId] = useState(null);
-
-//   // ── Подсчёт времени ───────────────────────────────────
-//   let totalHours = 0;
-
-//   // Ненавязанные задачи
-//   tasks.filter(t => !t.linked_event_id)
-//     .forEach(t => { totalHours += t.duration ?? 0; });
-
-//   // События: связанные → max(event, task), несвязанные → event duration
-//   calEvents.forEach(e => {
-//     const linked = tasks.find(t => t.linked_event_id === e.id);
-//     if (linked) {
-//       totalHours += Math.max(linked.duration ?? 0, e.durationHours ?? 0);
-//     } else {
-//       totalHours += e.durationHours ?? 0;
-//     }
-//   });
-
-//   const totalLabel = formatDuration(totalHours);
-
-//   // ── Привязать задачу к событию ────────────────────────
-//   function handleLink(taskId, eventId) {
-//     onUpdateTask(taskId, { linked_event_id: eventId });
-//     setLinkingEventId(null);
-//   }
-
-//   function handleUnlink(taskId) {
-//     onUpdateTask(taskId, { linked_event_id: null });
-//   }
-
-//   const linkedTaskIds = new Set(
-//     tasks.filter(t => t.linked_event_id).map(t => t.id)
-//   );
-
-//   return (
-//     <div className={`day-col${isToday ? " day-col--today" : ""}`}>
-
-//       {/* Заголовок */}
-//       <div className={`day-col__header${isToday ? " day-col__header--today" : ""}`}>
-//         {shortLabel}
-//         {isToday && <span className="badge badge--today">сегодня</span>}
-//       </div>
-
-//       {/* Задачи */}
-//       {tasks.length === 0
-//         ? <div className="empty">—</div>
-//         : tasks.map(t => (
-//             <div key={t.id}>
-//               <TaskCard
-//                 task={t}
-//                 onToggle={onToggle}
-//                 className={linkedTaskIds.has(t.id) ? "task-card--linked-to-event" : ""}
-//               />
-//               {t.linked_event_id && (
-//                 <div className="task-card__event-badge">📅 привязано к событию</div>
-//               )}
-//             </div>
-//           ))
-//       }
-
-//       {/* Итого времени */}
-//       {totalLabel && (
-//         <div className="day-col__footer">총 {totalLabel}</div>
-//       )}
-
-//       {/* События Google Calendar */}
-//       {calEvents.length > 0 && (
-//         <div className="day-col__calendar">
-//           {calEvents.map(e => {
-//             const linkedTask = tasks.find(t => t.linked_event_id === e.id);
-//             const isLinking  = linkingEventId === e.id;
-//             const unlinkableTasks = tasks.filter(t => !t.linked_event_id || t.linked_event_id === e.id);
-
-//             return (
-//               <div key={e.id} className={`cal-event${linkedTask ? " cal-event--linked" : ""}`}>
-//                 <Calendar size={14} className="cal-event__icon" color="var(--c-dim)" />
-
-//                 <div className="cal-event__body">
-//                   <div className="cal-event__title">{e.title}</div>
-//                   {e.time && <div className="cal-event__time">{e.time}</div>}
-
-//                   {/* Привязанная задача */}
-//                   {linkedTask && (
-//                     <div className="cal-event__linked-task">
-//                       <Link2 size={10} />
-//                       {linkedTask.text}
-//                       <button onClick={() => handleUnlink(linkedTask.id)}>
-//                         <X size={10} />
-//                       </button>
-//                     </div>
-//                   )}
-
-//                   {/* Выбор задачи для привязки */}
-//                   {isLinking && (
-//                     <select
-//                       className="cal-event__link-select"
-//                       defaultValue=""
-//                       onChange={e2 => e2.target.value && handleLink(e2.target.value, e.id)}
-//                     >
-//                       <option value="">— выбери задачу —</option>
-//                       {unlinkableTasks.map(t => (
-//                         <option key={t.id} value={t.id}>{t.text}</option>
-//                       ))}
-//                     </select>
-//                   )}
-//                 </div>
-
-//                 {/* Длительность */}
-//                 {e.durationHours && (
-//                   <span className="cal-event__dur">
-//                     {formatDuration(e.durationHours)}
-//                   </span>
-//                 )}
-
-//                 {/* Кнопка привязки */}
-//                 {!linkedTask && (
-//                   <button
-//                     className="cal-event__link-btn"
-//                     onClick={() => setLinkingEventId(isLinking ? null : e.id)}
-//                   >
-//                     {isLinking ? "✕" : "привязать"}
-//                   </button>
-//                 )}
-//               </div>
-//             );
-//           })}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }

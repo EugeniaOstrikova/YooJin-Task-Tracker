@@ -63,9 +63,9 @@ export function useTasks() {
   }, []);
 
   const saveTask = useCallback(async (id, updates) => {
-  await patchTask(id, updates).catch(console.error);
-  setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
-}, []);
+    await patchTask(id, updates).catch(console.error);
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
+  }, []);
 
   return {
     tasks, loading, error,

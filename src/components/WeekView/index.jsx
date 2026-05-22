@@ -10,8 +10,9 @@ import { getTrimesterForWeek } from "../../config/trimesters";
 import HabitTracker from "./HabitTracker";
 import WeekGoals from "./WeekGoals";
 import { useCalendar } from "../../hooks/useCalendar";
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 
-export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpdateTask }) {
+export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpdateTask, onAddTask }) {
   const [unscheduledOpen, setUnscheduledOpen] = useState(true);
 
   const days        = getWeekDays(weekId);
@@ -24,6 +25,24 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
   const tasksByDay = {};
   days.forEach(d => { tasksByDay[d.iso] = []; });
   const unscheduled = [];
+  const sensors = useSensors(useSensor(PointerSensor, {
+    activationConstraint: { distance: 8 }, // чтобы не мешал клику
+  }));
+  const [activeTask, setActiveTask] = useState(null);
+
+  function handleDragStart({ active }) {
+    const task = tasks.find(t => t.id === active.id);
+    setActiveTask(task ?? null);
+  }
+
+  function handleDragEnd({ active, over }) {
+    setActiveTask(null);
+    if (!over || active.id === over.id) return;
+    const task   = tasks.find(t => t.id === active.id);
+    const newDay = over.id; // id дроппабла = iso дата дня
+    if (!task || task.day === newDay) return;
+    onUpdateTask(task.id, { day: newDay });
+  }
 
   weekTasks.forEach(t => {
     if (t.day && tasksByDay[t.day]) tasksByDay[t.day].push(t);
@@ -100,6 +119,11 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
 
       {/* <WeekGoals weekId={weekId} /> */}
 
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
       {/* ── Основной layout ── */}
       <div className="week-layout">
 
@@ -116,20 +140,38 @@ export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpda
         <div className="week-layout__right">
           <div className="days-row">
             {days.slice(0, 4).map(day => (
-              <DayColumn key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} 
+              <DayColumn 
+                key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} 
                 onToggle={onToggle} calEvents={calEvents.filter(e => e.date === day.iso)}
-                onUpdateTask={onUpdateTask} />
+                onUpdateTask={onUpdateTask} 
+                onAddTask={onAddTask}
+                weekId={weekId}
+              />
             ))}
           </div>
           <div className="days-row">
             {days.slice(4).map(day => (
-              <DayColumn key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} 
-                onToggle={onToggle} calEvents={calEvents.filter(e => e.date === day.iso)} />
+              <DayColumn 
+                key={day.iso} day={day} tasks={tasksByDay[day.iso] || []} 
+                onToggle={onToggle} calEvents={calEvents.filter(e => e.date === day.iso)} 
+                onUpdateTask={onUpdateTask}
+                onAddTask={onAddTask}
+                weekId={weekId}
+              />
             ))}
           </div>
         </div>
 
       </div>
+        <DragOverlay>
+          {activeTask && (
+            <TaskCard 
+              task={activeTask} onToggle={() => {}} compact 
+              onSave={onUpdateTask}
+            />
+          )}
+        </DragOverlay>
+      </DndContext>
 
       {total === 0 && (
         <div className="empty empty--lg">

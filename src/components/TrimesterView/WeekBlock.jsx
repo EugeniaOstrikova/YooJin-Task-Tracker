@@ -38,7 +38,10 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
       </div>
 
       {tasks.map(t => (
-        <TaskCard key={t.id} task={t} onToggle={onToggle} compact />
+        <TaskCard key={t.id} task={t} 
+          onToggle={onToggle} compact 
+          onSave={onUpdateTask}
+        />
       ))}
     </div>
   );

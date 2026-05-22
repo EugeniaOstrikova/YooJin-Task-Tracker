@@ -396,7 +396,10 @@ input, textarea, select { font-family: inherit; }
 .day-col__footer {
   margin-top: 8px; padding-top: 6px;
   border-top: 1px solid #F1F5F9;
-  font-size: 11px; color: var(--c-dim); text-align: right;
+  font-size: 11px; 
+  color: var(--c-mid);
+  text-align: right;
+  font-weight: 500;
 }
 
 .day-col__calendar {
@@ -404,7 +407,27 @@ input, textarea, select { font-family: inherit; }
   border-top: 1px solid #F1F5F9;
 }
 
+.task-card__actual-input {
+  width: 52px;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--c-teal-bd);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+  text-align: center;
+}
+
 /* ── Calendar Event ───────────────────────── */
+.calendar-card__completed {
+  opacity: 0.5;
+}
+
+.calendar-card__completed .calendar-card__text {
+  text-decoration: line-through;
+  color: var(--c-dim);
+}
+
 .calendar-card__content {
   display: flex; align-items: flex-start;
   gap: 8px; padding: 7px 10px 7px 6px;
@@ -426,8 +449,9 @@ input, textarea, select { font-family: inherit; }
 
 .calendar-icon {
   /* color: #69aab3; */
-  color: var(--c-accent);
+  /* color: var(--c-accent); */
   flex-shrink: 0; margin-top: 2px;
+  cursor: "pointer"
 }
 
 .calendar__linked-task {
@@ -470,8 +494,15 @@ input, textarea, select { font-family: inherit; }
 .task-card__text--compact { font-size: 12px; }
 .task-card__text--done   { color: var(--c-dim); text-decoration: line-through; }
 
-.task-card__dur  { font-size: 11px; color: var(--c-dim); white-space: nowrap; flex-shrink: 0; }
+.task-card__dur  { font-size: 11px; color: var(--c-mid); white-space: nowrap; flex-shrink: 0; }
 .task-card__tags { margin-top: 4px; }
+
+.task-card__dur-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
 
 /* ── 18. Habit tracker ───────────────────── */
 /* .habit-wrap { margin-top: 24px; } */
@@ -525,9 +556,6 @@ input, textarea, select { font-family: inherit; }
 .habit-cell--today { border-color: var(--c-accent); }
 
 /* ── 19. Week goals ──────────────────────── */
-.week-goals {
-  /* margin-bottom: 16px; */
-}
 .week-goals__title {
   font-size: 12px; font-weight: 600; color: var(--c-accent);
   text-transform: uppercase; letter-spacing: .06em; margin-left: 4px;
@@ -725,4 +753,36 @@ input, textarea, select { font-family: inherit; }
   display: flex; align-items: center; justify-content: center;
   font-size: 14px; color: rgba(255,255,255,0.6);
   font-family: "Montserrat", sans-serif;
+}
+
+/* ── 29. Task edit modal ─────────────────── */
+.task-edit-modal { max-width: 480px; }
+.task-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.task-edit-grid--full { grid-column: 1 / -1; }
+
+.priority-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 4px;
+}
+.priority-btn {
+  padding: 6px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-border);
+  background: var(--c-white);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.priority-btn.is-active {
+  border-color: var(--c-teal);
+  background: var(--c-teal-bg);
+  font-weight: 600;
+  color: var(--c-accent);
 }

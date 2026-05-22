@@ -20,7 +20,9 @@ export async function loadTasks() {
 export async function upsertTasks(tasks) {
   if (!tasks?.length) return;
   if (supabase) {
-    const { error } = await supabase.from("tasks").upsert(tasks, { onConflict: "id" });
+    const { data: { user } } = await supabase.auth.getUser();
+    const withUser = tasks.map(t => ({ ...t, user_id: t.user_id ?? user?.id }));
+    const { error } = await supabase.from("tasks").upsert(withUser, { onConflict: "id" });
     if (error) throw new Error(error.message);
     return;
   }

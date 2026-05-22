@@ -57,6 +57,7 @@ export default function App() {
             tasks={tasks}
             onToggle={toggleDone}
             onUpdateTask={saveTask}
+            onAddTask={importTasks}
           />
         }
         {view === "trimester" &&
