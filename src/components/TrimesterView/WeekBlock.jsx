@@ -1,9 +1,11 @@
-import TaskCard        from "../shared/TaskCard";
+import { useTranslation } from "react-i18next";
+import TaskCard from "../shared/TaskCard";
 import { formatWeekRange, isCycleWeek } from "../../lib/weekUtils";
 
 export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
+  const { t, i18n } = useTranslation();
   const isCycle = isCycleWeek(weekId);
-  const done    = tasks.filter(t => t.done).length;
+  const done    = tasks.filter(task => task.done).length;
   const total   = tasks.length;
   const pct     = total ? Math.round((done / total) * 100) : 0;
   const allDone = total > 0 && done === total;
@@ -14,7 +16,7 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
       <div className={`week-block__head${isCycle ? " week-block__head--cycle" : ""}`}>
         <button onClick={() => onNavigate(weekId)} className="week-block__nav">
           <span className="week-block__id">{weekId}</span>
-          <span className="week-block__range">{formatWeekRange(weekId)}</span>
+          <span className="week-block__range">{formatWeekRange(weekId, i18n.language)}</span>
         </button>
 
         {isCycle && <span className="badge--cycle-sm">🌀 цикл</span>}
@@ -33,14 +35,13 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
               </span>
             </>
           )}
-          {total === 0 && <span className="week-block__no-tasks">нет задач</span>}
+          {total === 0 && <span className="week-block__no-tasks">{t("trimesterView.noTasks")}</span>}
         </div>
       </div>
 
-      {tasks.map(t => (
-        <TaskCard key={t.id} task={t} 
-          onToggle={onToggle} compact 
-          onSave={onUpdateTask}
+      {tasks.map(task => (
+        <TaskCard key={task.id} task={task}
+          onToggle={onToggle} compact
         />
       ))}
     </div>

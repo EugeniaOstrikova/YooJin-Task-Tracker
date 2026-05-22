@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useHabits } from "../../hooks/useHabits";
 import { getWeekDays } from "../../lib/weekUtils";
 import { Settings2 } from 'lucide-react';
 
 export default function HabitTracker({ weekId }) {
   const { habits, logs, loading, toggleDay, createHabit, removeHabit } = useHabits(weekId);
-  const days = getWeekDays(weekId);
+  const { t, i18n } = useTranslation();
+  const days = getWeekDays(weekId, i18n.language);
   const [newText, setNewText] = useState("");
   const [adding,  setAdding]  = useState(false);
 
@@ -21,7 +23,7 @@ export default function HabitTracker({ weekId }) {
   return (
     <div className="habit-wrap">
       <div className="habit-head">
-        <h3 className="habit-head__title">Привычки</h3>
+        <h3 className="habit-head__title">{t("habitTracker.title")}</h3>
         <Settings2 onClick={() => setAdding(v => !v)} size={14} className="btn-habit-edit" />
       </div>
 
@@ -32,7 +34,7 @@ export default function HabitTracker({ weekId }) {
             value={newText}
             onChange={e => setNewText(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleAdd()}
-            placeholder="Название привычки..."
+            placeholder={t("habitTracker.placeholder")}
             className="input"
           />
           <button onClick={handleAdd} className="btn-ok">OK</button>
@@ -40,7 +42,7 @@ export default function HabitTracker({ weekId }) {
       )}
 
       {habits.length === 0 && !adding && (
-        <div className="empty">Нет привычек</div>
+        <div className="empty">{t("habitTracker.empty")}</div>
       )}
 
       {habits.length > 0 && (
@@ -68,7 +70,7 @@ export default function HabitTracker({ weekId }) {
                   <button
                     onClick={() => removeHabit(habit.id)}
                     className="habit-row__del"
-                    title="Удалить привычку"
+                    title={t("habitTracker.deleteTitle")}
                   >
                     ✕
                   </button>

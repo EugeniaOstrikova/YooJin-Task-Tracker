@@ -1,11 +1,10 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { useThemes } from "../../hooks/useThemes";
 import { patchTask } from "../../lib/storage";
 import { getCurrentWeekId, weekIdForDate, formatWeekRange } from "../../lib/weekUtils";
 import { MessageCircle } from "lucide-react";
-
-// ── Логика статуса ─────────────────────────
 
 function isLate(task) {
   if (!task.done || !task.completed_at) return false;
@@ -20,18 +19,17 @@ function getStatus(task, currentWeekId) {
   return null;
 }
 
-const STATUS_META = {
-  missed: { label: "Пропущена",              color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
-  late:   { label: "Выполнена с опозданием", color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
-};
-
-// ── Модалка редактирования задачи ──────────
-
 function TaskEditModal({ task, themes, onSave, onClose, cats }) {
   const [themeId,  setThemeId]  = useState(task.theme_id ?? "");
   const [note,     setNote]     = useState(task.note ?? "");
   const [newTheme, setNewTheme] = useState("");
+  const { t } = useTranslation();
   const status = getStatus(task, getCurrentWeekId());
+
+  const STATUS_META = {
+    missed: { label: t("review.statusMissed"), color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
+    late:   { label: t("review.statusLate"),   color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
+  };
 
   async function handleSave() {
     await onSave(task.id, { theme_id: themeId || null, note: note || null });
@@ -59,63 +57,60 @@ function TaskEditModal({ task, themes, onSave, onClose, cats }) {
           <button onClick={onClose} className="btn-primary">✕</button>
         </div>
 
-        {/* Тема */}
         <div className="task-edit-section">
-          <label className="task-edit-label">Суть задачи (тема)</label>
+          <label className="task-edit-label">{t("review.themeLabel")}</label>
           <select
             value={themeId}
             onChange={e => setThemeId(e.target.value)}
             className="select"
             style={{ marginBottom: 8 }}
           >
-            <option value="">— без темы —</option>
-            {themes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+            <option value="">{t("review.noTheme")}</option>
+            {themes.map(th => <option key={th.id} value={th.id}>{th.name}</option>)}
           </select>
           <div className="task-edit-row">
             <input
               value={newTheme}
               onChange={e => setNewTheme(e.target.value)}
-              placeholder="Создать новую тему..."
+              placeholder={t("review.newThemePlaceholder")}
               className="input input--inline"
             />
             <button
               onClick={async () => {
                 if (!newTheme.trim()) return;
-                const t = await onSave._addTheme(newTheme);
-                if (t) { setThemeId(t.id); setNewTheme(""); }
+                const th = await onSave._addTheme(newTheme);
+                if (th) { setThemeId(th.id); setNewTheme(""); }
               }}
               className="btn-add-theme"
             >
-              + Добавить
+              {t("review.addTheme")}
             </button>
           </div>
         </div>
 
-        {/* Заметка */}
         <div className="task-edit-section">
-          <label className="task-edit-label">Заметка — почему не выполнена?</label>
+          <label className="task-edit-label">{t("review.noteLabel")}</label>
           <textarea
             value={note}
             onChange={e => setNote(e.target.value)}
-            placeholder="Что помешало? Как скорректировать план?"
+            placeholder={t("review.notePlaceholder")}
             rows={3}
             className="textarea"
           />
         </div>
 
         <button onClick={handleSave} className="btn-full btn-full--teal">
-          Сохранить
+          {t("review.save")}
         </button>
       </div>
     </div>
   );
 }
 
-// ── Карточка задачи в review ───────────────
-
-function ReviewTaskCard({ task, status, onEdit, cats }) {
+function ReviewTaskCard({ task, status, onEdit, cats, statusMeta }) {
+  const { t } = useTranslation();
   const cat = cats[task.cat];
-  const s   = STATUS_META[status];
+  const s   = statusMeta[status];
   return (
     <div
       onClick={() => onEdit(task)}
@@ -136,7 +131,7 @@ function ReviewTaskCard({ task, status, onEdit, cats }) {
           )}
           {task.note && (
             <span style={{ fontSize: 10, color: "var(--c-dim)", fontStyle: "italic" }}>
-              <MessageCircle size={12} /> есть заметка
+              <MessageCircle size={12} /> {t("review.hasNote")}
             </span>
           )}
         </div>
@@ -149,8 +144,7 @@ function ReviewTaskCard({ task, status, onEdit, cats }) {
 function groupByTheme(tasks, themes) {
   const map = {};
   tasks.forEach(task => {
-    // Используем theme_id как ключ только если тема реально найдена
-    const found = themes.find(t => t.id === task.theme_id);
+    const found = themes.find(th => th.id === task.theme_id);
     const key = found ? task.theme_id : "__none__";
     if (!map[key]) map[key] = [];
     map[key].push(task);
@@ -160,41 +154,44 @@ function groupByTheme(tasks, themes) {
     ...Object.entries(map).filter(([k]) => k !== "__none__"),
     ...Object.entries(map).filter(([k]) => k === "__none__"),
   ].map(([key, tasks]) => ({
-    theme: themes.find(t => t.id === key) ?? null,
+    theme: themes.find(th => th.id === key) ?? null,
     tasks,
   }));
 }
 
-function ThemeGroup({ theme, tasks, onEdit, status, cats }) {
+function ThemeGroup({ theme, tasks, onEdit, status, cats, statusMeta }) {
   return (
     <div className="theme-group">
       {theme && <div className="theme-group__label"># {theme.name}</div>}
       {tasks.map(task => (
-        <ReviewTaskCard key={task.id} task={task} status={status} onEdit={onEdit} cats={cats} />
+        <ReviewTaskCard key={task.id} task={task} status={status} onEdit={onEdit} cats={cats} statusMeta={statusMeta} />
       ))}
     </div>
   );
 }
-
-// ── Главный компонент ──────────────────────
 
 export default function ReviewView({ tasks, onTaskUpdate }) {
   const currentWeekId = getCurrentWeekId();
   const { themes, addTheme } = useThemes();
   const [editingTask, setEditingTask] = useState(null);
   const { cats } = useCategories();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language;
+
+  const STATUS_META = {
+    missed: { label: t("review.statusMissed"), color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
+    late:   { label: t("review.statusLate"),   color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
+  };
 
   const reviewTasks = [...new Map(
     tasks
-      .filter(t => t.week < currentWeekId)
-      .map(t => ({ ...t, status: getStatus(t, currentWeekId) }))
-      .filter(t => t.status !== null)
-      .map(t => [t.id, t])
+      .filter(task => task.week < currentWeekId)
+      .map(task => ({ ...task, status: getStatus(task, currentWeekId) }))
+      .filter(task => task.status !== null)
+      .map(task => [task.id, task])
   ).values()].sort((a, b) => b.week.localeCompare(a.week));
-  console.log("reviewTasks ids:", reviewTasks.map(t => t.id));
-console.log("weekMissed для W20:", reviewTasks.filter(t => t.week === "2026W20" && t.status === "missed").map(t => ({ id: t.id, text: t.text, theme_id: t.theme_id })));
 
-  const uniqueWeeks = [...new Set(reviewTasks.map(t => t.week))]
+  const uniqueWeeks = [...new Set(reviewTasks.map(task => task.week))]
     .sort((a, b) => b.localeCompare(a));
 
   const handleSave = useCallback(async (id, updates) => {
@@ -203,13 +200,13 @@ console.log("weekMissed для W20:", reviewTasks.filter(t => t.week === "2026W2
   }, [onTaskUpdate]);
   handleSave._addTheme = addTheme;
 
-  const missed = reviewTasks.filter(t => t.status === "missed").length;
-  const late   = reviewTasks.filter(t => t.status === "late").length;
+  const missed = reviewTasks.filter(task => task.status === "missed").length;
+  const late   = reviewTasks.filter(task => task.status === "late").length;
 
   const SUMMARY = [
-    { label: "Пропущено задач",          value: missed,        color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
-    { label: "Выполнено с опозданием",   value: late,          color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
-    { label: "Всего требуют внимания",   value: missed + late, color: "var(--c-accent)", bg: "var(--c-teal-bg)"   },
+    { label: t("review.summaryMissed"), value: missed,        color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
+    { label: t("review.summaryLate"),   value: late,          color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
+    { label: t("review.summaryAll"),    value: missed + late, color: "var(--c-accent)", bg: "var(--c-teal-bg)"   },
   ];
 
   return (
@@ -225,43 +222,43 @@ console.log("weekMissed для W20:", reviewTasks.filter(t => t.week === "2026W2
       </div>
 
       {reviewTasks.length === 0 && (
-        <div className="empty--center">Всё выполнено вовремя 🎉</div>
+        <div className="empty--center">{t("review.allDone")}</div>
       )}
 
       {uniqueWeeks.map(weekId => {
-        const weekMissed = reviewTasks.filter(t => t.week === weekId && t.status === "missed");
-        const weekLate   = reviewTasks.filter(t => t.week === weekId && t.status === "late");
+        const weekMissed = reviewTasks.filter(task => task.week === weekId && task.status === "missed");
+        const weekLate   = reviewTasks.filter(task => task.week === weekId && task.status === "late");
         const { themes, loading: themesLoading, addTheme } = useThemes();
 
-        if (themesLoading) return <div className="empty--center">Загрузка...</div>;
+        if (themesLoading) return <div className="empty--center">{t("review.loading")}</div>;
 
         return (
           <div key={weekId} className="review-week-group">
             <div className="review-week-title">
-              {weekId} · {formatWeekRange(weekId)}
+              {weekId} · {formatWeekRange(weekId, locale)}
             </div>
 
             <div className="review-cols">
               <div>
                 <div className="review-col__title review-col__title--missed">
-                  Не выполнены · {weekMissed.length}
+                  {t("review.missedCount", { count: weekMissed.length })}
                 </div>
                 {weekMissed.length === 0
                   ? <div className="review-col__empty">—</div>
                   : groupByTheme(weekMissed, themes).map(({ theme, tasks }) => (
-                      <ThemeGroup key={theme?.id ?? "__none__"} theme={theme} tasks={tasks} onEdit={setEditingTask} status="missed" cats={cats} />
+                      <ThemeGroup key={theme?.id ?? "__none__"} theme={theme} tasks={tasks} onEdit={setEditingTask} status="missed" cats={cats} statusMeta={STATUS_META} />
                     ))
                 }
               </div>
 
               <div>
                 <div className="review-col__title review-col__title--late">
-                  Выполнены позже · {weekLate.length}
+                  {t("review.lateCount", { count: weekLate.length })}
                 </div>
                 {weekLate.length === 0
                   ? <div className="review-col__empty">—</div>
                   : groupByTheme(weekLate, themes).map(({ theme, tasks }) => (
-                      <ThemeGroup key={theme?.id ?? "__none__"} theme={theme} tasks={tasks} onEdit={setEditingTask} status="late" cats={cats} />
+                      <ThemeGroup key={theme?.id ?? "__none__"} theme={theme} tasks={tasks} onEdit={setEditingTask} status="late" cats={cats} statusMeta={STATUS_META} />
                     ))
                 }
               </div>

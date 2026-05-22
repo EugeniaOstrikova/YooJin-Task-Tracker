@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { X } from "lucide-react";
 
 export default function TaskEditModal({ task, onSave, onClose }) {
   const { cats } = useCategories();
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     text:      task.text      ?? "",
     cat:       task.cat       ?? "other",
@@ -24,18 +26,24 @@ export default function TaskEditModal({ task, onSave, onClose }) {
     onClose();
   }
 
+  const priorities = [
+    { key: "p_high",      imp: true,  urg: true  },
+    { key: "p_important", imp: true,  urg: false },
+    { key: "p_urgent",    imp: false, urg: true  },
+    { key: "p_normal",    imp: false, urg: false },
+  ];
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container task-edit-modal" onClick={e => e.stopPropagation()}>
 
         <div className="modal-header">
-          <span className="modal-title">Редактировать задачу</span>
+          <span className="modal-title">{t("taskEdit.title")}</span>
           <button className="btn-close" onClick={onClose}><X size={15} /></button>
         </div>
 
-        {/* Текст */}
         <div className="field task-edit-grid--full">
-          <label className="field-label">Текст</label>
+          <label className="field-label">{t("taskEdit.textLabel")}</label>
           <textarea
             className="textarea"
             rows={2}
@@ -45,9 +53,8 @@ export default function TaskEditModal({ task, onSave, onClose }) {
         </div>
 
         <div className="task-edit-grid">
-          {/* Категория */}
           <div className="field">
-            <label className="field-label">Категория</label>
+            <label className="field-label">{t("taskEdit.categoryLabel")}</label>
             <select className="select" value={form.cat} onChange={e => set("cat", e.target.value)}>
               {Object.entries(cats).map(([id, c]) => (
                 <option key={id} value={id}>{c.label}</option>
@@ -55,9 +62,8 @@ export default function TaskEditModal({ task, onSave, onClose }) {
             </select>
           </div>
 
-          {/* День */}
           <div className="field">
-            <label className="field-label">День (YYYY-MM-DD)</label>
+            <label className="field-label">{t("taskEdit.dayLabel")}</label>
             <input
               className="input"
               type="date"
@@ -66,9 +72,8 @@ export default function TaskEditModal({ task, onSave, onClose }) {
             />
           </div>
 
-          {/* Длительность */}
           <div className="field">
-            <label className="field-label">Длительность (ч)</label>
+            <label className="field-label">{t("taskEdit.durationLabel")}</label>
             <input
               className="input"
               type="number"
@@ -81,28 +86,21 @@ export default function TaskEditModal({ task, onSave, onClose }) {
           </div>
         </div>
 
-        {/* Приоритет */}
         <div className="field">
-          <label className="field-label">Приоритет</label>
+          <label className="field-label">{t("taskEdit.priorityLabel")}</label>
           <div className="priority-grid">
-            {[
-              { label: "🔴 Важно + срочно",    imp: true,  urg: true  },
-              { label: "🟡 Важно, не срочно",  imp: true,  urg: false },
-              { label: "🟠 Срочно, не важно",  imp: false, urg: true  },
-              { label: "⚪ Обычное",            imp: false, urg: false },
-            ].map(p => (
+            {priorities.map(p => (
               <button
                 key={`${p.imp}-${p.urg}`}
                 className={`priority-btn${form.important === p.imp && form.urgent === p.urg ? " is-active" : ""}`}
                 onClick={() => { set("important", p.imp); set("urgent", p.urg); }}
               >
-                {p.label}
+                {t(`taskEdit.${p.key}`)}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Дедлайн */}
         <div className="field" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <input
             type="checkbox"
@@ -112,12 +110,12 @@ export default function TaskEditModal({ task, onSave, onClose }) {
             style={{ width: 16, height: 16, accentColor: "var(--c-teal)" }}
           />
           <label htmlFor="deadline-cb" className="field-label" style={{ margin: 0 }}>
-            Дедлайн
+            {t("taskEdit.deadlineLabel")}
           </label>
         </div>
 
         <button className="btn-full btn-full--teal" onClick={handleSave}>
-          Сохранить
+          {t("taskEdit.save")}
         </button>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { useCalendar } from "../../hooks/useCalendar";
 
@@ -7,6 +8,7 @@ function ColorDot({ color }) {
 }
 
 function CategoryRow({ cat, onEdit, onDelete }) {
+  const { t } = useTranslation();
   return (
     <div className="cat-row">
       <ColorDot color={cat.dot} />
@@ -14,7 +16,7 @@ function CategoryRow({ cat, onEdit, onDelete }) {
         <div className="cat-row__label">{cat.label}</div>
         <div className="cat-row__colors">{cat.dot} · {cat.bg} · {cat.color}</div>
       </div>
-      <button onClick={() => onEdit(cat)} className="btn-ghost" style={{ color: "var(--c-accent)", fontSize: 11 }}>Изменить</button>
+      <button onClick={() => onEdit(cat)} className="btn-ghost" style={{ color: "var(--c-accent)", fontSize: 11 }}>{t("settings.edit")}</button>
       {cat.id !== "other" && (
         <button onClick={() => onDelete(cat.id)} className="btn-ghost" style={{ color: "var(--c-missed)", fontSize: 11 }}>✕</button>
       )}
@@ -23,6 +25,7 @@ function CategoryRow({ cat, onEdit, onDelete }) {
 }
 
 function CategoryForm({ initial, onSave, onCancel }) {
+  const { t } = useTranslation();
   const isNew = !initial.id;
   const [form, setForm] = useState({
     id:    initial.id    ?? "",
@@ -33,7 +36,15 @@ function CategoryForm({ initial, onSave, onCancel }) {
     sort:  initial.sort  ?? 99,
   });
 
-  const field = (key, label, placeholder) => (
+  const FIELDS = [
+    { key: "id",    label: t("settings.fieldId"),    placeholder: t("settings.fieldIdPlaceholder") },
+    { key: "label", label: t("settings.fieldLabel"), placeholder: t("settings.fieldLabelPlaceholder") },
+    { key: "dot",   label: t("settings.fieldDot"),   placeholder: "#9B8EC4" },
+    { key: "bg",    label: t("settings.fieldBg"),    placeholder: "#EDE9FE" },
+    { key: "color", label: t("settings.fieldColor"), placeholder: "#5B21B6" },
+  ];
+
+  const field = ({ key, label, placeholder }) => (
     <div className="field" key={key}>
       <label className="field-label">{label}</label>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -52,22 +63,19 @@ function CategoryForm({ initial, onSave, onCancel }) {
   return (
     <div className="cat-form">
       <div className="cat-form__title">
-        {isNew ? "Новая категория" : `Редактировать: ${initial.label}`}
+        {isNew ? t("settings.newCategory") : t("settings.editCategory", { name: initial.label })}
       </div>
-      {field("id",    "ID (латиница, без пробелов)", "например: study")}
-      {field("label", "Название",                    "например: Учёба")}
-      {field("dot",   "Цвет точки / бордера (hex)",  "#9B8EC4")}
-      {field("bg",    "Цвет фона карточки (hex)",     "#EDE9FE")}
-      {field("color", "Цвет текста (hex)",             "#5B21B6")}
+      {FIELDS.map(field)}
       <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-        <button onClick={() => onSave(form)} className="btn-primary" style={{ flex: 1 }}>Сохранить</button>
-        <button onClick={onCancel} className="btn-secondary">Отмена</button>
+        <button onClick={() => onSave(form)} className="btn-primary" style={{ flex: 1 }}>{t("settings.save")}</button>
+        <button onClick={onCancel} className="btn-secondary">{t("settings.cancel")}</button>
       </div>
     </div>
   );
 }
 
 export default function SettingsModal({ onClose }) {
+  const { t } = useTranslation();
   const { cats, saveCategory, removeCategory } = useCategories();
   const [editing, setEditing] = useState(null);
   const catList = Object.values(cats).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
@@ -79,7 +87,7 @@ export default function SettingsModal({ onClose }) {
   }
 
   async function handleDelete(id) {
-    if (!confirm(`Удалить категорию «${cats[id]?.label}»?`)) return;
+    if (!confirm(t("settings.deleteConfirm", { name: cats[id]?.label }))) return;
     await removeCategory(id);
   }
 
@@ -88,11 +96,11 @@ export default function SettingsModal({ onClose }) {
       <div className="modal-container" style={{ maxWidth: 480 }} onClick={e => e.stopPropagation()}>
 
         <div className="modal-header">
-          <span className="modal-title">Настройки</span>
+          <span className="modal-title">{t("settings.title")}</span>
           <button onClick={onClose} className="btn-ghost" style={{ fontSize: 16 }}>✕</button>
         </div>
 
-        <div className="settings-section">Категории</div>
+        <div className="settings-section">{t("settings.categoriesSection")}</div>
 
         {catList.map(cat => (
           <CategoryRow key={cat.id} cat={cat} onEdit={setEditing} onDelete={handleDelete} />
@@ -111,27 +119,27 @@ export default function SettingsModal({ onClose }) {
             className="btn-secondary"
             style={{ width: "100%", marginTop: 12, textAlign: "center" }}
           >
-            + Добавить категорию
+            {t("settings.addCategory")}
           </button>
         )}
         <div style={{ marginTop: 20 }}>
-        <div className="settings-section">Google Calendar</div>
+          <div className="settings-section">{t("settings.calendarSection")}</div>
           {!connected ? (
             <a
               href={connectUrl}
               className="btn-primary"
               style={{ display: "inline-block", textDecoration: "none", marginTop: 4 }}
             >
-              Подключить Google Calendar
+              {t("settings.connectCalendar")}
             </a>
           ) : (
             <div>
               <div style={{ fontSize: 12, color: "var(--c-ok)", marginBottom: 12, fontWeight: 600 }}>
-                ✓ Подключено
+                {t("settings.connected")}
               </div>
 
               {calendars.length === 0 && (
-                <div className="empty">Загрузка календарей...</div>
+                <div className="empty">{t("settings.loadingCalendars")}</div>
               )}
 
               {calendars.map(cal => (

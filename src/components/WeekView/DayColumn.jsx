@@ -1,4 +1,5 @@
-import { useState, useCallback } from "react"; 
+import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import TaskCard from "../shared/TaskCard";
 import { formatDuration } from "../../lib/weekUtils";
 import { Calendar, Link2, X, CalendarCheck } from "lucide-react";
@@ -10,19 +11,20 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
   const [linkingEventId, setLinkingEventId] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const { setNodeRef, isOver } = useDroppable({ id: day.iso });
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language;
 
-  // ── Подсчёт времени ───────────────────────────────────
   let planHours = 0;
   let factHours = 0;
 
-  tasks.forEach(t => {
-    if (t.linked_event_id) return;
-    planHours += t.duration ?? 0;  // все задачи в план
-    if (t.done) factHours += t.actual_duration ?? t.duration ?? 0;
+  tasks.forEach(task => {
+    if (task.linked_event_id) return;
+    planHours += task.duration ?? 0;
+    if (task.done) factHours += task.actual_duration ?? task.duration ?? 0;
   });
 
   calEvents.forEach(e => {
-    const linked   = tasks.find(t => t.linked_event_id === e.id);
+    const linked   = tasks.find(task => task.linked_event_id === e.id);
     const eventDur = e.durationHours ?? 0;
     if (linked) {
       const planned  = Math.max(linked.duration ?? 0, eventDur);
@@ -34,10 +36,9 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
     }
   });
 
-  const planLabel = formatDuration(planHours);
-  const factLabel = formatDuration(factHours);
+  const planLabel = formatDuration(planHours, locale);
+  const factLabel = formatDuration(factHours, locale);
 
-  // ── Привязать задачу к событию ────────────────────────
   function handleLink(taskId, eventId) {
     onUpdateTask(taskId, { linked_event_id: eventId });
     setLinkingEventId(null);
@@ -48,10 +49,9 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
   }
 
   const linkedTaskIds = new Set(
-    tasks.filter(t => t.linked_event_id).map(t => t.id)
+    tasks.filter(task => task.linked_event_id).map(task => task.id)
   );
 
-  // Функция создания задачи из события:
   function handleCompleteEvent(e) {
     onAddTask([{
       id:              `auto_${e.id}_${Date.now()}`,
@@ -68,35 +68,34 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
   }
 
   return (
-    <div 
-      ref={setNodeRef} 
-      className={`day-col${isToday ? " day-col--today" : ""}`
-    }>
+    <div
+      ref={setNodeRef}
+      className={`day-col${isToday ? " day-col--today" : ""}`}
+    >
       <div className={`day-col__header${isToday ? " day-col__header--today" : ""}`}>
         {shortLabel}
-        {isToday && <span className="badge badge--today">сегодня</span>}
+        {isToday && <span className="badge badge--today">{t("dayColumn.today")}</span>}
       </div>
 
       {tasks.length === 0
         ? <div className="empty">—</div>
-        : tasks.map(t => 
-          <TaskCard 
-            key={t.id} 
-            task={t} 
-            onToggle={onToggle} 
+        : tasks.map(task =>
+          <TaskCard
+            key={task.id}
+            task={task}
+            onToggle={onToggle}
             onEdit={setEditingTask}
             onSave={onUpdateTask}
-            linked={t.linked_event_id ? true : false}
+            linked={task.linked_event_id ? true : false}
           />)
       }
 
-      {/* События Google Calendar */}
       {calEvents.length > 0 && (
         <div className="day-col__calendar">
           {calEvents.map(e => {
-            const linkedTask = tasks.find(t => t.linked_event_id === e.id);
+            const linkedTask = tasks.find(task => task.linked_event_id === e.id);
             const isLinking  = linkingEventId === e.id;
-            const unlinkableTasks = tasks.filter(t => !t.linked_event_id || t.linked_event_id === e.id);
+            const unlinkableTasks = tasks.filter(task => !task.linked_event_id || task.linked_event_id === e.id);
             const isCompleted = !!linkedTask?.done;
 
             return (
@@ -117,9 +116,7 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
                       onClick={() => handleCompleteEvent(e)}
                     />
                   )}
-                  {/* <Calendar size={14} className="calendar-icon" /> */}
-                  <div 
-                    style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="calendar-card__name">
                       <span className="calendar-card__text">{e.title}</span>
                       {!linkedTask && (
@@ -146,15 +143,15 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
                         defaultValue=""
                         onChange={e2 => e2.target.value && handleLink(e2.target.value, e.id)}
                       >
-                        <option value="">— выбери задачу —</option>
-                        {unlinkableTasks.map(t => (
-                          <option key={t.id} value={t.id}>{t.text}</option>
+                        <option value="">{t("dayColumn.selectTask")}</option>
+                        {unlinkableTasks.map(task => (
+                          <option key={task.id} value={task.id}>{task.text}</option>
                         ))}
                       </select>
                     )}
                   </div>
                   {e.durationHours && (
-                    <span className="task-card__dur">{formatDuration(e.durationHours)}</span>
+                    <span className="task-card__dur">{formatDuration(e.durationHours, locale)}</span>
                   )}
                 </div>
               </div>
@@ -165,9 +162,9 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
 
       {(planLabel || factLabel) && (
         <div className="day-col__footer">
-          {planLabel && <span>계획 {planLabel}</span>}
+          {planLabel && <span>{t("weekView.planPrefix")} {planLabel}</span>}
           {planLabel && factLabel && <span> · </span>}
-          {factLabel && <span>실제 {factLabel}</span>}
+          {factLabel && <span>{t("weekView.factPrefix")} {factLabel}</span>}
         </div>
       )}
 

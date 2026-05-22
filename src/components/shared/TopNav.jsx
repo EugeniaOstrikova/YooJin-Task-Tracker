@@ -1,10 +1,14 @@
 import { isSupabase } from "../../lib/storage";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import SettingsModal from "./SettingsModal";
 import { Settings } from "lucide-react";
 
+const LANGS = ["ru", "en", "ko"];
+
 export default function TopNav({ view, onViewChange, onImport, onExport }) {
   const [showSettings, setShowSettings] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const tabBtn = (v, label) => (
     <button
@@ -18,21 +22,32 @@ export default function TopNav({ view, onViewChange, onImport, onExport }) {
 
   return (
     <div className="top-nav">
-      <span className="top-nav__logo">Трекер</span>
+      <span className="top-nav__logo">{t("nav.title")}</span>
 
       <div className="top-nav__tabs">
-        {tabBtn("week",      "Неделя")}
-        {tabBtn("trimester", "Триместр")}
-        {tabBtn("stats",     "Статистика")}
-        {tabBtn("review",    "Разбор")}
+        {tabBtn("week",      t("nav.week"))}
+        {tabBtn("trimester", t("nav.trimester"))}
+        {tabBtn("stats",     t("nav.stats"))}
+        {tabBtn("review",    t("nav.review"))}
       </div>
 
       <div className="top-nav__actions">
+        <div className="lang-switcher">
+          {LANGS.map(lng => (
+            <button
+              key={lng}
+              onClick={() => i18n.changeLanguage(lng)}
+              className={`lang-btn${i18n.language === lng ? " is-active" : ""}`}
+            >
+              {lng.toUpperCase()}
+            </button>
+          ))}
+        </div>
         <span className={`badge-storage ${isSupabase ? "badge-storage--cloud" : "badge-storage--local"}`}>
           {isSupabase ? "☁ Supabase" : "💾 Local"}
         </span>
-        <button onClick={onExport} className="btn-export">↓ Экспорт</button>
-        <button onClick={onImport} className="btn-import">+ Импорт</button>
+        <button onClick={onExport} className="btn-export">{t("nav.export")}</button>
+        <button onClick={onImport} className="btn-import">{t("nav.import")}</button>
         <button onClick={() => setShowSettings(true)} className="btn-icon-nav">
           <Settings size={16} color="#fff" />
         </button>

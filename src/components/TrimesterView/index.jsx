@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import WeekBlock from "./WeekBlock";
 import { TRIMESTERS, getTrimesterForWeek } from "../../config/trimesters";
 import { getWeeksBetween, getCurrentWeekId, getMonthLabel } from "../../lib/weekUtils";
@@ -6,32 +7,31 @@ import { getWeeksBetween, getCurrentWeekId, getMonthLabel } from "../../lib/week
 export default function TrimesterView({ tasks, onToggle, onNavigateWeek, currentWeekId }) {
   const currentTrimester = getTrimesterForWeek(currentWeekId) ?? TRIMESTERS[0];
   const [selectedId, setSelectedId] = useState(currentTrimester.id);
+  const { t, i18n } = useTranslation();
 
-  const trimester = TRIMESTERS.find(t => t.id === selectedId) ?? TRIMESTERS[0];
+  const trimester = TRIMESTERS.find(tr => tr.id === selectedId) ?? TRIMESTERS[0];
   const weeks     = getWeeksBetween(trimester.start, trimester.end);
 
-  const trimTasks = tasks.filter(t => t.week >= trimester.start && t.week <= trimester.end);
-  const trimDone  = trimTasks.filter(t => t.done).length;
+  const trimTasks = tasks.filter(task => task.week >= trimester.start && task.week <= trimester.end);
+  const trimDone  = trimTasks.filter(task => task.done).length;
   const trimTotal = trimTasks.length;
   const trimPct   = trimTotal ? Math.round((trimDone / trimTotal) * 100) : 0;
 
   return (
     <div className="trim-view">
 
-      {/* ── Переключатель триместров ── */}
       <div className="trim-selector">
-        {TRIMESTERS.map(t => (
+        {TRIMESTERS.map(tr => (
           <button
-            key={t.id}
-            onClick={() => setSelectedId(t.id)}
-            className={`trim-btn${selectedId === t.id ? " is-active" : ""}`}
+            key={tr.id}
+            onClick={() => setSelectedId(tr.id)}
+            className={`trim-btn${selectedId === tr.id ? " is-active" : ""}`}
           >
-            {t.label}
+            {tr.label}
           </button>
         ))}
       </div>
 
-      {/* ── Прогресс триместра ── */}
       <div className="trim-progress">
         <div className="trim-progress__row">
           <span className="trim-progress__label">{trimester.label}</span>
@@ -47,13 +47,12 @@ export default function TrimesterView({ tasks, onToggle, onNavigateWeek, current
         </div>
       </div>
 
-      {/* ── Сетка недель ── */}
       <div className="trim-grid">
         {weeks.map(wId => (
           <WeekBlock
             key={wId}
             weekId={wId}
-            tasks={tasks.filter(t => t.week === wId)}
+            tasks={tasks.filter(task => task.week === wId)}
             onToggle={onToggle}
             onNavigate={id => onNavigateWeek(id)}
           />
@@ -62,8 +61,8 @@ export default function TrimesterView({ tasks, onToggle, onNavigateWeek, current
 
       {trimTotal === 0 && (
         <div className="empty empty--lg">
-          В этом триместре задач нет.<br />
-          <span style={{ fontSize: 12 }}>Добавь через «Импорт» ↑</span>
+          {t("trimesterView.empty")}<br />
+          <span style={{ fontSize: 12 }}>{t("trimesterView.emptyHint")}</span>
         </div>
       )}
     </div>

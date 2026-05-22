@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "title": "Gentle Planner",
+    "week": "Неделя",
+    "trimester": "Триместр",
+    "stats": "Статистика",
+    "review": "Разбор",
+    "export": "↓ Экспорт",
+    "import": "+ Импорт"
+  },
+  "auth": {
+    "title": "Gentle Planner",
+    "subtitle": "Войди чтобы продолжить",
+    "emailLabel": "Email",
+    "passwordLabel": "Пароль",
+    "loading": "Входим...",
+    "submit": "Войти"
+  },
+  "weekView": {
+    "today": "Сегодня",
+    "cycleWarning": "🌀 Неделя цикла — возможно низкий уровень энергии. Планируй задачи с запасом.",
+    "noDay": "Без дня",
+    "empty": "На эту неделю задач нет.",
+    "emptyHint": "Добавь их через кнопку «Импорт» ↑",
+    "totalPrefix": "Всего",
+    "planPrefix": "План",
+    "factPrefix": "Факт"
+  },
+  "weekGoals": {
+    "title": "Главное на неделю",
+    "goalPlaceholder": "Цель {{num}}..."
+  },
+  "habitTracker": {
+    "title": "Привычки",
+    "placeholder": "Название привычки...",
+    "deleteTitle": "Удалить привычку",
+    "empty": "Нет привычек"
+  },
+  "trimesterView": {
+    "empty": "В этом триместре задач нет.",
+    "emptyHint": "Добавь через «Импорт» ↑",
+    "noTasks": "нет задач"
+  },
+  "stats": {
+    "tooltipTotal": "Всего за неделю:",
+    "current": "{{label}} (текущая)",
+    "past": "{{label}} (прошедшая)",
+    "planned": "{{label}} (план)",
+    "totalTasks": "Всего задач в триместре",
+    "donePast": "Выполнено (прошедшие недели)",
+    "completionPct": "% выполнения",
+    "plannedFuture": "Запланировано (будущие)",
+    "legendPast": "Прошедшие недели (факт)",
+    "legendFuture": "Будущие недели (план)"
+  },
+  "review": {
+    "statusMissed": "Пропущена",
+    "statusLate": "Выполнена с опозданием",
+    "noTheme": "— без темы —",
+    "newThemePlaceholder": "Создать новую тему...",
+    "addTheme": "+ Добавить",
+    "notePlaceholder": "Что помешало? Как скорректировать план?",
+    "save": "Сохранить",
+    "hasNote": "есть заметка",
+    "summaryMissed": "Пропущено задач",
+    "summaryLate": "Выполнено с опозданием",
+    "summaryAll": "Всего требуют внимания",
+    "missedCount": "Не выполнены · {{count}}",
+    "lateCount": "Выполнены позже · {{count}}",
+    "allDone": "Всё выполнено вовремя 🎉",
+    "loading": "Загрузка...",
+    "themeLabel": "Суть задачи (тема)",
+    "noteLabel": "Заметка — почему не выполнена?"
+  },
+  "taskEdit": {
+    "title": "Редактировать задачу",
+    "textLabel": "Текст",
+    "categoryLabel": "Категория",
+    "dayLabel": "День (YYYY-MM-DD)",
+    "durationLabel": "Длительность (ч)",
+    "priorityLabel": "Приоритет",
+    "p_high": "🔴 Важно + срочно",
+    "p_important": "🟡 Важно, не срочно",
+    "p_urgent": "🟠 Срочно, не важно",
+    "p_normal": "⚪ Обычное",
+    "deadlineLabel": "Дедлайн",
+    "save": "Сохранить"
+  },
+  "settings": {
+    "title": "Настройки",
+    "categoriesSection": "Категории",
+    "edit": "Изменить",
+    "newCategory": "Новая категория",
+    "editCategory": "Редактировать: {{name}}",
+    "fieldId": "ID (латиница, без пробелов)",
+    "fieldIdPlaceholder": "например: study",
+    "fieldLabel": "Название",
+    "fieldLabelPlaceholder": "например: Учёба",
+    "fieldDot": "Цвет точки / бордера (hex)",
+    "fieldBg": "Цвет фона карточки (hex)",
+    "fieldColor": "Цвет текста (hex)",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "deleteConfirm": "Удалить категорию «{{name}}»?",
+    "addCategory": "+ Добавить категорию",
+    "calendarSection": "Google Calendar",
+    "connectCalendar": "Подключить Google Calendar",
+    "connected": "✓ Подключено",
+    "loadingCalendars": "Загрузка календарей..."
+  },
+  "import": {
+    "title": "Импорт задач",
+    "tabAdd": "Добавить задачи",
+    "tabRestore": "Восстановить из файла",
+    "hintAdd": "Добавит задачи к существующим. Задачи с совпадающим id будут обновлены.",
+    "hintRestore": "⚠️ Полная замена всех задач. Используй для восстановления из сохранённого tasks.json.",
+    "hideExample": "▲ Скрыть пример",
+    "showExample": "▼ Показать пример JSON",
+    "loadFile": "Загрузить .json файл:",
+    "pastePlaceholder": "...или вставь JSON сюда",
+    "btnReplace": "Заменить все задачи",
+    "btnImport": "Импортировать",
+    "success": "✓ Готово!",
+    "errRootArray": "Корень должен быть массивом []",
+    "errMissingId": "#{{n}}: отсутствует «id»",
+    "errMissingWeek": "#{{n}}: отсутствует «week»",
+    "errInvalidWeek": "#{{n}}: неверный формат «week» — ожидается «2026W19»",
+    "errMissingText": "#{{n}}: отсутствует «text»",
+    "errMissingCat": "#{{n}}: отсутствует «cat»",
+    "errInvalidCat": "#{{n}}: неверная «cat» («{{cat}}»). Доступные: {{available}}",
+    "errInvalidDay": "#{{n}}: «day» должен быть в формате «YYYY-MM-DD»",
+    "errJson": "Ошибка JSON: {{msg}}",
+    "errSave": "Ошибка сохранения: {{msg}}"
+  },
+  "dayColumn": {
+    "selectTask": "— выбери задачу —",
+    "today": "сегодня"
+  },
+  "duration": {
+    "hours": "{{h}}ч",
+    "minutes": "{{m}}мин",
+    "hoursMinutes": "{{h}}ч {{m}}мин"
+  }
+}

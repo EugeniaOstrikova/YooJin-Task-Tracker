@@ -1,8 +1,7 @@
 import { CYCLE_START, CYCLE_LENGTH } from "../config/cycle";
 
-const RU_MONTHS_SHORT = ["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
-const RU_MONTHS_FULL  = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
-const RU_DAYS_SHORT   = ["вс","пн","вт","ср","чт","пт","сб"];
+const INTL_LOCALE_MAP = { ru: "ru-RU", en: "en-US", ko: "ko-KR" };
+function toIntlLocale(locale) { return INTL_LOCALE_MAP[locale] ?? locale; }
 
 // ─── Базовые утилиты ─────────────────────────────────────────────────────────
 
@@ -112,35 +111,42 @@ export function isCycleWeek(weekId) {
 
 // ─── Форматирование ───────────────────────────────────────────────────────────
 
-/** "2026W19" → "10–16 мая" */
-export function formatWeekRange(weekId) {
+/** "2026W19" → "10–16 мая" (locale: "ru" | "en" | "ko") */
+export function formatWeekRange(weekId, locale = "ru") {
+  const il = toIntlLocale(locale);
   const s = getWeekStart(weekId);
   const e = getWeekEnd(weekId);
+  const monthFmt = new Intl.DateTimeFormat(il, { month: "short" });
   if (s.getMonth() === e.getMonth()) {
-    return `${s.getDate()}–${e.getDate()} ${RU_MONTHS_SHORT[s.getMonth()]}`;
+    return `${s.getDate()}–${e.getDate()} ${monthFmt.format(s)}`;
   }
-  return `${s.getDate()} ${RU_MONTHS_SHORT[s.getMonth()]}–${e.getDate()} ${RU_MONTHS_SHORT[e.getMonth()]}`;
+  return `${s.getDate()} ${monthFmt.format(s)}–${e.getDate()} ${monthFmt.format(e)}`;
 }
 
-/** Полный заголовок недели: "2026W19 · 10–16 мая 2026" */
-export function formatWeekTitle(weekId) {
-  return `${weekId} · ${formatWeekRange(weekId)}`;
+/** Полный заголовок недели */
+export function formatWeekTitle(weekId, locale = "ru") {
+  return `${weekId} · ${formatWeekRange(weekId, locale)}`;
 }
 
 /** Получить 7 дней недели с датами */
-export function getWeekDays(weekId) {
+export function getWeekDays(weekId, locale = "ru") {
+  const il = toIntlLocale(locale);
   const start = getWeekStart(weekId);
+  const monthFmt   = new Intl.DateTimeFormat(il, { month: "short" });
+  const weekdayFmt = new Intl.DateTimeFormat(il, { weekday: "short" });
   return Array.from({ length: 7 }, (_, i) => {
     const d   = new Date(start);
     d.setDate(start.getDate() + i);
-    const iso = toLocalISO(d);
+    const iso      = toLocalISO(d);
+    const dayName  = weekdayFmt.format(d);
+    const month    = monthFmt.format(d);
     return {
       iso,
-      label:      `${RU_DAYS_SHORT[d.getDay()]} ${d.getDate()} ${RU_MONTHS_SHORT[d.getMonth()]}`,
-      shortLabel: `${RU_DAYS_SHORT[d.getDay()]} ${d.getDate()}`,
-      dayName:    RU_DAYS_SHORT[d.getDay()],
+      label:      `${dayName} ${d.getDate()} ${month}`,
+      shortLabel: `${dayName} ${d.getDate()}`,
+      dayName,
       date:       d.getDate(),
-      month:      RU_MONTHS_SHORT[d.getMonth()],
+      month,
       isToday: iso === toLocalISO(new Date()),
     };
   });
@@ -159,18 +165,26 @@ export function getWeeksBetween(startWeekId, endWeekId) {
 }
 
 /** Месяц + год для заголовка группы */
-export function getMonthLabel(weekId) {
-  const s = getWeekStart(weekId);
-  return `${RU_MONTHS_FULL[s.getMonth()]} ${s.getFullYear()}`;
+export function getMonthLabel(weekId, locale = "ru") {
+  const il = toIntlLocale(locale);
+  const s  = getWeekStart(weekId);
+  return new Intl.DateTimeFormat(il, { month: "long", year: "numeric" }).format(s);
 }
 
-/** 1.5 → "1시간 30분",  2 → "2시간",  0.5 → "30분" */
-export function formatDuration(hours) {
+const DURATION_UNITS = {
+  ru: { h: "ч",   m: "мин"  },
+  en: { h: "h",   m: "m"    },
+  ko: { h: "시간", m: "분"   },
+};
+
+/** 1.5 → "1ч 30мин" / "1h 30m" / "1시간 30분" */
+export function formatDuration(hours, locale = "ru") {
   if (!hours || hours <= 0) return null;
   const h = Math.floor(hours);
   const m = Math.round((hours - h) * 60);
-  if (h === 0) return `${m}분`;
-  if (m === 0) return `${h}시간`;
-  return `${h}시간 ${m}분`;
+  const u = DURATION_UNITS[locale] ?? DURATION_UNITS.en;
+  if (h === 0) return `${m}${u.m}`;
+  if (m === 0) return `${h}${u.h}`;
+  return `${h}${u.h} ${m}${u.m}`;
 }
 

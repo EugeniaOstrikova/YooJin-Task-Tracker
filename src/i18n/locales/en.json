@@ -1,0 +1,144 @@
+{
+  "nav": {
+    "title": "Gentle Planner",
+    "week": "Week",
+    "trimester": "Trimester",
+    "stats": "Stats",
+    "review": "Review",
+    "export": "↓ Export",
+    "import": "+ Import"
+  },
+  "auth": {
+    "title": "Gentle Planner",
+    "subtitle": "Sign in to continue",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "loading": "Signing in...",
+    "submit": "Sign in"
+  },
+  "weekView": {
+    "today": "Today",
+    "cycleWarning": "🌀 Cycle week — energy may be low. Plan tasks with buffer.",
+    "noDay": "No date",
+    "empty": "No tasks for this week.",
+    "emptyHint": "Add them via the «Import» button ↑",
+    "totalPrefix": "Total",
+    "planPrefix": "plan",
+    "factPrefix": "actual"
+  },
+  "weekGoals": {
+    "title": "Goals for the week",
+    "goalPlaceholder": "Goal {{num}}..."
+  },
+  "habitTracker": {
+    "title": "Habits",
+    "placeholder": "Habit name...",
+    "deleteTitle": "Delete habit",
+    "empty": "No habits"
+  },
+  "trimesterView": {
+    "empty": "No tasks in this trimester.",
+    "emptyHint": "Add via «Import» ↑",
+    "noTasks": "no tasks"
+  },
+  "stats": {
+    "tooltipTotal": "Total for week:",
+    "current": "{{label}} (current)",
+    "past": "{{label}} (past)",
+    "planned": "{{label}} (planned)",
+    "totalTasks": "Total tasks in trimester",
+    "donePast": "Completed (past weeks)",
+    "completionPct": "Completion %",
+    "plannedFuture": "Planned (future)",
+    "legendPast": "Past weeks (actual)",
+    "legendFuture": "Future weeks (planned)"
+  },
+  "review": {
+    "statusMissed": "Missed",
+    "statusLate": "Completed late",
+    "noTheme": "— no theme —",
+    "newThemePlaceholder": "Create new theme...",
+    "addTheme": "+ Add",
+    "notePlaceholder": "What got in the way? How to adjust the plan?",
+    "save": "Save",
+    "hasNote": "has note",
+    "summaryMissed": "Missed tasks",
+    "summaryLate": "Completed late",
+    "summaryAll": "Total need attention",
+    "missedCount": "Missed · {{count}}",
+    "lateCount": "Done late · {{count}}",
+    "allDone": "All done on time 🎉",
+    "loading": "Loading...",
+    "themeLabel": "Task theme",
+    "noteLabel": "Note — why wasn't it done?"
+  },
+  "taskEdit": {
+    "title": "Edit task",
+    "textLabel": "Text",
+    "categoryLabel": "Category",
+    "dayLabel": "Day (YYYY-MM-DD)",
+    "durationLabel": "Duration (h)",
+    "priorityLabel": "Priority",
+    "p_high": "🔴 Important + urgent",
+    "p_important": "🟡 Important, not urgent",
+    "p_urgent": "🟠 Urgent, not important",
+    "p_normal": "⚪ Normal",
+    "deadlineLabel": "Deadline",
+    "save": "Save"
+  },
+  "settings": {
+    "title": "Settings",
+    "categoriesSection": "Categories",
+    "edit": "Edit",
+    "newCategory": "New category",
+    "editCategory": "Edit: {{name}}",
+    "fieldId": "ID (latin, no spaces)",
+    "fieldIdPlaceholder": "e.g. study",
+    "fieldLabel": "Name",
+    "fieldLabelPlaceholder": "e.g. Study",
+    "fieldDot": "Dot / border color (hex)",
+    "fieldBg": "Card background color (hex)",
+    "fieldColor": "Text color (hex)",
+    "save": "Save",
+    "cancel": "Cancel",
+    "deleteConfirm": "Delete category «{{name}}»?",
+    "addCategory": "+ Add category",
+    "calendarSection": "Google Calendar",
+    "connectCalendar": "Connect Google Calendar",
+    "connected": "✓ Connected",
+    "loadingCalendars": "Loading calendars..."
+  },
+  "import": {
+    "title": "Import tasks",
+    "tabAdd": "Add tasks",
+    "tabRestore": "Restore from file",
+    "hintAdd": "Adds tasks to existing ones. Tasks with matching id will be updated.",
+    "hintRestore": "⚠️ Full replacement of all tasks. Use to restore from a saved tasks.json.",
+    "hideExample": "▲ Hide example",
+    "showExample": "▼ Show JSON example",
+    "loadFile": "Load .json file:",
+    "pastePlaceholder": "...or paste JSON here",
+    "btnReplace": "Replace all tasks",
+    "btnImport": "Import",
+    "success": "✓ Done!",
+    "errRootArray": "Root must be an array []",
+    "errMissingId": "#{{n}}: missing «id»",
+    "errMissingWeek": "#{{n}}: missing «week»",
+    "errInvalidWeek": "#{{n}}: invalid «week» format — expected «2026W19»",
+    "errMissingText": "#{{n}}: missing «text»",
+    "errMissingCat": "#{{n}}: missing «cat»",
+    "errInvalidCat": "#{{n}}: invalid «cat» («{{cat}}»). Available: {{available}}",
+    "errInvalidDay": "#{{n}}: «day» must be in «YYYY-MM-DD» format",
+    "errJson": "JSON error: {{msg}}",
+    "errSave": "Save error: {{msg}}"
+  },
+  "dayColumn": {
+    "selectTask": "— select a task —",
+    "today": "today"
+  },
+  "duration": {
+    "hours": "{{h}}h",
+    "minutes": "{{m}}m",
+    "hoursMinutes": "{{h}}h {{m}}m"
+  }
+}

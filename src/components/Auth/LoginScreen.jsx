@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { signIn } from "../../lib/auth";
 
 export default function LoginScreen() {
@@ -6,6 +7,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [error,    setError]    = useState("");
   const [loading,  setLoading]  = useState(false);
+  const { t } = useTranslation();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -24,13 +26,13 @@ export default function LoginScreen() {
     <div className="login-screen">
       <div className="login-card">
         <div className="login-header">
-          <div className="login-title">Трекер</div>
-          <div className="login-sub">Войди чтобы продолжить</div>
+          <div className="login-title">{t("auth.title")}</div>
+          <div className="login-sub">{t("auth.subtitle")}</div>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="field">
-            <label className="field-label">Email</label>
+            <label className="field-label">{t("auth.emailLabel")}</label>
             <input
               type="email"
               value={email}
@@ -41,7 +43,7 @@ export default function LoginScreen() {
           </div>
 
           <div className="field">
-            <label className="field-label">Пароль</label>
+            <label className="field-label">{t("auth.passwordLabel")}</label>
             <input
               type="password"
               value={password}
@@ -61,7 +63,7 @@ export default function LoginScreen() {
             className="btn-full btn-full--teal"
             style={{ opacity: loading ? 0.7 : 1 }}
           >
-            {loading ? "Входим..." : "Войти"}
+            {loading ? t("auth.loading") : t("auth.submit")}
           </button>
         </form>
       </div>

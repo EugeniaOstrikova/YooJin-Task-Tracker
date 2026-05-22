@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useWeekGoals } from "../../hooks/useWeekGoals";
 
 export default function WeekGoals({ weekId }) {
   const { goals, done, updateGoal, toggleDone } = useWeekGoals(weekId);
   const [editingIndex, setEditingIndex] = useState(null);
   const [draft, setDraft] = useState("");
+  const { t } = useTranslation();
 
   function startEdit(i) {
     setEditingIndex(i);
@@ -18,7 +20,7 @@ export default function WeekGoals({ weekId }) {
 
   return (
     <div className="week-goals">
-      <h3 className="week-goals__title">Главное на неделю</h3>
+      <h3 className="week-goals__title">{t("weekGoals.title")}</h3>
 
       <div className="week-goals__list">
         {goals.map((goal, i) => (
@@ -48,7 +50,7 @@ export default function WeekGoals({ weekId }) {
                   if (e.key === "Enter")  commitEdit(i);
                   if (e.key === "Escape") setEditingIndex(null);
                 }}
-                placeholder={`Цель ${i + 1}...`}
+                placeholder={t("weekGoals.goalPlaceholder", { num: i + 1 })}
                 className="goal-input"
               />
             ) : (
@@ -58,7 +60,7 @@ export default function WeekGoals({ weekId }) {
                 onMouseEnter={e => e.currentTarget.style.borderColor = "var(--c-teal-bd)"}
                 onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}
               >
-                {goal || `Цель ${i + 1}...`}
+                {goal || t("weekGoals.goalPlaceholder", { num: i + 1 })}
               </div>
             )}
           </div>
