@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import WeekBlock from "./WeekBlock";
 import { TRIMESTERS, getTrimesterForWeek } from "../../config/trimesters";
-import { getWeeksBetween, getCurrentWeekId, getMonthLabel, getTrimesterTasks } from "../../lib/weekUtils";
+import { getWeeksBetween, getTrimesterTasks } from "../../lib/weekUtils";
 import TrimesterSelector from "../shared/TrimesterSelector";
 
 export default function TrimesterView({ tasks, onToggle, onNavigateWeek, currentWeekId }) {

@@ -74,7 +74,7 @@
   },
   "taskEdit": {
     "title": "Редактировать задачу",
-    "CreateTitle": "Create task",
+    "createTitle": "Создать задачу",
     "textLabel": "Текст",
     "categoryLabel": "Категория",
     "dayLabel": "День (YYYY-MM-DD)",
@@ -85,7 +85,8 @@
     "p_urgent": "🟠 Срочно, не важно",
     "p_normal": "⚪ Обычное",
     "deadlineLabel": "Дедлайн",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "add": "Добавить"
   },
   "settings": {
     "title": "Настройки",
@@ -141,5 +142,8 @@
     "hours": "{{h}}ч",
     "minutes": "{{m}}мин",
     "hoursMinutes": "{{h}}ч {{m}}мин"
+  },
+  "label": {
+    "other": "Другое"
   }
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { useCalendar } from "../../hooks/useCalendar";
+import { X } from "lucide-react";
 
 function ColorDot({ color }) {
   return <div className="color-dot" style={{ background: color }} />;
@@ -18,7 +19,9 @@ function CategoryRow({ cat, onEdit, onDelete }) {
       </div>
       <button onClick={() => onEdit(cat)} className="btn-ghost" style={{ color: "var(--c-accent)", fontSize: 11 }}>{t("settings.edit")}</button>
       {cat.id !== "other" && (
-        <button onClick={() => onDelete(cat.id)} className="btn-ghost" style={{ color: "var(--c-missed)", fontSize: 11 }}>✕</button>
+        <button onClick={() => onDelete(cat.id)} className="btn-ghost" style={{ color: "var(--c-missed)", fontSize: 11 }}>
+          <X/>
+        </button>
       )}
     </div>
   );
@@ -97,7 +100,9 @@ export default function SettingsModal({ onClose }) {
 
         <div className="modal-header">
           <span className="modal-title">{t("settings.title")}</span>
-          <button onClick={onClose} className="btn-ghost" style={{ fontSize: 16 }}>✕</button>
+          <button onClick={onClose} className="btn-ghost">
+            <X size={16}/>
+          </button>
         </div>
 
         <div className="settings-section">{t("settings.categoriesSection")}</div>

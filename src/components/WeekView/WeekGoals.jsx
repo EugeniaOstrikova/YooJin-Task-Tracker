@@ -50,8 +50,6 @@ export default function WeekGoals({ weekId }) {
               <div
                 onClick={() => startEdit(i)}
                 className={`goal-text${done[i] ? " goal-text--done" : goal ? " goal-text--filled" : " goal-text--empty"}`}
-                onMouseEnter={e => e.currentTarget.style.borderColor = "var(--c-teal-bd)"}
-                onMouseLeave={e => e.currentTarget.style.borderColor = "transparent"}
               >
                 {goal || t("weekGoals.goalPlaceholder", { num: i + 1 })}
               </div>

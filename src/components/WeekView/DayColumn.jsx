@@ -93,7 +93,7 @@ export default function DayColumn({ day, tasks, onToggle, calEvents = [], onUpda
             onToggle={onToggle}
             onEdit={setEditingTask}
             onSave={onUpdateTask}
-            linked={task.linked_event_id ? true : false}
+            linked={!!task.linked_event_id}
           />)
       }
 

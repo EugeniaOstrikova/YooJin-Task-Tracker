@@ -74,7 +74,7 @@
   },
   "taskEdit": {
     "title": "Edit task",
-    "CreateTitle": "Create task",
+    "createTitle": "Create task",
     "textLabel": "Text",
     "categoryLabel": "Category",
     "dayLabel": "Day (YYYY-MM-DD)",
@@ -85,7 +85,8 @@
     "p_urgent": "🟠 Urgent, not important",
     "p_normal": "⚪ Normal",
     "deadlineLabel": "Deadline",
-    "save": "Save"
+    "save": "Save",
+    "add": "Add"
   },
   "settings": {
     "title": "Settings",
@@ -141,5 +142,8 @@
     "hours": "{{h}}h",
     "minutes": "{{m}}m",
     "hoursMinutes": "{{h}}h {{m}}m"
+  },
+  "label": {
+    "other": "Other"
   }
 }

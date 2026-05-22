@@ -33,7 +33,6 @@ export default function App() {
   if (authLoading) return (
     <div className="screen-auth-loading">Загрузка...</div>
   );
-  // if (loading) return <div className="screen-loading">Загрузка...</div>;
   if (error)   return <div className="screen-error">Ошибка: {error}</div>;
 
   if (!user) return <LoginScreen />;

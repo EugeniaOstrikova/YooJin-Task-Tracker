@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import DayColumn from "./DayColumn";
 import TaskCard  from "../shared/TaskCard";
 import {
-  getWeekDays, formatWeekRange, formatWeekTitle,
+  getWeekDays, formatWeekRange,
   getNextWeekId, getPrevWeekId, getCurrentWeekId,
   isCycleWeek, formatDuration,
 } from "../../lib/weekUtils";
@@ -16,8 +16,7 @@ import { Plus, ArrowRight, ArrowLeft } from "lucide-react";
 import TaskEditModal from "../shared/TaskEditModal";
 
 export default function WeekView({ weekId, onWeekChange, tasks, onToggle, onUpdateTask, onAddTask }) {
-  const [unscheduledOpen, setUnscheduledOpen] = useState(true);
-  const [creating, setCreating] = useState(null); //
+  const [creating, setCreating] = useState(null); 
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 

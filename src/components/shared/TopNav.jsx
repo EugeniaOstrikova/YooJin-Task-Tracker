@@ -2,11 +2,11 @@ import { isSupabase } from "../../lib/storage";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import SettingsModal from "./SettingsModal";
-import { Settings } from "lucide-react";
+import { Settings, LogOut } from "lucide-react";
 
 const LANGS = ["ru", "en", "ko"];
 
-export default function TopNav({ view, onViewChange, onImport, onExport }) {
+export default function TopNav({ view, onViewChange, onImport, onExport, onSignOut }) {
   const [showSettings, setShowSettings] = useState(false);
   const { t, i18n } = useTranslation();
 
@@ -48,8 +48,11 @@ export default function TopNav({ view, onViewChange, onImport, onExport }) {
         </span>
         <button onClick={onExport} className="btn-export">{t("nav.export")}</button>
         <button onClick={onImport} className="btn-import">{t("nav.import")}</button>
-        <button onClick={() => setShowSettings(true)} className="btn-icon-nav">
-          <Settings size={16} color="#fff" />
+        <button onClick={() => setShowSettings(true)} className="btn-export">
+          <Settings size={16} className="btn-top-nav" />
+        </button>
+        <button onClick={onSignOut} className="btn-export">
+          <LogOut size={16} className="btn-top-nav" />
         </button>
       </div>
 

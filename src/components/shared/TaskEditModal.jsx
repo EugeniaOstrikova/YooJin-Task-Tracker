@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { X } from "lucide-react";
+import Checkbox from "@mui/material/Checkbox";
 
 export default function TaskEditModal({ task = null, defaultDay = "", weekId = "", onSave, onAdd, onClose }) {
   const { cats } = useCategories();
@@ -50,10 +51,11 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
 
         <div className="modal-header">
           <span className="modal-title">
-            {t("taskEdit.title")}
-            {/* {isEditing ? "Редактировать задачу" : "Новая задача"} */}
+            {isEditing ? t("taskEdit.title") : t("taskEdit.createTitle")}
         </span>
-          <button className="btn-close" onClick={onClose}><X size={15} /></button>
+          <button className="btn-ghost" onClick={onClose}>
+            <X size={16} />
+          </button>
         </div>
 
         <div className="field task-edit-grid--full">
@@ -116,12 +118,16 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
         </div>
 
         <div className="field" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <input
-            type="checkbox"
-            id="deadline-cb"
+          <Checkbox
             checked={form.deadline}
             onChange={e => set("deadline", e.target.checked)}
-            style={{ width: 16, height: 16, accentColor: "var(--c-teal)" }}
+            size="small"
+            id="deadline-cb"
+            sx={{
+              padding: 0,
+              color: "var(--c-border)",
+              "&.Mui-checked": { color: "var(--c-accent)" },
+            }}
           />
           <label htmlFor="deadline-cb" className="field-label" style={{ margin: 0 }}>
             {t("taskEdit.deadlineLabel")}
@@ -129,8 +135,7 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
         </div>
 
         <button className="btn-full btn-full--teal" onClick={handleSave}>
-          {t("taskEdit.save")}
-          {/* {isEditing ? "Сохранить" : "Добавить"} */}
+          {isEditing ? t("taskEdit.save") : t("taskEdit.add")}
         </button>
       </div>
     </div>

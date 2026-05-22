@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHabits } from "../../hooks/useHabits";
 import { getWeekDays } from "../../lib/weekUtils";
-import { Settings2 } from 'lucide-react';
+import { Settings2, X } from 'lucide-react';
 import Checkbox from "@mui/material/Checkbox";
 
 export default function HabitTracker({ weekId }) {
@@ -75,7 +75,7 @@ export default function HabitTracker({ weekId }) {
                     className="habit-row__del"
                     title={t("habitTracker.deleteTitle")}
                   >
-                    ✕
+                    <X size={12} />
                   </button>
                 </div>
 

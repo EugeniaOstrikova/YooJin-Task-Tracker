@@ -41,6 +41,7 @@
   --c-ok:    #059669;
   --c-ok-bg: #F0FDF4;
   --c-ok-bd: #86EFAC;
+  --c-ok-light: #82B5A0;
 
   /* Error */
   --c-err:    #DC2626;
@@ -53,6 +54,8 @@
   --r-lg:  12px;
   --r-xl:  16px;
   --r-pill: 20px;
+
+  --c-event: #d7f5f9;
 }
 
 /* ── 2. Reset / Base ─────────────────────── */
@@ -177,6 +180,9 @@ input, textarea, select { font-family: inherit; }
   border: none; padding: 4px 8px;
   font-size: 12px; cursor: pointer;
 }
+.btn-top-nav {
+  color: var(--c-white);
+}
 .btn-nav {
   background: var(--c-white);
   border: 1px solid var(--c-border);
@@ -189,7 +195,7 @@ input, textarea, select { font-family: inherit; }
 }
 .btn-nav-today {
   font-size: 11px; padding: 6px 10px;
-  background: #F1F5F9; color: var(--c-mid);
+  background: var(--c-teal-bg); color: var(--c-mid);
   border: 1px solid var(--c-border);
   border-radius: var(--r-md); cursor: pointer; flex-shrink: 0;
 }
@@ -198,25 +204,19 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--r-md); padding: 3px 10px;
   font-size: 12px; color: var(--c-mid); cursor: pointer;
 }
-/* .btn-habit-edit {
-  background: none; 
-  padding: 0;
-  font-size: 14px; 
-  color: var(--c-accent); cursor: pointer;
-} */
 .btn-ok {
   background: var(--c-ink); color: #fff;
   border: none; border-radius: var(--r-md);
   padding: 7px 14px; font-size: 13px; cursor: pointer;
 }
 .btn-close {
-  background: #F1F5F9; border: none;
+  background: var(--c-teal-bg); border: none;
   border-radius: var(--r-md); width: 30px; height: 30px;
   cursor: pointer; font-size: 15px; color: var(--c-mid);
 }
 .btn-example {
   background: none; border: none;
-  color: #7C3AED; font-size: 12px;
+  color: var(--c-nav); font-size: 12px;
   cursor: pointer; padding: 0; margin-bottom: 8px; font-weight: 500;
 }
 .btn-add-theme {
@@ -262,7 +262,7 @@ input, textarea, select { font-family: inherit; }
 .badge--deadline {
   font-size: 9px; padding: 1px 7px;
   letter-spacing: .04em;
-  background: #FEE2E2; color: var(--c-err);
+  background: var(--c-err-bg); color: var(--c-err);
 }
 .badge--today {
   font-size: 9px; padding: 1px 6px; font-weight: 700;
@@ -419,7 +419,7 @@ input, textarea, select { font-family: inherit; }
 
 .day-col__footer {
   margin-top: 8px; padding-top: 6px;
-  border-top: 1px solid #F1F5F9;
+  border-top: 1px solid var(--c-teal-bg);
   font-size: 11px; 
   color: var(--c-mid);
   text-align: right;
@@ -428,7 +428,7 @@ input, textarea, select { font-family: inherit; }
 
 .day-col__calendar {
   margin-top: 8px; padding-top: 6px;
-  border-top: 1px solid #F1F5F9;
+  border-top: 1px solid var(--c-teal-bg);
 }
 
 .task-card__actual-input {
@@ -457,7 +457,7 @@ input, textarea, select { font-family: inherit; }
   gap: 8px; padding: 7px 10px 7px 6px;
   border-radius: var(--r-sm); margin-bottom: 2px;
   cursor: pointer; user-select: none; transition: opacity .15s;
-  background: linear-gradient(to left, #d7f5f9, transparent);
+  background: linear-gradient(to left, var(--c-event), transparent);
 }
 
 .calendar-card__text { 
@@ -472,10 +472,8 @@ input, textarea, select { font-family: inherit; }
 }
 
 .calendar-icon {
-  /* color: #69aab3; */
-  /* color: var(--c-accent); */
   flex-shrink: 0; margin-top: 2px;
-  cursor: "pointer"
+  cursor: pointer
 }
 
 .calendar__linked-task {
@@ -520,7 +518,6 @@ input, textarea, select { font-family: inherit; }
 }
 
 /* ── 18. Habit tracker ───────────────────── */
-/* .habit-wrap { margin-top: 24px; } */
 .habit-head {
   display: flex; align-items: center;
   margin-bottom: 16px;
@@ -534,14 +531,14 @@ input, textarea, select { font-family: inherit; }
 
 .habit-table {
   background: var(--c-white);
-  border: 1px solid var(--c-border);
+  border: 1px solid var(--c-teal-bd);
   border-radius: var(--r-lg); overflow: hidden; max-width: 520px;
 }
 .habit-table__header {
   display: grid;
   grid-template-columns: 1fr repeat(7, 36px);
   gap: 4px; padding: 8px 12px;
-  border-bottom: 1px solid #F1F5F9; background: #F8FAFC;
+  background: var(--c-teal-bg);
 }
 .habit-table__day { 
   text-align: center; font-size: 12px; 
@@ -554,7 +551,7 @@ input, textarea, select { font-family: inherit; }
   display: grid;
   grid-template-columns: 1fr repeat(7, 36px);
   gap: 4px; padding: 8px 12px;
-  align-items: center; border-bottom: 1px solid #F1F5F9;
+  align-items: center; border-bottom: 1px solid var(--c-teal-bg);
 }
 .habit-row:last-child { border-bottom: none; }
 
@@ -585,7 +582,6 @@ input, textarea, select { font-family: inherit; }
   border: 1px solid var(--c-teal-bd);
   border-radius: var(--r-lg);
   padding: 12px 16px; 
-  /* margin-bottom: 16px; */
  }
 
 .goal-row { display: flex; align-items: center; gap: 10px; }
@@ -605,10 +601,9 @@ input, textarea, select { font-family: inherit; }
 }
 .goal-text:hover         { border-color: var(--c-teal-bd); }
 .goal-text--done         { color: var(--c-dim); text-decoration: line-through; font-weight: 500; }
-.goal-text--empty        { color: #9BBFC6; font-weight: 400; }
 .goal-text--filled       { color: #1E293B; font-weight: 500; }
 .goal-input {
-  flex: 1; background: var(--c-white); border: 1px solid #A5B4FC;
+  flex: 1; background: var(--c-white); border: 1px solid var(--c-teal);
   border-radius: var(--r-md); padding: 5px 10px;
   font-size: 13px; color: #1E293B; outline: none;
 }
@@ -649,7 +644,7 @@ input, textarea, select { font-family: inherit; }
 .week-block__meta  { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .week-block__mini-track { width: 60px; height: 3px; background: var(--c-border); border-radius: 3px; overflow: hidden; }
 .week-block__mini-fill        { height: 100%; border-radius: 3px; background: var(--c-teal); }
-.week-block__mini-fill--done  { background: #82B5A0; }
+.week-block__mini-fill--done  { background: var(--c-ok-light); }
 .week-block__count            { font-size: 11px; color: var(--c-dim); font-weight: 500; }
 .week-block__count--done      { color: var(--c-ok); }
 .week-block__no-tasks         { font-size: 11px; color: var(--c-faint); }
@@ -711,13 +706,13 @@ input, textarea, select { font-family: inherit; }
   padding: 20px 18px 40px; width: 100%; max-width: 580px;
   max-height: 90vh; overflow-y: auto;
 }
-.import-tabs { display: flex; background: #F1F5F9; border-radius: 10px; padding: 4px; margin-bottom: 14px; gap: 4px; }
+.import-tabs { display: flex; background: var(--c-teal-bg); border-radius: 10px; padding: 4px; margin-bottom: 14px; gap: 4px; }
 .import-tab     { flex: 1; padding: 7px; font-size: 13px; border-radius: var(--r-md); border: none; font-weight: 500; cursor: pointer; }
 .import-tab--on  { background: var(--c-ink); color: #fff; }
 .import-tab--off { background: transparent; color: var(--c-dim); }
 
 .import-hint        { font-size: 12px; color: var(--c-mid); margin-bottom: 10px; line-height: 1.5; }
-.import-example     { background: #F8FAFC; border: 1px solid var(--c-border); border-radius: var(--r-md); padding: 10px 12px; font-size: 11px; color: var(--c-mid); font-family: monospace; white-space: pre-wrap; line-height: 1.6; margin-bottom: 10px; }
+.import-example     { background: var(--c-teal-bg); border: 1px solid var(--c-border); border-radius: var(--r-md); padding: 10px 12px; font-size: 11px; color: var(--c-mid); font-family: monospace; white-space: pre-wrap; line-height: 1.6; margin-bottom: 10px; }
 .import-file-label  { display: block; margin-bottom: 8px; font-size: 12px; color: var(--c-mid); }
 .import-meta        { margin-top: 12px; font-size: 11px; color: var(--c-dim); line-height: 1.7; }
 

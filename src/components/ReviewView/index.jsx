@@ -4,7 +4,7 @@ import { useCategories } from "../../context/CategoriesContext";
 import { useThemes } from "../../hooks/useThemes";
 import { patchTask } from "../../lib/storage";
 import { getCurrentWeekId, weekIdForDate, formatWeekRange } from "../../lib/weekUtils";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { getCatCardStyle } from "../../lib/categoryStyles";
 
 const getStatusMeta = (t) => ({
@@ -57,7 +57,9 @@ function TaskEditModal({ task, themes, onSave, onClose, cats }) {
               </span>
             </div>
           </div>
-          <button onClick={onClose} className="btn-primary">✕</button>
+          <button onClick={onClose} className="btn-ghost">
+            <X size={16} />
+          </button>
         </div>
 
         <div className="task-edit-section">
@@ -172,7 +174,7 @@ function ThemeGroup({ theme, tasks, onEdit, status, cats, statusMeta }) {
 
 export default function ReviewView({ tasks, onTaskUpdate }) {
   const currentWeekId = getCurrentWeekId();
-  const { themes, addTheme } = useThemes();
+  const { themes, loading: themesLoading, addTheme } = useThemes();
   const [editingTask, setEditingTask] = useState(null);
   const { cats } = useCategories();
   const { t, i18n } = useTranslation();
@@ -225,7 +227,6 @@ export default function ReviewView({ tasks, onTaskUpdate }) {
       {uniqueWeeks.map(weekId => {
         const weekMissed = reviewTasks.filter(task => task.week === weekId && task.status === "missed");
         const weekLate   = reviewTasks.filter(task => task.week === weekId && task.status === "late");
-        const { themes, loading: themesLoading, addTheme } = useThemes();
 
         if (themesLoading) return <div className="empty--center">{t("review.loading")}</div>;
 

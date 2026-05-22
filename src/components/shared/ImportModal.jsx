@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
 import { isValidWeekId } from "../../lib/weekUtils";
+import { X } from "lucide-react";
 
 const EXAMPLE = JSON.stringify([
   {
@@ -91,7 +92,9 @@ export default function ImportModal({ onImport, onRestore, onClose }) {
 
         <div className="modal-header">
           <span className="modal-title">{t("import.title")}</span>
-          <button onClick={onClose} className="btn-close">✕</button>
+          <button onClick={onClose} className="btn-ghost">
+            <X size={16} />
+          </button>
         </div>
 
         <div className="import-tabs">

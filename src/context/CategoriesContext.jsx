@@ -1,18 +1,23 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useEffect, useState, createContext, useContext, useCallback } from "react";
 import { loadCategories, upsertCategory, deleteCategory } from "../lib/categoriesStorage";
+import { useAuth } from "../hooks/useAuth";
 
 const CategoriesContext = createContext(null);
 
 export function CategoriesProvider({ children }) {
+  const { user } = useAuth();
   const [cats,    setCats]    = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadCategories().then(list => {
-      setCats(Object.fromEntries(list.map(c => [c.id, c])));
-      setLoading(false);
-    }).catch(console.error);
-  }, []);
+    if (!user) return; // ← ждём авторизации
+    loadCategories()
+      .then(list => {
+        setCats(Object.fromEntries(list.map(c => [c.id, c])));
+        setLoading(false);
+      })
+      .catch(console.error);
+  }, [user]);
 
   const saveCategory = useCallback(async (cat) => {
     await upsertCategory(cat);

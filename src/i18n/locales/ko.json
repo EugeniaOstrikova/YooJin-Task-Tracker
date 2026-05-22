@@ -74,7 +74,7 @@
   },
   "taskEdit": {
     "title": "할 일 수정",
-    "CreateTitle": "Create task",
+    "createTitle": "할 일 만들기",
     "textLabel": "내용",
     "categoryLabel": "카테고리",
     "dayLabel": "날짜 (YYYY-MM-DD)",
@@ -85,7 +85,8 @@
     "p_urgent": "🟠 긴급, 중요하지 않음",
     "p_normal": "⚪ 보통",
     "deadlineLabel": "마감일",
-    "save": "저장"
+    "save": "저장",
+    "add": "추가"
   },
   "settings": {
     "title": "설정",
@@ -141,5 +142,8 @@
     "hours": "{{h}}시간",
     "minutes": "{{m}}분",
     "hoursMinutes": "{{h}}시간 {{m}}분"
+  },
+  "label": {
+    "other": "기타"
   }
 }
