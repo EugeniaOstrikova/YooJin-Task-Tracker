@@ -5,6 +5,12 @@ import { useThemes } from "../../hooks/useThemes";
 import { patchTask } from "../../lib/storage";
 import { getCurrentWeekId, weekIdForDate, formatWeekRange } from "../../lib/weekUtils";
 import { MessageCircle } from "lucide-react";
+import { getCatCardStyle } from "../../lib/categoryStyles";
+
+const getStatusMeta = (t) => ({
+  missed: { label: t("review.statusMissed"), color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
+  late:   { label: t("review.statusLate"),   color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
+});
 
 function isLate(task) {
   if (!task.done || !task.completed_at) return false;
@@ -26,10 +32,7 @@ function TaskEditModal({ task, themes, onSave, onClose, cats }) {
   const { t } = useTranslation();
   const status = getStatus(task, getCurrentWeekId());
 
-  const STATUS_META = {
-    missed: { label: t("review.statusMissed"), color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
-    late:   { label: t("review.statusLate"),   color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
-  };
+  const STATUS_META = getStatusMeta(t);
 
   async function handleSave() {
     await onSave(task.id, { theme_id: themeId || null, note: note || null });
@@ -111,15 +114,12 @@ function ReviewTaskCard({ task, status, onEdit, cats, statusMeta }) {
   const { t } = useTranslation();
   const cat = cats[task.cat];
   const s   = statusMeta[status];
+  const cardStyle = getCatCardStyle(s);
   return (
     <div
       onClick={() => onEdit(task)}
       className="review-task"
-      style={{
-        background:  `linear-gradient(to left, ${s.bg}, transparent)`,
-        border:      `1px solid ${s.color}`,
-        borderRight: `3px solid ${s.color}`,
-      }}
+      style={{border: `1px solid ${s.color}`, ...cardStyle}}
     >
       <div className="review-task__body">
         <div className="review-task__text">{task.text}</div>
@@ -178,10 +178,7 @@ export default function ReviewView({ tasks, onTaskUpdate }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language;
 
-  const STATUS_META = {
-    missed: { label: t("review.statusMissed"), color: "var(--c-missed)", bg: "var(--c-missed-bg)" },
-    late:   { label: t("review.statusLate"),   color: "var(--c-late)",   bg: "var(--c-late-bg)"   },
-  };
+  const STATUS_META = getStatusMeta(t);
 
   const reviewTasks = [...new Map(
     tasks

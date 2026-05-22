@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useWeekGoals } from "../../hooks/useWeekGoals";
+import Checkbox from "@mui/material/Checkbox";
 
 export default function WeekGoals({ weekId }) {
   const { goals, done, updateGoal, toggleDone } = useWeekGoals(weekId);
@@ -25,20 +26,12 @@ export default function WeekGoals({ weekId }) {
       <div className="week-goals__list">
         {goals.map((goal, i) => (
           <div key={i} className="goal-row">
-
-            <div
-              onClick={() => goal && toggleDone(i)}
-              className={`goal-cb${done[i] ? " goal-cb--done" : ""}`}
-              style={{ cursor: goal ? "pointer" : "default" }}
-            >
-              {done[i] && (
-                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              )}
-            </div>
-
-            <span className="goal-num">{i + 1}.</span>
+            <Checkbox
+              className="goal-cb"
+              checked={done[i]}
+              onClick={() => goal && toggleDone(i)} 
+              size="small"
+            />
 
             {editingIndex === i ? (
               <input

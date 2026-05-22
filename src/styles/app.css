@@ -8,6 +8,7 @@
   --c-nav:      #2C5F6A;   /* nav bar / dark buttons */
   --c-accent:   #4A7A85;   /* headings, icons        */
   --c-teal:     #76A5AF;   /* active states          */
+  --c-teal-light: #b7cdd2;
   --c-teal-bg:  #EAF3F5;   /* subtle teal fill       */
   --c-teal-bd:  #B8D6DC;   /* teal border            */
 
@@ -501,15 +502,6 @@ input, textarea, select { font-family: inherit; }
 .task-card--compact { padding: 5px 10px 5px 6px; }
 .task-card--done    { opacity: .45; }
 
-.task-card__cb {
-  width: 16px; height: 16px; border-radius: 4px;
-  flex-shrink: 0; margin-top: 2px;
-  border: 1.5px solid var(--c-ink); background: transparent;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
-}
-.task-card__cb--done { border: none; }
-
 .task-card__body { flex: 1; min-width: 0; }
 .task-card__row  { display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
 
@@ -551,8 +543,12 @@ input, textarea, select { font-family: inherit; }
   gap: 4px; padding: 8px 12px;
   border-bottom: 1px solid #F1F5F9; background: #F8FAFC;
 }
-.habit-table__day          { text-align: center; font-size: 10px; font-weight: 600; color: var(--c-dim); text-transform: uppercase; }
-.habit-table__day--today   { color: #0369A1; }
+.habit-table__day { 
+  text-align: center; font-size: 12px; 
+  font-weight: 600; color: var(--c-dim); 
+  text-transform: uppercase; 
+}
+.habit-table__day--today   { color: var(--c-accent) }
 
 .habit-row {
   display: grid;
@@ -568,14 +564,14 @@ input, textarea, select { font-family: inherit; }
 .habit-row__del   { background: none; border: none; color: var(--c-faint); cursor: pointer; font-size: 12px; padding: 0; flex-shrink: 0; margin-left: auto; }
 
 .habit-cell {
-  width: 28px; height: 28px; border-radius: 6px; margin: 0 auto;
-  cursor: pointer; background: #F1F5F9;
-  border: 1.5px solid transparent;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
+  padding: 0 !important;
+  color: var(--c-teal-light) !important;
 }
-.habit-cell--on    { background: var(--c-teal); }
-.habit-cell--today { border-color: var(--c-accent); }
+.habit-cell.Mui-checked {
+  color: var(--c-teal) !important;
+}
+
+.habit-cell--today { color: var(--c-accent) !important; }
 
 /* ── 19. Week goals ──────────────────────── */
 .week-goals__title {
@@ -593,17 +589,15 @@ input, textarea, select { font-family: inherit; }
  }
 
 .goal-row { display: flex; align-items: center; gap: 10px; }
-.goal-cb  {
-  width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
-  border: 1.5px solid var(--c-teal); background: transparent;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s;
-}
-.goal-cb--done { border: none; background: var(--c-teal); }
 
-.goal-num {
-  font-size: 13px; font-weight: 700; color: var(--c-accent); flex-shrink: 0;
+.goal-cb {
+  padding: 0 !important;
+  color: var(--c-teal) !important;
 }
+.goal-cb.Mui-checked {
+  color: var(--c-teal) !important;
+}
+
 .goal-text {
   flex: 1; padding: 5px 10px; border-radius: var(--r-md);
   font-size: 13px; cursor: text;

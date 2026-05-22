@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import WeekBlock from "./WeekBlock";
 import { TRIMESTERS, getTrimesterForWeek } from "../../config/trimesters";
-import { getWeeksBetween, getCurrentWeekId, getMonthLabel } from "../../lib/weekUtils";
+import { getWeeksBetween, getCurrentWeekId, getMonthLabel, getTrimesterTasks } from "../../lib/weekUtils";
+import TrimesterSelector from "../shared/TrimesterSelector";
 
 export default function TrimesterView({ tasks, onToggle, onNavigateWeek, currentWeekId }) {
   const currentTrimester = getTrimesterForWeek(currentWeekId) ?? TRIMESTERS[0];
@@ -12,25 +13,12 @@ export default function TrimesterView({ tasks, onToggle, onNavigateWeek, current
   const trimester = TRIMESTERS.find(tr => tr.id === selectedId) ?? TRIMESTERS[0];
   const weeks     = getWeeksBetween(trimester.start, trimester.end);
 
-  const trimTasks = tasks.filter(task => task.week >= trimester.start && task.week <= trimester.end);
-  const trimDone  = trimTasks.filter(task => task.done).length;
-  const trimTotal = trimTasks.length;
-  const trimPct   = trimTotal ? Math.round((trimDone / trimTotal) * 100) : 0;
+  const { tasks: trimTasks, done: trimDone, total: trimTotal, pct: trimPct } = getTrimesterTasks(tasks, trimester);
 
   return (
     <div className="trim-view">
 
-      <div className="trim-selector">
-        {TRIMESTERS.map(tr => (
-          <button
-            key={tr.id}
-            onClick={() => setSelectedId(tr.id)}
-            className={`trim-btn${selectedId === tr.id ? " is-active" : ""}`}
-          >
-            {tr.label}
-          </button>
-        ))}
-      </div>
+      <TrimesterSelector selected={selectedId} onChange={setSelectedId} />
 
       <div className="trim-progress">
         <div className="trim-progress__row">

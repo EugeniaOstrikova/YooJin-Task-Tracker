@@ -6,7 +6,8 @@ import {
 } from "recharts";
 import { useCategories } from "../../context/CategoriesContext";
 import { TRIMESTERS, getTrimesterForWeek } from "../../config/trimesters";
-import { getWeeksBetween, formatWeekRange, getCurrentWeekId, isCycleWeek } from "../../lib/weekUtils";
+import { getWeeksBetween, formatWeekRange, getCurrentWeekId, isCycleWeek, getTrimesterTasks } from "../../lib/weekUtils";
+import TrimesterSelector from "../shared/TrimesterSelector";
 
 function buildChartData(weeks, tasks, currentWeekId, catKeys, locale) {
   return weeks.map(weekId => {
@@ -87,9 +88,7 @@ export default function StatsView({ tasks, currentWeekId }) {
   const weeks      = getWeeksBetween(trimester.start, trimester.end);
   const data       = buildChartData(weeks, tasks, currentWeekId, CAT_KEYS, locale);
 
-  const trimTasks = tasks.filter(task => task.week >= trimester.start && task.week <= trimester.end);
-  const trimDone  = trimTasks.filter(task => task.done).length;
-  const trimTotal = trimTasks.length;
+  const { tasks: trimTasks, done: trimDone, total: trimTotal } = getTrimesterTasks(tasks, trimester);
   const pastTasks = trimTasks.filter(task => task.week < currentWeekId);
   const pastDone  = pastTasks.filter(task => task.done).length;
 
@@ -99,21 +98,12 @@ export default function StatsView({ tasks, currentWeekId }) {
     { label: t("stats.completionPct"), value: pastTasks.length ? `${Math.round(pastDone / pastTasks.length * 100)}%` : "—" },
     { label: t("stats.plannedFuture"), value: trimTotal - pastTasks.length },
   ];
+  const currentTrimester = getTrimesterForWeek(getCurrentWeekId()) ?? TRIMESTERS[0];
+  const [selectedId, setSelectedId] = useState(currentTrimester.id);
 
   return (
     <div className="stats-view">
-
-      <div className="trim-selector">
-        {TRIMESTERS.map(tr => (
-          <button
-            key={tr.id}
-            onClick={() => setSelId(tr.id)}
-            className={`trim-btn${selId === tr.id ? " is-active" : ""}`}
-          >
-            {tr.label}
-          </button>
-        ))}
-      </div>
+      <TrimesterSelector selected={selectedId} onChange={setSelectedId} />
 
       <div className="stats-cards">
         {SUMMARY_CARDS.map((card, i) => (

@@ -188,3 +188,12 @@ export function formatDuration(hours, locale = "ru") {
   return `${h}${u.h} ${m}${u.m}`;
 }
 
+export function getTrimesterTasks(tasks, trimester) {
+  const filtered = tasks.filter(t => t.week >= trimester.start && t.week <= trimester.end);
+  return {
+    tasks:   filtered,
+    done:    filtered.filter(t => t.done).length,
+    total:   filtered.length,
+    pct:     filtered.length ? Math.round(filtered.filter(t => t.done).length / filtered.length * 100) : 0,
+  };
+}

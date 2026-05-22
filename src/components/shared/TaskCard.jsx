@@ -6,6 +6,8 @@ import { formatDuration } from "../../lib/weekUtils";
 import { Link2, X } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import Checkbox from "@mui/material/Checkbox";
+import { getCatCardStyle } from "../../lib/categoryStyles";
 
 export default function TaskCard({ task, onToggle, onEdit, onSave, compact = false, linked }) {
   const { cats } = useCategories();
@@ -20,13 +22,10 @@ export default function TaskCard({ task, onToggle, onEdit, onSave, compact = fal
     id: task.id,
   });
 
-  const style = {
-    transform: CSS.Translate.toString(transform),
-    opacity:   isDragging ? 0.4 : 1,
-    // существующие стили градиента и бордера
-    background: cat === "other" ? "transparent" : `linear-gradient(to left, ${catStyle.bg}, transparent)`,
-    borderRight: cat === "other" ? "none" : `3px solid ${catStyle.dot}`,
-  };
+  const cardStyle = getCatCardStyle(catStyle, { 
+    noBorder:    cat === "other",
+    noGradient:  cat === "other",
+  });
 
   function handleActualSave() {
     const val = parseFloat(actualInput);
@@ -37,27 +36,23 @@ export default function TaskCard({ task, onToggle, onEdit, onSave, compact = fal
   return (
     <div
       className={`task-card${compact ? " task-card--compact" : ""}${done ? " task-card--done" : ""}`}
-      style={{
-        background:  cat === "other" ? "transparent" : `linear-gradient(to left, ${catStyle.bg}, transparent)`,
-        borderRight: cat === "other" ? "none" : `3px solid ${catStyle.dot}`,
-      }}
+      style={{...cardStyle}}
       ref={setNodeRef}
       {...attributes}
       {...listeners}
     >
       {/* Чекбокс */}
-      <div
-        className={`task-card__cb${done ? " task-card__cb--done" : ""}`}
-        style={{ background: done ? catStyle.dot : "transparent" }}
-        onClick={e => { e.stopPropagation(); onToggle(task.id); }}
+      <Checkbox
+        checked={done}
+        onChange={e => { e.stopPropagation(); onToggle(task.id); }}
         onPointerDown={e => e.stopPropagation()}
-      >
-        {done && (
-          <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-            <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </div>
+        size="small"
+        sx={{
+          padding: 0,
+          color: catStyle.dot,
+          "&.Mui-checked": { color: catStyle.dot },
+        }}
+      />
 
       {/* Контент */}
       <div className="task-card__body">

@@ -13,3 +13,5 @@ supabase/.temp
 
 # Claude
 .claude
+
+CODE_REVIEW.md

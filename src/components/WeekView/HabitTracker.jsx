@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useHabits } from "../../hooks/useHabits";
 import { getWeekDays } from "../../lib/weekUtils";
 import { Settings2 } from 'lucide-react';
+import Checkbox from "@mui/material/Checkbox";
 
 export default function HabitTracker({ weekId }) {
   const { habits, logs, loading, toggleDay, createHabit, removeHabit } = useHabits(weekId);
@@ -79,17 +80,12 @@ export default function HabitTracker({ weekId }) {
                 </div>
 
                 {dayLogs.map((checked, di) => (
-                  <div
+                  <Checkbox
                     key={di}
+                    checked={checked}
                     onClick={() => toggleDay(habit.id, di)}
-                    className={`habit-cell${checked ? " habit-cell--on" : ""}${days[di]?.isToday ? " habit-cell--today" : ""}`}
-                  >
-                    {checked && (
-                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                  </div>
+                    className={`habit-cell${days[di]?.isToday ? " habit-cell--today" : ""}`}
+                  />
                 ))}
               </div>
             );
