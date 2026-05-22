@@ -1,18 +1,53 @@
-const CLIENT_ID     = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const SCOPES        = "https://www.googleapis.com/auth/calendar.readonly";
-const REDIRECT_URI  = window.location.origin;
+const CLIENT_ID    = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
-// ── OAuth ─────────────────────────────────────────────
-
-export function getGoogleAuthUrl() {
+export function getGoogleAuthUrl(redirectUri) {
   const params = new URLSearchParams({
     client_id:     CLIENT_ID,
-    redirect_uri:  REDIRECT_URI,
-    response_type: "token",
-    scope:         SCOPES,
+    redirect_uri:  redirectUri,
+    response_type: "code",
+    scope:         "https://www.googleapis.com/auth/calendar.readonly",
+    access_type:   "offline",
     prompt:        "consent",
   });
   return `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+}
+
+export function parseCodeFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("code");
+}
+
+export async function exchangeCodeForTokens(code, userId, redirectUri) {
+  const res = await fetch(
+    `${SUPABASE_URL}/functions/v1/google-token-exchange`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, userId, redirectUri }),
+    }
+  );
+  return res.json();
+}
+
+export async function refreshAccessToken(userId) {
+  const res = await fetch(
+    `${SUPABASE_URL}/functions/v1/google-refresh-token`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    }
+  );
+  const data = await res.json();
+  return data.access_token;
+}
+
+export function isTokenValid(settings) {
+  return !!(
+    settings?.google_access_token &&
+    settings?.google_token_expiry > Date.now() + 60000
+  );
 }
 
 export function parseTokenFromHash() {
@@ -25,11 +60,6 @@ export function parseTokenFromHash() {
     access_token:  token,
     expiry_time:   Date.now() + parseInt(expiry) * 1000,
   };
-}
-
-export function isTokenValid(settings) {
-  return !!(settings?.google_access_token && 
-    settings?.google_token_expiry > Date.now());
 }
 
 // ── Calendar API ──────────────────────────────────────

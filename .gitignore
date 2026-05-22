@@ -1,3 +1,15 @@
-node_modules
+# Build
 dist
-.env.env
+
+# Dependencies  
+node_modules
+
+# Env
+.env
+.env.local
+
+# Supabase temp
+supabase/.temp
+
+# Claude
+.claude
