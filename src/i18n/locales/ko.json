@@ -6,7 +6,8 @@
     "stats": "통계",
     "review": "리뷰",
     "export": "↓ 내보내기",
-    "import": "+ 가져오기"
+    "import": "+ 가져오기",
+    "goals": "목표"
   },
   "auth": {
     "title": "Gentle Planner",

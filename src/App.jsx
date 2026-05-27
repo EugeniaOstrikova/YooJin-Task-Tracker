@@ -12,6 +12,7 @@ import { CategoriesProvider } from "./context/CategoriesContext";
 import { useAuth }      from "./hooks/useAuth";
 import LoginScreen      from "./components/Auth/LoginScreen";
 import { signOut } from "./lib/auth";
+import GoalsView from "./components/GoalsView";
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
@@ -69,6 +70,7 @@ export default function App() {
         }
         {view === "stats"  && <StatsView tasks={tasks} currentWeekId={weekId} />}
         {view === "review" && <ReviewView tasks={tasks} onTaskUpdate={updateTaskLocally} />}
+        {view === "goals" && <GoalsView />}
 
         {showImport && (
           <ImportModal

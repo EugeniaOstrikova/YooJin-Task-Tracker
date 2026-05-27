@@ -2,7 +2,7 @@ import { isSupabase } from "../../lib/storage";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import SettingsModal from "./SettingsModal";
-import { Settings, LogOut } from "lucide-react";
+import { Settings, LogOut, Squirrel } from "lucide-react";
 
 const LANGS = ["ru", "en", "ko"];
 
@@ -22,13 +22,17 @@ export default function TopNav({ view, onViewChange, onImport, onExport, onSignO
 
   return (
     <div className="top-nav">
-      <span className="top-nav__logo">{t("nav.title")}</span>
+      <div className="top-nav__logo-box">
+        <Squirrel className="top-nav__logo-item" size={16}/>
+        <span className="top-nav__logo">{t("nav.title")}</span>
+      </div>
 
       <div className="top-nav__tabs">
         {tabBtn("week",      t("nav.week"))}
         {tabBtn("trimester", t("nav.trimester"))}
         {tabBtn("stats",     t("nav.stats"))}
         {tabBtn("review",    t("nav.review"))}
+        {tabBtn("goals",     t("nav.goals"))}
       </div>
 
       <div className="top-nav__actions">

@@ -56,6 +56,11 @@
   --r-pill: 20px;
 
   --c-event: #d7f5f9;
+
+  /* ── Priority colors ─────────────────────── */
+  --c-priority-urgent: #E53E3E;
+  --c-priority-heavy:  #7C3AED;
+  --c-priority-light:  #38A169;
 }
 
 /* ── 2. Reset / Base ─────────────────────── */
@@ -79,6 +84,10 @@ input, textarea, select { font-family: inherit; }
 .screen-loading { padding: 32px; font-size: 14px; color: var(--c-dim); }
 .screen-error   { padding: 32px; font-size: 14px; color: var(--c-err); }
 
+.priority-icon--urgent { color: var(--c-priority-urgent); fill: var(--c-priority-urgent); }
+.priority-icon--heavy  { color: var(--c-priority-heavy);  fill: var(--c-priority-heavy);  }
+.priority-icon--light  { color: var(--c-priority-light);  fill: var(--c-priority-light);  }
+
 /* ── 4. Top nav ──────────────────────────── */
 .top-nav {
   position: sticky; top: 0; z-index: 100;
@@ -87,9 +96,17 @@ input, textarea, select { font-family: inherit; }
   display: flex; align-items: center;
   justify-content: space-between; gap: 12px;
 }
+.top-nav__logo-box {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
 .top-nav__logo {
   font-size: 15px; font-weight: 700;
-  color: #fff; letter-spacing: -0.01em; flex-shrink: 0;
+  color: var(--c-white); letter-spacing: -0.01em; flex-shrink: 0;
+}
+.top-nav__logo-item {
+  color: var(--c-white);
 }
 .top-nav__tabs {
   display: flex;
@@ -501,7 +518,7 @@ input, textarea, select { font-family: inherit; }
 .task-card--done    { opacity: .45; }
 
 .task-card__body { flex: 1; min-width: 0; }
-.task-card__row  { display: flex; align-items: flex-start; gap: 5px; flex-wrap: wrap; }
+.task-card__row  { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 
 .task-card__text         { font-size: 13px; font-weight: 500; color: var(--c-ink); line-height: 1.4; flex: 1; }
 .task-card__text--compact { font-size: 12px; }
@@ -796,4 +813,51 @@ input, textarea, select { font-family: inherit; }
   background: var(--c-teal-bg);
   font-weight: 600;
   color: var(--c-accent);
+}
+
+/* ── Goal Stage Column ───────────────────── */
+.stage-col {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: 14px;
+  min-height: 120px;
+  transition: all 0.15s;
+}
+.stage-col--over {
+  background: var(--c-teal-bg);
+  border-color: var(--c-teal-bd);
+}
+.stage-col__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.stage-col__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+
+/* ── Task Group ──────────────────────────── */
+.task-group {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+.task-group__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.task-group__title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }

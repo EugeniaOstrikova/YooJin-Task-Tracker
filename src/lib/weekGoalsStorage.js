@@ -8,7 +8,10 @@ const LOCAL_KEY = "tracker-week-goals-v1";
 export async function loadWeekGoals(week) {
   if (supabase) {
     const { data } = await supabase
-      .from("week_goals").select("goals, goals_done").eq("week", week).single();
+      .from("week_goals")
+      .select("goals, goals_done")
+      .eq("week", week)
+      .maybeSingle();
     return {
       goals:      data?.goals      ?? [],
       goals_done: data?.goals_done ?? [],

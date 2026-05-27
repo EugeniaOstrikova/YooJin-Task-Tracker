@@ -32,8 +32,8 @@ function validate(tasks, CAT_KEYS, t) {
   tasks.forEach((task, i) => {
     const n = i + 1;
     if (!task.id)   errs.push(t("import.errMissingId",   { n }));
-    if (!task.week) errs.push(t("import.errMissingWeek", { n }));
-    else if (!isValidWeekId(task.week)) errs.push(t("import.errInvalidWeek", { n }));
+    // if (!task.week) errs.push(t("import.errMissingWeek", { n }));
+    else if (task.week && !isValidWeekId(task.week)) errs.push(t("import.errInvalidWeek", { n }));
     if (!task.text) errs.push(t("import.errMissingText", { n }));
     if (!task.cat)  errs.push(t("import.errMissingCat",  { n }));
     else if (!CAT_KEYS.includes(task.cat))

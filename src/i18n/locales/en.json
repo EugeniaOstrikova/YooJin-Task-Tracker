@@ -6,7 +6,8 @@
     "stats": "Stats",
     "review": "Review",
     "export": "↓ Export",
-    "import": "+ Import"
+    "import": "+ Import",
+    "goals": "Goals"
   },
   "auth": {
     "title": "Gentle Planner",

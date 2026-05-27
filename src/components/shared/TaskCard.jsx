@@ -57,7 +57,7 @@ export default function TaskCard({ task, onToggle, onEdit, onSave, compact = fal
       {/* Контент */}
       <div className="task-card__body">
         <div className="task-card__row">
-          <PriorityIcon important={important} urgent={urgent} size={12} />
+          <PriorityIcon urgent={task.urgent} effort={task.effort} size={14} />
           <span 
             onClick={e => { e.stopPropagation(); onEdit?.(task); }}
             className={`task-card__text${compact ? " task-card__text--compact" : ""}${done ? " task-card__text--done" : ""}`}

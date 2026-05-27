@@ -102,16 +102,38 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
           </div>
         </div>
 
+        {/* Срочно */}
         <div className="field">
-          <label className="field-label">{t("taskEdit.priorityLabel")}</label>
+          <label className="field-label">Срочно</label>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+            <input
+              type="checkbox"
+              id="urgent-cb"
+              checked={form.urgent}
+              onChange={e => set("urgent", e.target.checked)}
+              style={{ width: 16, height: 16, accentColor: "var(--c-priority-urgent)" }}
+            />
+            <label htmlFor="urgent-cb" style={{ fontSize: 13, color: "var(--c-ink)" }}>
+              Критичный дедлайн
+            </label>
+          </div>
+        </div>
+
+        {/* Тип усилия */}
+        <div className="field">
+          <label className="field-label">Тип задачи</label>
           <div className="priority-grid">
-            {priorities.map(p => (
+            {[
+              { value: null,    label: "Обычная" },
+              { value: "heavy", label: "🔥 Тяжёлая" },
+              { value: "light", label: "⚡ Лёгкая"  },
+            ].map(p => (
               <button
-                key={`${p.imp}-${p.urg}`}
-                className={`priority-btn${form.important === p.imp && form.urgent === p.urg ? " is-active" : ""}`}
-                onClick={() => { set("important", p.imp); set("urgent", p.urg); }}
+                key={String(p.value)}
+                className={`priority-btn${form.effort === p.value ? " is-active" : ""}`}
+                onClick={() => set("effort", p.value)}
               >
-                {t(`taskEdit.${p.key}`)}
+                {p.label}
               </button>
             ))}
           </div>
