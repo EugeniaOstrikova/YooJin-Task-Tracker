@@ -1,20 +1,22 @@
 import { CYCLE_START, CYCLE_LENGTH } from "../config/cycle";
 
 const INTL_LOCALE_MAP = { ru: "ru-RU", en: "en-US", ko: "ko-KR" };
-function toIntlLocale(locale) { return INTL_LOCALE_MAP[locale] ?? locale; }
+function toIntlLocale(locale) {
+  return INTL_LOCALE_MAP[locale] ?? locale;
+}
 
 // ─── Базовые утилиты ─────────────────────────────────────────────────────────
 
 /** Первое воскресенье данного года */
 function firstSundayOfYear(year) {
   const jan1 = new Date(year, 0, 1);
-  const day  = jan1.getDay(); // 0=Вс
+  const day = jan1.getDay(); // 0=Вс
   return new Date(year, 0, 1 - day); // воскресенье недели, содержащей Jan 1
 }
 
 /** Количество воскресных недель в году */
 function weeksInYear(year) {
-  const fs  = firstSundayOfYear(year);
+  const fs = firstSundayOfYear(year);
   const fsN = firstSundayOfYear(year + 1);
   return Math.round((fsN - fs) / (7 * 86400000));
 }
@@ -53,8 +55,8 @@ export function isValidWeekId(str) {
 /** "2026W19" → Date (воскресенье, начало недели) */
 export function getWeekStart(weekId) {
   const { year, week } = parseWeekId(weekId);
-  const fs  = firstSundayOfYear(year);
-  const d   = new Date(fs);
+  const fs = firstSundayOfYear(year);
+  const d = new Date(fs);
   d.setDate(fs.getDate() + (week - 1) * 7);
   return d;
 }
@@ -62,7 +64,7 @@ export function getWeekStart(weekId) {
 /** "2026W19" → Date (суббота, конец недели) */
 export function getWeekEnd(weekId) {
   const start = getWeekStart(weekId);
-  const end   = new Date(start);
+  const end = new Date(start);
   end.setDate(start.getDate() + 6);
   return end;
 }
@@ -70,7 +72,7 @@ export function getWeekEnd(weekId) {
 /** Date → "2026W19" */
 export function weekIdForDate(date) {
   const year = date.getFullYear();
-  const fs   = firstSundayOfYear(year);
+  const fs = firstSundayOfYear(year);
 
   if (date < fs) {
     const prevWeeks = weeksInYear(year - 1);
@@ -103,7 +105,7 @@ export function getPrevWeekId(weekId) {
 
 /** Является ли данная неделя неделей цикла */
 export function isCycleWeek(weekId) {
-  const start   = getWeekStart(CYCLE_START);
+  const start = getWeekStart(CYCLE_START);
   const current = getWeekStart(weekId);
   const diffWeeks = Math.round((current - start) / (7 * 86400000));
   return diffWeeks >= 0 && diffWeeks % CYCLE_LENGTH === 0;
@@ -132,20 +134,20 @@ export function formatWeekTitle(weekId, locale = "ru") {
 export function getWeekDays(weekId, locale = "ru") {
   const il = toIntlLocale(locale);
   const start = getWeekStart(weekId);
-  const monthFmt   = new Intl.DateTimeFormat(il, { month: "short" });
+  const monthFmt = new Intl.DateTimeFormat(il, { month: "short" });
   const weekdayFmt = new Intl.DateTimeFormat(il, { weekday: "short" });
   return Array.from({ length: 7 }, (_, i) => {
-    const d   = new Date(start);
+    const d = new Date(start);
     d.setDate(start.getDate() + i);
-    const iso      = toLocalISO(d);
-    const dayName  = weekdayFmt.format(d);
-    const month    = monthFmt.format(d);
+    const iso = toLocalISO(d);
+    const dayName = weekdayFmt.format(d);
+    const month = monthFmt.format(d);
     return {
       iso,
-      label:      `${dayName} ${d.getDate()} ${month}`,
+      label: `${dayName} ${d.getDate()} ${month}`,
       shortLabel: `${dayName} ${d.getDate()}`,
       dayName,
-      date:       d.getDate(),
+      date: d.getDate(),
       month,
       isToday: iso === toLocalISO(new Date()),
     };
@@ -167,14 +169,16 @@ export function getWeeksBetween(startWeekId, endWeekId) {
 /** Месяц + год для заголовка группы */
 export function getMonthLabel(weekId, locale = "ru") {
   const il = toIntlLocale(locale);
-  const s  = getWeekStart(weekId);
-  return new Intl.DateTimeFormat(il, { month: "long", year: "numeric" }).format(s);
+  const s = getWeekStart(weekId);
+  return new Intl.DateTimeFormat(il, { month: "long", year: "numeric" }).format(
+    s
+  );
 }
 
 const DURATION_UNITS = {
-  ru: { h: "ч",   m: "мин"  },
-  en: { h: "h",   m: "m"    },
-  ko: { h: "시간", m: "분"   },
+  ru: { h: "ч", m: "мин" },
+  en: { h: "h", m: "m" },
+  ko: { h: "시간", m: "분" },
 };
 
 /** 1.5 → "1ч 30мин" / "1h 30m" / "1시간 30분" */
@@ -189,11 +193,17 @@ export function formatDuration(hours, locale = "ru") {
 }
 
 export function getTrimesterTasks(tasks, trimester) {
-  const filtered = tasks.filter(t => t.week >= trimester.start && t.week <= trimester.end);
+  const filtered = tasks.filter(
+    (t) => t.week >= trimester.start && t.week <= trimester.end
+  );
   return {
-    tasks:   filtered,
-    done:    filtered.filter(t => t.done).length,
-    total:   filtered.length,
-    pct:     filtered.length ? Math.round(filtered.filter(t => t.done).length / filtered.length * 100) : 0,
+    tasks: filtered,
+    done: filtered.filter((t) => t.done).length,
+    total: filtered.length,
+    pct: filtered.length
+      ? Math.round(
+          (filtered.filter((t) => t.done).length / filtered.length) * 100
+        )
+      : 0,
   };
 }

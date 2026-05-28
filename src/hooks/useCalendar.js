@@ -2,16 +2,20 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "./useAuth";
 import { loadSettings, saveSettings } from "../lib/userSettingsStorage";
 import {
-  getGoogleAuthUrl, parseCodeFromUrl,
-  exchangeCodeForTokens, refreshAccessToken,
-  isTokenValid, fetchCalendarList,
-  fetchEventsForWeek, parseEventTiming,
+  getGoogleAuthUrl,
+  parseCodeFromUrl,
+  exchangeCodeForTokens,
+  refreshAccessToken,
+  isTokenValid,
+  fetchCalendarList,
+  fetchEventsForWeek,
+  parseEventTiming,
 } from "../lib/googleCalendar";
 import { getWeekStart, getWeekEnd } from "../lib/weekUtils";
 
 export function useCalendar() {
-  const { user }   = useAuth();
-  const [settings, setSettings]   = useState({});
+  const { user } = useAuth();
+  const [settings, setSettings] = useState({});
   const [calendars, setCalendars] = useState([]);
   const [connected, setConnected] = useState(false);
   const refreshTimer = useRef(null);
@@ -21,7 +25,7 @@ export function useCalendar() {
   // Загрузка настроек
   useEffect(() => {
     if (!user) return;
-    loadSettings(user.id).then(s => {
+    loadSettings(user.id).then((s) => {
       setSettings(s);
       setConnected(isTokenValid(s));
     });
@@ -35,14 +39,16 @@ export function useCalendar() {
     // Очистить URL
     window.history.replaceState({}, "", window.location.pathname);
 
-    exchangeCodeForTokens(code, user.id, redirectUri).then(result => {
-      if (result.success) {
-        loadSettings(user.id).then(s => {
-          setSettings(s);
-          setConnected(true);
-        });
-      }
-    }).catch(console.error);
+    exchangeCodeForTokens(code, user.id, redirectUri)
+      .then((result) => {
+        if (result.success) {
+          loadSettings(user.id).then((s) => {
+            setSettings(s);
+            setConnected(true);
+          });
+        }
+      })
+      .catch(console.error);
   }, [user]);
 
   // Автообновление токена
@@ -83,50 +89,56 @@ export function useCalendar() {
   }, [connected, settings.google_access_token]);
 
   // Переключить выбранный календарь
-  const toggleCalendar = useCallback(async (calId) => {
-    const current = settings.selected_calendars ?? [];
-    const updated = current.includes(calId)
-      ? current.filter(id => id !== calId)
-      : [...current, calId];
-    await saveSettings(user.id, { selected_calendars: updated });
-    setSettings(prev => ({ ...prev, selected_calendars: updated }));
-  }, [settings, user]);
+  const toggleCalendar = useCallback(
+    async (calId) => {
+      const current = settings.selected_calendars ?? [];
+      const updated = current.includes(calId)
+        ? current.filter((id) => id !== calId)
+        : [...current, calId];
+      await saveSettings(user.id, { selected_calendars: updated });
+      setSettings((prev) => ({ ...prev, selected_calendars: updated }));
+    },
+    [settings, user]
+  );
 
   // Получить события недели
-  const getWeekEvents = useCallback(async (weekId) => {
-    if (!settings.google_access_token) return [];
-    const selected = settings.selected_calendars ?? [];
-    if (!selected.length) return [];
+  const getWeekEvents = useCallback(
+    async (weekId) => {
+      if (!settings.google_access_token) return [];
+      const selected = settings.selected_calendars ?? [];
+      if (!selected.length) return [];
 
-    // Обновить токен если нужно
-    let token = settings.google_access_token;
-    if (!isTokenValid(settings) && user) {
-      token = await refreshAccessToken(user.id);
-      if (!token) return [];
-    }
+      // Обновить токен если нужно
+      let token = settings.google_access_token;
+      if (!isTokenValid(settings) && user) {
+        token = await refreshAccessToken(user.id);
+        if (!token) return [];
+      }
 
-    const start = getWeekStart(weekId);
-    const end   = getWeekEnd(weekId);
-    end.setDate(end.getDate() + 1);
+      const start = getWeekStart(weekId);
+      const end = getWeekEnd(weekId);
+      end.setDate(end.getDate() + 1);
 
-    const allEvents = await Promise.all(
-      selected.map(calId =>
-        fetchEventsForWeek(token, calId, start, end).catch(() => [])
-      )
-    );
+      const allEvents = await Promise.all(
+        selected.map((calId) =>
+          fetchEventsForWeek(token, calId, start, end).catch(() => [])
+        )
+      );
 
-    return allEvents.flat().map(e => {
-      const { time, durationHours } = parseEventTiming(e.start, e.end);
-      return {
-        id:            e.id,
-        title:         e.summary ?? "(без названия)",
-        time,
-        durationHours,
-        date:          e.start?.date ?? e.start?.dateTime?.split("T")[0],
-        allDay:        !!e.start?.date,
-      };
-    });
-  }, [settings, user]);
+      return allEvents.flat().map((e) => {
+        const { time, durationHours } = parseEventTiming(e.start, e.end);
+        return {
+          id: e.id,
+          title: e.summary ?? "(без названия)",
+          time,
+          durationHours,
+          date: e.start?.date ?? e.start?.dateTime?.split("T")[0],
+          allDay: !!e.start?.date,
+        };
+      });
+    },
+    [settings, user]
+  );
 
   return {
     connected,

@@ -2,15 +2,16 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHabits } from "../../hooks/useHabits";
 import { getWeekDays } from "../../lib/weekUtils";
-import { Settings2, X } from 'lucide-react';
+import { Settings2, X } from "lucide-react";
 import Checkbox from "@mui/material/Checkbox";
 
 export default function HabitTracker({ weekId }) {
-  const { habits, logs, loading, toggleDay, createHabit, removeHabit } = useHabits(weekId);
+  const { habits, logs, loading, toggleDay, createHabit, removeHabit } =
+    useHabits(weekId);
   const { t, i18n } = useTranslation();
   const days = getWeekDays(weekId, i18n.language);
   const [newText, setNewText] = useState("");
-  const [adding,  setAdding]  = useState(false);
+  const [adding, setAdding] = useState(false);
 
   async function handleAdd() {
     if (!newText.trim()) return;
@@ -26,7 +27,7 @@ export default function HabitTracker({ weekId }) {
       <div className="habit-head">
         <h3 className="habit-head__title">{t("habitTracker.title")}</h3>
         <button className="btn-icon-nav">
-          <Settings2 onClick={() => setAdding(v => !v)} size={14} />
+          <Settings2 onClick={() => setAdding((v) => !v)} size={14} />
         </button>
       </div>
 
@@ -35,12 +36,14 @@ export default function HabitTracker({ weekId }) {
           <input
             autoFocus
             value={newText}
-            onChange={e => setNewText(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleAdd()}
+            onChange={(e) => setNewText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             placeholder={t("habitTracker.placeholder")}
             className="input"
           />
-          <button onClick={handleAdd} className="btn-ok">OK</button>
+          <button onClick={handleAdd} className="btn-ok">
+            OK
+          </button>
         </div>
       )}
 
@@ -52,7 +55,7 @@ export default function HabitTracker({ weekId }) {
         <div className="habit-table">
           <div className="habit-table__header">
             <div />
-            {days.map(d => (
+            {days.map((d) => (
               <div
                 key={d.iso}
                 className={`habit-table__day${d.isToday ? " habit-table__day--today" : ""}`}
@@ -63,7 +66,7 @@ export default function HabitTracker({ weekId }) {
           </div>
 
           {habits.map((habit, hi) => {
-            const dayLogs  = logs[habit.id] ?? Array(7).fill(false);
+            const dayLogs = logs[habit.id] ?? Array(7).fill(false);
             const doneCount = dayLogs.filter(Boolean).length;
             return (
               <div key={habit.id} className="habit-row">

@@ -4,14 +4,17 @@ const URL = import.meta.env.VITE_SUPABASE_URL;
 const KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = URL && KEY ? createClient(URL, KEY) : null;
 const LOCAL_HABITS = "tracker-habits-v1";
-const LOCAL_LOGS   = "tracker-habit-logs-v1";
+const LOCAL_LOGS = "tracker-habit-logs-v1";
 
 // ── Привычки ──────────────────────────────────────────
 
 export async function loadHabits() {
   if (supabase) {
     const { data, error } = await supabase
-      .from("habits").select("*").eq("active", true).order("created_at");
+      .from("habits")
+      .select("*")
+      .eq("active", true)
+      .order("created_at");
     if (error) throw new Error(error.message);
     return data;
   }
@@ -20,7 +23,9 @@ export async function loadHabits() {
 
 export async function addHabit(habit) {
   if (supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("habits")
       .insert({ ...habit, user_id: user?.id });
@@ -38,7 +43,10 @@ export async function deleteHabit(id) {
     return;
   }
   const all = JSON.parse(localStorage.getItem(LOCAL_HABITS) ?? "[]");
-  localStorage.setItem(LOCAL_HABITS, JSON.stringify(all.filter(h => h.id !== id)));
+  localStorage.setItem(
+    LOCAL_HABITS,
+    JSON.stringify(all.filter((h) => h.id !== id))
+  );
 }
 
 // ── Логи за неделю ────────────────────────────────────
@@ -46,17 +54,21 @@ export async function deleteHabit(id) {
 export async function loadWeekLogs(week) {
   if (supabase) {
     const { data, error } = await supabase
-      .from("habit_logs").select("*").eq("week", week);
+      .from("habit_logs")
+      .select("*")
+      .eq("week", week);
     if (error) throw new Error(error.message);
     return data;
   }
   const all = JSON.parse(localStorage.getItem(LOCAL_LOGS) ?? "[]");
-  return all.filter(l => l.week === week);
+  return all.filter((l) => l.week === week);
 }
 
 export async function upsertLog(habitId, week, days) {
   if (supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("habit_logs")
       .upsert(
@@ -67,7 +79,7 @@ export async function upsertLog(habitId, week, days) {
     return;
   }
   const all = JSON.parse(localStorage.getItem(LOCAL_LOGS) ?? "[]");
-  const idx = all.findIndex(l => l.habit_id === habitId && l.week === week);
+  const idx = all.findIndex((l) => l.habit_id === habitId && l.week === week);
   if (idx >= 0) all[idx] = { habit_id: habitId, week, days };
   else all.push({ habit_id: habitId, week, days });
   localStorage.setItem(LOCAL_LOGS, JSON.stringify(all));

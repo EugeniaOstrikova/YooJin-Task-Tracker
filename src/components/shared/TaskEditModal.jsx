@@ -4,21 +4,28 @@ import { useCategories } from "../../context/CategoriesContext";
 import { X } from "lucide-react";
 import Checkbox from "@mui/material/Checkbox";
 
-export default function TaskEditModal({ task = null, defaultDay = "", weekId = "", onSave, onAdd, onClose }) {
+export default function TaskEditModal({
+  task = null,
+  defaultDay = "",
+  weekId = "",
+  onSave,
+  onAdd,
+  onClose,
+}) {
   const { cats } = useCategories();
   const isEditing = !!task?.id;
   const { t } = useTranslation();
   const [form, setForm] = useState({
-    text:      task?.text      ?? "",
-    cat:       task?.cat       ?? "other",
-    day:       task?.day       ?? defaultDay,
-    duration:  task?.duration  ?? "",
+    text: task?.text ?? "",
+    cat: task?.cat ?? "other",
+    day: task?.day ?? defaultDay,
+    duration: task?.duration ?? "",
     important: task?.important ?? false,
-    urgent:    task?.urgent    ?? false,
-    deadline:  task?.deadline  ?? false,
+    urgent: task?.urgent ?? false,
+    deadline: task?.deadline ?? false,
   });
 
-  const set = (key, val) => setForm(p => ({ ...p, [key]: val }));
+  const set = (key, val) => setForm((p) => ({ ...p, [key]: val }));
 
   async function handleSave() {
     const updates = {
@@ -28,31 +35,35 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
     if (isEditing) {
       await onSave(task.id, updates);
     } else {
-      await onAdd([{
-        id:   `task_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        week: weekId,
-        done: false,
-        ...updates,
-      }]);
+      await onAdd([
+        {
+          id: `task_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+          week: weekId,
+          done: false,
+          ...updates,
+        },
+      ]);
     }
     onClose();
   }
 
   const priorities = [
-    { key: "p_high",      imp: true,  urg: true  },
-    { key: "p_important", imp: true,  urg: false },
-    { key: "p_urgent",    imp: false, urg: true  },
-    { key: "p_normal",    imp: false, urg: false },
+    { key: "p_high", imp: true, urg: true },
+    { key: "p_important", imp: true, urg: false },
+    { key: "p_urgent", imp: false, urg: true },
+    { key: "p_normal", imp: false, urg: false },
   ];
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-container task-edit-modal" onClick={e => e.stopPropagation()}>
-
+      <div
+        className="modal-container task-edit-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <span className="modal-title">
             {isEditing ? t("taskEdit.title") : t("taskEdit.createTitle")}
-        </span>
+          </span>
           <button className="btn-ghost" onClick={onClose}>
             <X size={16} />
           </button>
@@ -64,16 +75,22 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
             className="textarea"
             rows={2}
             value={form.text}
-            onChange={e => set("text", e.target.value)}
+            onChange={(e) => set("text", e.target.value)}
           />
         </div>
 
         <div className="task-edit-grid">
           <div className="field">
             <label className="field-label">{t("taskEdit.categoryLabel")}</label>
-            <select className="select" value={form.cat} onChange={e => set("cat", e.target.value)}>
+            <select
+              className="select"
+              value={form.cat}
+              onChange={(e) => set("cat", e.target.value)}
+            >
               {Object.entries(cats).map(([id, c]) => (
-                <option key={id} value={id}>{c.label}</option>
+                <option key={id} value={id}>
+                  {c.label}
+                </option>
               ))}
             </select>
           </div>
@@ -84,7 +101,7 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
               className="input"
               type="date"
               value={form.day}
-              onChange={e => set("day", e.target.value)}
+              onChange={(e) => set("day", e.target.value)}
             />
           </div>
 
@@ -96,7 +113,7 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
               step="0.5"
               min="0"
               value={form.duration}
-              onChange={e => set("duration", e.target.value)}
+              onChange={(e) => set("duration", e.target.value)}
               placeholder="2"
             />
           </div>
@@ -105,15 +122,29 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
         {/* Срочно */}
         <div className="field">
           <label className="field-label">Срочно</label>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 4,
+            }}
+          >
             <input
               type="checkbox"
               id="urgent-cb"
               checked={form.urgent}
-              onChange={e => set("urgent", e.target.checked)}
-              style={{ width: 16, height: 16, accentColor: "var(--c-priority-urgent)" }}
+              onChange={(e) => set("urgent", e.target.checked)}
+              style={{
+                width: 16,
+                height: 16,
+                accentColor: "var(--c-priority-urgent)",
+              }}
             />
-            <label htmlFor="urgent-cb" style={{ fontSize: 13, color: "var(--c-ink)" }}>
+            <label
+              htmlFor="urgent-cb"
+              style={{ fontSize: 13, color: "var(--c-ink)" }}
+            >
               Критичный дедлайн
             </label>
           </div>
@@ -124,10 +155,10 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
           <label className="field-label">Тип задачи</label>
           <div className="priority-grid">
             {[
-              { value: null,    label: "Обычная" },
+              { value: null, label: "Обычная" },
               { value: "heavy", label: "🔥 Тяжёлая" },
-              { value: "light", label: "⚡ Лёгкая"  },
-            ].map(p => (
+              { value: "light", label: "⚡ Лёгкая" },
+            ].map((p) => (
               <button
                 key={String(p.value)}
                 className={`priority-btn${form.effort === p.value ? " is-active" : ""}`}
@@ -139,10 +170,13 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
           </div>
         </div>
 
-        <div className="field" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div
+          className="field"
+          style={{ display: "flex", alignItems: "center", gap: 10 }}
+        >
           <Checkbox
             checked={form.deadline}
-            onChange={e => set("deadline", e.target.checked)}
+            onChange={(e) => set("deadline", e.target.checked)}
             size="small"
             id="deadline-cb"
             sx={{
@@ -151,7 +185,11 @@ export default function TaskEditModal({ task = null, defaultDay = "", weekId = "
               "&.Mui-checked": { color: "var(--c-accent)" },
             }}
           />
-          <label htmlFor="deadline-cb" className="field-label" style={{ margin: 0 }}>
+          <label
+            htmlFor="deadline-cb"
+            className="field-label"
+            style={{ margin: 0 }}
+          >
             {t("taskEdit.deadlineLabel")}
           </label>
         </div>

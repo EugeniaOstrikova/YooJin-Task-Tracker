@@ -13,7 +13,7 @@ export async function loadWeekGoals(week) {
       .eq("week", week)
       .maybeSingle();
     return {
-      goals:      data?.goals      ?? [],
+      goals: data?.goals ?? [],
       goals_done: data?.goals_done ?? [],
     };
   }

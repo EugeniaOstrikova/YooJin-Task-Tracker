@@ -15,7 +15,15 @@ export default function CategoryTag({ cat, small = false }) {
         gap: 4,
       }}
     >
-      <span style={{ width: 6, height: 6, borderRadius: "50%", background: c.dot, flexShrink: 0 }} />
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: c.dot,
+          flexShrink: 0,
+        }}
+      />
       {c.label}
     </span>
   );

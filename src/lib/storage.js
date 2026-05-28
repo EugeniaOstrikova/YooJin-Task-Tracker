@@ -10,7 +10,10 @@ const LOCAL_KEY = "weekly-tracker-tasks-v1";
 
 export async function loadTasks() {
   if (supabase) {
-    const { data, error } = await supabase.from("tasks").select("*").order("created_at");
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .order("created_at");
     if (error) throw new Error(error.message);
     return data;
   }
@@ -20,15 +23,24 @@ export async function loadTasks() {
 export async function upsertTasks(tasks) {
   if (!tasks?.length) return;
   if (supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
-    const withUser = tasks.map(t => ({ ...t, user_id: t.user_id ?? user?.id }));
-    const { error } = await supabase.from("tasks").upsert(withUser, { onConflict: "id" });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const withUser = tasks.map((t) => ({
+      ...t,
+      user_id: t.user_id ?? user?.id,
+    }));
+    const { error } = await supabase
+      .from("tasks")
+      .upsert(withUser, { onConflict: "id" });
     if (error) throw new Error(error.message);
     return;
   }
   const existing = _localLoad();
-  const map = Object.fromEntries(existing.map(t => [t.id, t]));
-  tasks.forEach(t => { map[t.id] = { ...map[t.id], ...t }; });
+  const map = Object.fromEntries(existing.map((t) => [t.id, t]));
+  tasks.forEach((t) => {
+    map[t.id] = { ...map[t.id], ...t };
+  });
   _localSave(Object.values(map));
 }
 
@@ -38,7 +50,7 @@ export async function patchTask(id, updates) {
     if (error) throw new Error(error.message);
     return;
   }
-  _localSave(_localLoad().map(t => t.id === id ? { ...t, ...updates } : t));
+  _localSave(_localLoad().map((t) => (t.id === id ? { ...t, ...updates } : t)));
 }
 
 export async function deleteTask(id) {
@@ -47,7 +59,7 @@ export async function deleteTask(id) {
     if (error) throw new Error(error.message);
     return;
   }
-  _localSave(_localLoad().filter(t => t.id !== id));
+  _localSave(_localLoad().filter((t) => t.id !== id));
 }
 
 export async function replaceTasks(tasks) {
@@ -60,8 +72,11 @@ export async function replaceTasks(tasks) {
 }
 
 function _localLoad() {
-  try { return JSON.parse(localStorage.getItem(LOCAL_KEY) ?? "[]"); }
-  catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(LOCAL_KEY) ?? "[]");
+  } catch {
+    return [];
+  }
 }
 
 function _localSave(tasks) {

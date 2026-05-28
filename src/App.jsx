@@ -1,40 +1,45 @@
 import { useState } from "react";
-import { useTasks }       from "./hooks/useTasks";
+import { useTasks } from "./hooks/useTasks";
 import { getCurrentWeekId } from "./lib/weekUtils";
-import TopNav             from "./components/shared/TopNav";
-import ImportModal        from "./components/shared/ImportModal";
-import WeekView           from "./components/WeekView";
-import TrimesterView      from "./components/TrimesterView";
+import TopNav from "./components/shared/TopNav";
+import ImportModal from "./components/shared/ImportModal";
+import WeekView from "./components/WeekView";
+import ChapterView from "./components/ChapterView";
 import ColorLegend from "./components/shared/ColorLegend";
 import StatsView from "./components/StatsView";
 import ReviewView from "./components/ReviewView";
 import { CategoriesProvider } from "./context/CategoriesContext";
-import { useAuth }      from "./hooks/useAuth";
-import LoginScreen      from "./components/Auth/LoginScreen";
+import { useAuth } from "./hooks/useAuth";
+import LoginScreen from "./components/Auth/LoginScreen";
 import { signOut } from "./lib/auth";
 import GoalsView from "./components/GoalsView";
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
-  const { 
-    tasks, loading, error, 
-    toggleDone, importTasks, 
-    restoreFromJson, exportTasks, 
-    updateTaskLocally, saveTask } = useTasks();
+  const {
+    tasks,
+    loading,
+    error,
+    toggleDone,
+    importTasks,
+    restoreFromJson,
+    exportTasks,
+    updateTaskLocally,
+    saveTask,
+  } = useTasks();
 
-  const [view,        setView]        = useState("week");
-  const [weekId,      setWeekId]      = useState(getCurrentWeekId);
-  const [showImport,  setShowImport]  = useState(false);
+  const [view, setView] = useState("week");
+  const [weekId, setWeekId] = useState(getCurrentWeekId);
+  const [showImport, setShowImport] = useState(false);
 
   function handleNavigateWeek(id) {
     setWeekId(id);
     setView("week");
   }
-  
-  if (authLoading) return (
-    <div className="screen-auth-loading">Загрузка...</div>
-  );
-  if (error)   return <div className="screen-error">Ошибка: {error}</div>;
+
+  if (authLoading)
+    return <div className="screen-auth-loading">Загрузка...</div>;
+  if (error) return <div className="screen-error">Ошибка: {error}</div>;
 
   if (!user) return <LoginScreen />;
 
@@ -50,7 +55,7 @@ export default function App() {
         />
         <ColorLegend />
 
-        {view === "week" &&
+        {view === "week" && (
           <WeekView
             weekId={weekId}
             onWeekChange={setWeekId}
@@ -59,17 +64,20 @@ export default function App() {
             onUpdateTask={saveTask}
             onAddTask={importTasks}
           />
-        }
-        {view === "trimester" &&
+        )}
+        {/* {view === "trimester" &&
           <TrimesterView
             tasks={tasks}
             onToggle={toggleDone}
             onNavigateWeek={handleNavigateWeek}
             currentWeekId={weekId}
           />
-        }
-        {view === "stats"  && <StatsView tasks={tasks} currentWeekId={weekId} />}
-        {view === "review" && <ReviewView tasks={tasks} onTaskUpdate={updateTaskLocally} />}
+        } */}
+        {view === "chapter" && <ChapterView />}
+        {view === "stats" && <StatsView tasks={tasks} currentWeekId={weekId} />}
+        {view === "review" && (
+          <ReviewView tasks={tasks} onTaskUpdate={updateTaskLocally} />
+        )}
         {view === "goals" && <GoalsView />}
 
         {showImport && (

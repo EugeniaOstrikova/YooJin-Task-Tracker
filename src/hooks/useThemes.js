@@ -8,26 +8,36 @@ export function useThemes() {
     loadThemes().then(setThemes).catch(console.error);
   }, []);
 
-  const addTheme = useCallback(async (name) => {
-    const trimmed = name.trim();
-    if (!trimmed) return null;
-    const existing = themes.find(t => t.name.toLowerCase() === trimmed.toLowerCase());
-    if (existing) return existing;
-    const theme = await createTheme(trimmed);
-    setThemes(prev => [...prev, theme].sort((a, b) => a.name.localeCompare(b.name)));
-    return theme;
-  }, [themes]);
+  const addTheme = useCallback(
+    async (name) => {
+      const trimmed = name.trim();
+      if (!trimmed) return null;
+      const existing = themes.find(
+        (t) => t.name.toLowerCase() === trimmed.toLowerCase()
+      );
+      if (existing) return existing;
+      const theme = await createTheme(trimmed);
+      setThemes((prev) =>
+        [...prev, theme].sort((a, b) => a.name.localeCompare(b.name))
+      );
+      return theme;
+    },
+    [themes]
+  );
 
   const removeTheme = useCallback(async (id) => {
     await deleteTheme(id);
-    setThemes(prev => prev.filter(t => t.id !== id));
+    setThemes((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadThemes()
-      .then(data => { setThemes(data); setLoading(false); })
+      .then((data) => {
+        setThemes(data);
+        setLoading(false);
+      })
       .catch(console.error);
   }, []);
 

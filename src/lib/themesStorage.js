@@ -8,7 +8,9 @@ const LOCAL_KEY = "tracker-themes-v1";
 export async function loadThemes() {
   if (supabase) {
     const { data, error } = await supabase
-      .from("themes").select("*").order("name");
+      .from("themes")
+      .select("*")
+      .order("name");
     if (error) throw new Error(error.message);
     return data;
   }
@@ -34,5 +36,8 @@ export async function deleteTheme(id) {
     return;
   }
   const all = JSON.parse(localStorage.getItem(LOCAL_KEY) ?? "[]");
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(all.filter(t => t.id !== id)));
+  localStorage.setItem(
+    LOCAL_KEY,
+    JSON.stringify(all.filter((t) => t.id !== id))
+  );
 }

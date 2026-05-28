@@ -5,18 +5,23 @@ import { formatWeekRange, isCycleWeek } from "../../lib/weekUtils";
 export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
   const { t, i18n } = useTranslation();
   const isCycle = isCycleWeek(weekId);
-  const done    = tasks.filter(task => task.done).length;
-  const total   = tasks.length;
-  const pct     = total ? Math.round((done / total) * 100) : 0;
+  const done = tasks.filter((task) => task.done).length;
+  const total = tasks.length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
   const allDone = total > 0 && done === total;
 
   return (
-    <div className={`week-block${isCycle ? " week-block--cycle" : ""}${allDone ? " week-block--done" : ""}`}>
-
-      <div className={`week-block__head${isCycle ? " week-block__head--cycle" : ""}`}>
+    <div
+      className={`week-block${isCycle ? " week-block--cycle" : ""}${allDone ? " week-block--done" : ""}`}
+    >
+      <div
+        className={`week-block__head${isCycle ? " week-block__head--cycle" : ""}`}
+      >
         <button onClick={() => onNavigate(weekId)} className="week-block__nav">
           <span className="week-block__id">{weekId}</span>
-          <span className="week-block__range">{formatWeekRange(weekId, i18n.language)}</span>
+          <span className="week-block__range">
+            {formatWeekRange(weekId, i18n.language)}
+          </span>
         </button>
 
         {isCycle && <span className="badge--cycle-sm">🌀 цикл</span>}
@@ -30,19 +35,23 @@ export default function WeekBlock({ weekId, tasks, onToggle, onNavigate }) {
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className={`week-block__count${allDone ? " week-block__count--done" : ""}`}>
+              <span
+                className={`week-block__count${allDone ? " week-block__count--done" : ""}`}
+              >
                 {done}/{total}
               </span>
             </>
           )}
-          {total === 0 && <span className="week-block__no-tasks">{t("trimesterView.noTasks")}</span>}
+          {total === 0 && (
+            <span className="week-block__no-tasks">
+              {t("trimesterView.noTasks")}
+            </span>
+          )}
         </div>
       </div>
 
-      {tasks.map(task => (
-        <TaskCard key={task.id} task={task}
-          onToggle={onToggle} compact
-        />
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task} onToggle={onToggle} compact />
       ))}
     </div>
   );

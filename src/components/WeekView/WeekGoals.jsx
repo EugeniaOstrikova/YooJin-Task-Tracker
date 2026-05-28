@@ -29,7 +29,7 @@ export default function WeekGoals({ weekId }) {
             <Checkbox
               className="goal-cb"
               checked={done[i]}
-              onClick={() => goal && toggleDone(i)} 
+              onClick={() => goal && toggleDone(i)}
               size="small"
             />
 
@@ -37,10 +37,10 @@ export default function WeekGoals({ weekId }) {
               <input
                 autoFocus
                 value={draft}
-                onChange={e => setDraft(e.target.value)}
+                onChange={(e) => setDraft(e.target.value)}
                 onBlur={() => commitEdit(i)}
-                onKeyDown={e => {
-                  if (e.key === "Enter")  commitEdit(i);
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitEdit(i);
                   if (e.key === "Escape") setEditingIndex(null);
                 }}
                 placeholder={t("weekGoals.goalPlaceholder", { num: i + 1 })}

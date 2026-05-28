@@ -7,12 +7,21 @@ const LOCAL_KEY = "tracker-categories-v1";
 
 export async function loadCategories() {
   const DEFAULT_CATS = [
-    { id: "other",   label: "other",   dot: "#94A3B8", bg: "#F1F5F9", color: "#475569", sort: 0 },
+    {
+      id: "other",
+      label: "other",
+      dot: "#94A3B8",
+      bg: "#F1F5F9",
+      color: "#475569",
+      sort: 0,
+    },
   ];
 
   if (supabase) {
     const { data, error } = await supabase
-      .from("categories").select("*").order("sort");
+      .from("categories")
+      .select("*")
+      .order("sort");
     if (error) throw new Error(error.message);
     return data?.length ? data : DEFAULT_CATS;
   }
@@ -22,7 +31,9 @@ export async function loadCategories() {
 
 export async function upsertCategory(cat) {
   if (supabase) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("categories")
       .upsert({ ...cat, user_id: user?.id }, { onConflict: "id" });
@@ -30,8 +41,9 @@ export async function upsertCategory(cat) {
     return;
   }
   const all = JSON.parse(localStorage.getItem(LOCAL_KEY) ?? "[]");
-  const idx = all.findIndex(c => c.id === cat.id);
-  if (idx >= 0) all[idx] = cat; else all.push(cat);
+  const idx = all.findIndex((c) => c.id === cat.id);
+  if (idx >= 0) all[idx] = cat;
+  else all.push(cat);
   localStorage.setItem(LOCAL_KEY, JSON.stringify(all));
 }
 
@@ -42,5 +54,8 @@ export async function deleteCategory(id) {
     return;
   }
   const all = JSON.parse(localStorage.getItem(LOCAL_KEY) ?? "[]");
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(all.filter(c => c.id !== id)));
+  localStorage.setItem(
+    LOCAL_KEY,
+    JSON.stringify(all.filter((c) => c.id !== id))
+  );
 }

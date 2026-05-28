@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 import { signIn } from "../../lib/auth";
 
 export default function LoginScreen() {
-  const [email,    setEmail]    = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error,    setError]    = useState("");
-  const [loading,  setLoading]  = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
 
   async function handleSubmit(e) {
@@ -36,7 +36,7 @@ export default function LoginScreen() {
             <input
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="input"
             />
@@ -47,15 +47,13 @@ export default function LoginScreen() {
             <input
               type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
               className="input"
             />
           </div>
 
-          {error && (
-            <div className="alert alert--error">{error}</div>
-          )}
+          {error && <div className="alert alert--error">{error}</div>}
 
           <button
             type="submit"
