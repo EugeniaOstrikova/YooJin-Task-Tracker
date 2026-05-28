@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { useChapters } from "../../hooks/useChapter";
 import { upsertTarget, upsertTactic } from "../../lib/chaptersStorage";
@@ -10,16 +11,17 @@ import {
 import {
   getCurrentWeekId,
   getWeeksBetween,
-  formatWeekRange,
 } from "../../lib/weekUtils";
 import CreateChapterModal from "./CreateChapterModal";
 import ChapterDetail from "./ChapterDetail";
 
-function ChapterCard({ chapter, tasks, tactics, onClick }) {
+function ChapterCard({ chapter, tasks, onClick }) {
+  const { t } = useTranslation();
   const current = getCurrentWeekId();
   const weeks = getWeeksBetween(chapter.start_week, getChapterEndWeek(chapter));
   const weekNum = weeks.indexOf(current) + 1;
-  const score = calcExecutionScore(chapter, tactics, tasks);
+  const score = calcExecutionScore(chapter, [], tasks);
+  const isActive = weekNum > 0 && weekNum <= chapter.duration_weeks;
 
   return (
     <div
@@ -27,50 +29,27 @@ function ChapterCard({ chapter, tasks, tactics, onClick }) {
       onClick={onClick}
       style={{ cursor: "pointer", borderTop: "3px solid var(--c-teal)" }}
     >
-      <div
-        style={{
-          fontSize: 15,
-          fontWeight: 700,
-          color: "var(--c-ink)",
-          marginBottom: 4,
-        }}
-      >
-        {chapter.title}
-      </div>
-      <div style={{ fontSize: 12, color: "var(--c-dim)", marginBottom: 12 }}>
-        {chapter.start_week} · {chapter.duration_weeks} недель
-        {weekNum > 0 && weekNum <= chapter.duration_weeks && (
-          <span style={{ color: "var(--c-teal)", fontWeight: 600 }}>
-            {" "}
-            · Неделя {weekNum} из {chapter.duration_weeks}
+      <div className="chapter-card__title">{chapter.title}</div>
+      <div className="chapter-card__meta">
+        {chapter.start_week} · {t("chapter.weeksCount", { n: chapter.duration_weeks })}
+        {isActive && (
+          <span className="chapter-card__meta-active">
+            {" "}· {t("chapter.weekOf", { num: weekNum, total: chapter.duration_weeks })}
           </span>
         )}
       </div>
 
       {score && (
         <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 4,
-            }}
-          >
-            <span style={{ fontSize: 11, color: "var(--c-dim)" }}>
-              Execution Score
-            </span>
-            <span
-              style={{ fontSize: 11, fontWeight: 700, color: "var(--c-teal)" }}
-            >
+          <div className="chapter-card__score-row">
+            <span className="chapter-card__score-label">{t("chapter.executionScore")}</span>
+            <span className="chapter-card__score-value">
               {Math.round(score.score * 100)}% · {score.passed}/{score.total}{" "}
-              недель
+              {t("chapter.weeksShort")}
             </span>
           </div>
           <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${score.score * 100}%` }}
-            />
+            <div className="progress-fill" style={{ width: `${score.score * 100}%` }} />
           </div>
         </div>
       )}
@@ -79,6 +58,7 @@ function ChapterCard({ chapter, tasks, tactics, onClick }) {
 }
 
 export default function ChapterView() {
+  const { t } = useTranslation();
   const { chapters, loading, saveChapter, removeChapter } = useChapters();
   const { tasks } = useTasks();
   const [creating, setCreating] = useState(false);
@@ -86,11 +66,11 @@ export default function ChapterView() {
 
   async function handleCreate({ chapter, targets, tactics }) {
     await saveChapter(chapter);
-    for (const t of targets) await upsertTarget(t);
-    for (const t of tactics) await upsertTactic(t);
+    for (const tg of targets) await upsertTarget(tg);
+    for (const tac of tactics) await upsertTactic(tac);
   }
 
-  if (loading) return <div className="screen-loading">Загрузка...</div>;
+  if (loading) return <div className="screen-loading">{t("review.loading")}</div>;
 
   if (selected) {
     return (
@@ -107,54 +87,30 @@ export default function ChapterView() {
   }
 
   return (
-    <div style={{ padding: "20px 20px 40px", maxWidth: 800, margin: "0 auto" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
+    <div className="chapter-view">
+      <div className="chapter-view__header">
         <div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: "var(--c-ink)" }}>
-            Chapters
-          </div>
-          <div style={{ fontSize: 13, color: "var(--c-dim)", marginTop: 2 }}>
-            12-недельные блоки фокуса
-          </div>
+          <div className="chapter-view__title">{t("chapter.listTitle")}</div>
+          <div className="chapter-view__subtitle">{t("chapter.listSubtitle")}</div>
         </div>
-        <button
-          className="btn-primary"
-          style={{ display: "flex", alignItems: "center", gap: 6 }}
-          onClick={() => setCreating(true)}
-        >
-          <Plus size={14} /> Новая глава
+        <button className="btn-primary btn--icon" onClick={() => setCreating(true)}>
+          <Plus size={14} /> {t("chapter.create.newBtn")}
         </button>
       </div>
 
       {chapters.length === 0 ? (
         <div className="empty--center">
-          Нет глав.
+          {t("chapter.listEmpty")}
           <br />
-          <span style={{ fontSize: 12 }}>
-            Создай первую 12-недельную главу.
-          </span>
+          <span style={{ fontSize: 12 }}>{t("chapter.listEmptyHint")}</span>
         </div>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-            gap: 12,
-          }}
-        >
+        <div className="chapter-grid">
           {chapters.map((ch) => (
             <ChapterCard
               key={ch.id}
               chapter={ch}
               tasks={tasks}
-              tactics={[]}
               onClick={() => setSelected(ch)}
             />
           ))}

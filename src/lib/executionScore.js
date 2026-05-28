@@ -2,36 +2,29 @@ import { getWeeksBetween, getCurrentWeekId, getNextWeekId } from "./weekUtils";
 
 // Счёт одной тактики за неделю
 export function calcTacticScore(tactic, weekTasks) {
-  const taggedDone = weekTasks.filter(
-    (t) => t.tactic_tag === tactic.tag && t.done
+  const doneTasks = weekTasks.filter(
+    (t) => t.tactic_id === tactic.id && t.done // ← проверь что именно tactic_id
   );
 
   const { target_sessions, target_hours, target_count } = tactic;
 
-  // sessions + hours
   if (target_sessions && target_hours) {
-    const sessionsScore = Math.min(taggedDone.length / target_sessions, 1);
+    const sessionsScore = Math.min(doneTasks.length / target_sessions, 1);
     const hoursScore = Math.min(
-      taggedDone.reduce((s, t) => s + (t.actual_duration ?? 0), 0) /
+      doneTasks.reduce((s, t) => s + (t.actual_duration ?? 0), 0) /
         target_hours,
       1
     );
     return (sessionsScore + hoursScore) / 2;
   }
-
-  // только часы
   if (target_hours) {
-    const actual = taggedDone.reduce((s, t) => s + (t.actual_duration ?? 0), 0);
+    const actual = doneTasks.reduce((s, t) => s + (t.actual_duration ?? 0), 0);
     return Math.min(actual / target_hours, 1);
   }
-
-  // количество
   if (target_count) {
-    return Math.min(taggedDone.length / target_count, 1);
+    return Math.min(doneTasks.length / target_count, 1);
   }
-
-  // binary
-  return taggedDone.length > 0 ? 1 : 0;
+  return doneTasks.length > 0 ? 1 : 0;
 }
 
 // Счёт недели (среднее по всем тактикам)

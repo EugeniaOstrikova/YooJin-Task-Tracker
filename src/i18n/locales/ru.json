@@ -146,5 +146,74 @@
   },
   "label": {
     "other": "Другое"
+  },
+  "chapter": {
+    "listTitle": "Chapters",
+    "listSubtitle": "12-недельные блоки фокуса",
+    "listEmpty": "Нет глав.",
+    "listEmptyHint": "Создай первую 12-недельную главу.",
+    "weekOf": "Неделя {{num}} из {{total}}",
+    "weeksCount": "{{n}} недель",
+    "weeksShort": "недель",
+    "executionScore": "Execution Score",
+    "addTargetBtn": "Ориентир",
+    "thisWeek": "% этой недели",
+    "backBtn": "Все главы",
+    "progress": {
+      "title": "Прогресс текущей недели",
+      "titleWeek": "Прогресс {{week}}",
+      "passed": "✓ зачтена",
+      "needed": "нужно ещё {{pct}}%"
+    },
+    "target": {
+      "noTactics": "Нет тактик",
+      "editTitle": "Редактировать ориентир",
+      "newTitle": "Новый ориентир",
+      "fieldName": "Название",
+      "fieldNamePlaceholder": "Например: Выпустить трек",
+      "fieldDirection": "Life Direction",
+      "noDirection": "— без направления —",
+      "sectionTactics": "Тактики",
+      "sectionCheckpoints": "Контрольные точки",
+      "addCheckpoint": "Добавить контрольную точку",
+      "checkpointPlaceholder": "Название",
+      "saveBtn": "Сохранить",
+      "addBtn": "Добавить ориентир"
+    },
+    "tactic": {
+      "addBtn": "Добавить тактику",
+      "placeholder": "Название тактики",
+      "type_sessions_hours": "Сессии + часы",
+      "type_hours": "Часы",
+      "type_count": "Количество",
+      "ph_sessions": "сессий",
+      "ph_hours": "часов",
+      "ph_hours_week": "часов в неделю",
+      "ph_count": "раз в неделю",
+      "prog_sessions": "{{actual}}/{{target}} сессий · {{hours}}/{{targetHours}} ч",
+      "prog_hours": "{{hours}}/{{targetHours}} ч",
+      "prog_count": "{{count}}/{{target}} раз"
+    },
+    "create": {
+      "newBtn": "Новая глава",
+      "titleStep1": "Новая глава",
+      "titleStep2": "Ориентиры и тактики",
+      "fieldTitle": "Название главы",
+      "fieldTitlePlaceholder": "Например: Весна 2026",
+      "fieldStart": "Начало (выбери дату)",
+      "fieldDuration": "Длительность (недель)",
+      "nextBtn": "Далее →",
+      "backBtn": "← Назад",
+      "createBtn": "Создать главу",
+      "targetPlaceholder": "Ориентир {{num}}",
+      "addTargetBtn": "Добавить ориентир"
+    },
+    "timeline": {
+      "title": "Timeline · {{weeks}} нед.",
+      "current": "W{{num}} · Сейчас",
+      "next": "W{{num}} · Следующая",
+      "noData": "Нет данных",
+      "execution": "Execution: {{pct}}%"
+    }
   }
 }

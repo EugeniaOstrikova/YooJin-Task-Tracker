@@ -146,5 +146,74 @@
   },
   "label": {
     "other": "기타"
+  },
+  "chapter": {
+    "listTitle": "챕터",
+    "listSubtitle": "12주 집중 블록",
+    "listEmpty": "챕터가 없습니다.",
+    "listEmptyHint": "첫 12주 챕터를 만들어 보세요.",
+    "weekOf": "{{total}}주 중 {{num}}주차",
+    "weeksCount": "{{n}}주",
+    "weeksShort": "주",
+    "executionScore": "실행 점수",
+    "addTargetBtn": "목표",
+    "thisWeek": "% 이번 주",
+    "backBtn": "모든 챕터",
+    "progress": {
+      "title": "이번 주 진행률",
+      "titleWeek": "{{week}} 진행률",
+      "passed": "✓ 통과",
+      "needed": "{{pct}}% 더 필요"
+    },
+    "target": {
+      "noTactics": "전술 없음",
+      "editTitle": "목표 수정",
+      "newTitle": "새 목표",
+      "fieldName": "이름",
+      "fieldNamePlaceholder": "예: 트랙 발매",
+      "fieldDirection": "Life Direction",
+      "noDirection": "— 방향 없음 —",
+      "sectionTactics": "전술",
+      "sectionCheckpoints": "체크포인트",
+      "addCheckpoint": "체크포인트 추가",
+      "checkpointPlaceholder": "이름",
+      "saveBtn": "저장",
+      "addBtn": "목표 추가"
+    },
+    "tactic": {
+      "addBtn": "전술 추가",
+      "placeholder": "전술 이름",
+      "type_sessions_hours": "세션 + 시간",
+      "type_hours": "시간",
+      "type_count": "횟수",
+      "ph_sessions": "세션",
+      "ph_hours": "시간",
+      "ph_hours_week": "시간/주",
+      "ph_count": "회/주",
+      "prog_sessions": "{{actual}}/{{target}}세션 · {{hours}}/{{targetHours}}h",
+      "prog_hours": "{{hours}}/{{targetHours}}h",
+      "prog_count": "{{count}}/{{target}}회"
+    },
+    "create": {
+      "newBtn": "새 챕터",
+      "titleStep1": "새 챕터",
+      "titleStep2": "목표 및 전술",
+      "fieldTitle": "챕터 이름",
+      "fieldTitlePlaceholder": "예: 봄 2026",
+      "fieldStart": "시작일 선택",
+      "fieldDuration": "기간 (주)",
+      "nextBtn": "다음 →",
+      "backBtn": "← 뒤로",
+      "createBtn": "챕터 만들기",
+      "targetPlaceholder": "목표 {{num}}",
+      "addTargetBtn": "목표 추가"
+    },
+    "timeline": {
+      "title": "타임라인 · {{weeks}}주",
+      "current": "W{{num}} · 현재",
+      "next": "W{{num}} · 다음",
+      "noData": "데이터 없음",
+      "execution": "실행률: {{pct}}%"
+    }
   }
 }

@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { ArrowLeft, Trash2, CheckCircle2, Circle } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { ArrowLeft, Trash2, Plus } from "lucide-react";
 import { useChapterDetail } from "../../hooks/useChapter";
+import WeekTimeline from "./WeekTimeline";
+import TargetCard from "./TargetCard";
+import TargetModal from "./TargetModal";
 import {
   calcWeekScore,
   calcExecutionScore,
@@ -11,243 +15,120 @@ import {
   getCurrentWeekId,
   formatWeekRange,
 } from "../../lib/weekUtils";
-
-function TacticRow({ tactic, weekTasks }) {
-  const score = calcTacticScore(tactic, weekTasks);
-  const pct = Math.round(score * 100);
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "5px 0",
-        borderBottom: "1px solid var(--c-border)",
-      }}
-    >
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 12, fontWeight: 500, color: "var(--c-ink)" }}>
-          {tactic.text}
-        </div>
-        <div style={{ fontSize: 10, color: "var(--c-dim)" }}>#{tactic.tag}</div>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <div
-          style={{
-            width: 60,
-            height: 3,
-            background: "var(--c-border)",
-            borderRadius: 2,
-          }}
-        >
-          <div
-            style={{
-              height: "100%",
-              borderRadius: 2,
-              background:
-                pct >= 85
-                  ? "var(--c-ok)"
-                  : pct > 0
-                    ? "var(--c-teal)"
-                    : "var(--c-border)",
-              width: `${pct}%`,
-            }}
-          />
-        </div>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: pct >= 85 ? "var(--c-ok)" : "var(--c-mid)",
-            minWidth: 30,
-            textAlign: "right",
-          }}
-        >
-          {pct}%
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function TargetCard({ target, tactics, tasks, currentWeek }) {
-  const targetTactics = tactics.filter((t) => t.target_id === target.id);
-  const weekTasks = tasks.filter((t) => t.week === currentWeek);
-
-  return (
-    <div className="card" style={{ borderTop: "2px solid var(--c-teal)" }}>
-      <div
-        style={{
-          fontSize: 14,
-          fontWeight: 700,
-          color: "var(--c-ink)",
-          marginBottom: 12,
-        }}
-      >
-        {target.title}
-      </div>
-      {targetTactics.map((tac) => (
-        <TacticRow key={tac.id} tactic={tac} weekTasks={weekTasks} />
-      ))}
-      {targetTactics.length === 0 && <div className="empty">Нет тактик</div>}
-    </div>
-  );
-}
-
-function WeekBlock({
-  weekId,
-  weekNum,
-  score,
-  checkpoints,
-  isCurrent,
-  isPast,
-  onNavigate,
-}) {
-  const pct = score != null ? Math.round(score * 100) : null;
-  const chk = checkpoints.filter((c) => c.target_week === weekId);
-
-  return (
-    <div
-      onClick={() => onNavigate(weekId)}
-      style={{
-        flex: "1 1 0",
-        minWidth: 0,
-        padding: "8px 6px",
-        borderRadius: "var(--r-md)",
-        cursor: "pointer",
-        background: isCurrent ? "var(--c-teal-bg)" : "var(--c-bg)",
-        border: isCurrent
-          ? "1.5px solid var(--c-teal-bd)"
-          : "1px solid var(--c-border)",
-        opacity: !isPast && !isCurrent ? 0.6 : 1,
-        textAlign: "center",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: isCurrent ? "var(--c-teal)" : "var(--c-dim)",
-        }}
-      >
-        W{weekNum}
-      </div>
-      {pct != null && (
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color:
-              pct >= 85
-                ? "var(--c-ok)"
-                : pct > 0
-                  ? "var(--c-mid)"
-                  : "var(--c-faint)",
-          }}
-        >
-          {pct}%
-        </div>
-      )}
-      {chk.length > 0 && (
-        <div style={{ fontSize: 9, color: "var(--c-teal)", marginTop: 2 }}>
-          ●
-        </div>
-      )}
-    </div>
-  );
-}
+import { useGoals } from "../../hooks/useGoals";
 
 export default function ChapterDetail({ chapter, tasks, onBack, onDelete }) {
-  const { targets, tactics, checkpoints, loading, saveCheckpoint } =
-    useChapterDetail(chapter.id);
+  const { t } = useTranslation();
+  const {
+    targets,
+    tactics,
+    checkpoints,
+    loading,
+    saveTarget,
+    saveTactic,
+    removeTactic,
+    saveCheckpoint,
+    removeCheckpoint,
+  } = useChapterDetail(chapter.id);
+
   const currentWeek = getCurrentWeekId();
   const endWeek = getChapterEndWeek(chapter);
   const weeks = getWeeksBetween(chapter.start_week, endWeek);
   const weekNum = weeks.indexOf(currentWeek) + 1;
   const score = calcExecutionScore(chapter, tactics, tasks);
 
-  if (loading) return <div className="screen-loading">Загрузка...</div>;
+  const [editingTarget, setEditingTarget] = useState(null);
+  const [selectedWeek, setSelectedWeek] = useState(currentWeek);
+
+  const { goals } = useGoals();
+
+  const currentWeekTasks = tasks.filter((t) => t.week === selectedWeek);
+  const weekScore = calcWeekScore(tactics, currentWeekTasks);
+  const weekPct = weekScore != null ? Math.round(weekScore * 100) : null;
+  const weekPassed = weekPct != null && weekPct >= 85;
+  const progressVariant = weekPassed ? "ok" : weekPct >= 50 ? "warning" : "missed";
+
+  if (loading) return <div className="screen-loading">{t("review.loading")}</div>;
+
+  function openNewTarget() {
+    setEditingTarget({
+      id: `target_${Date.now()}`,
+      chapter_id: chapter.id,
+      title: "",
+      life_direction_id: null,
+      sort: targets.length,
+    });
+  }
 
   return (
-    <div style={{ padding: "20px 20px 40px" }}>
-      {/* Навигация */}
-      <button
-        className="btn-ghost"
-        onClick={onBack}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          marginBottom: 20,
-          color: "var(--c-mid)",
-        }}
-      >
-        <ArrowLeft size={16} /> Все главы
+    <div className="chapter-detail">
+      <button className="btn-ghost btn-back" onClick={onBack}>
+        <ArrowLeft size={16} /> {t("chapter.backBtn")}
       </button>
 
-      {/* Заголовок */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: 24,
-        }}
-      >
+      <div className="chapter-header">
         <div>
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 22,
-              fontWeight: 700,
-              color: "var(--c-ink)",
-            }}
-          >
-            {chapter.title}
-          </h2>
-          <div style={{ fontSize: 13, color: "var(--c-dim)", marginTop: 4 }}>
+          <h2 className="chapter-title">{chapter.title}</h2>
+          <div className="chapter-subtitle">
             {weekNum > 0 && weekNum <= chapter.duration_weeks
-              ? `Неделя ${weekNum} из ${chapter.duration_weeks} · ${formatWeekRange(currentWeek)}`
-              : `${chapter.start_week} · ${chapter.duration_weeks} недель`}
+              ? `${t("chapter.weekOf", { num: weekNum, total: chapter.duration_weeks })} · ${formatWeekRange(currentWeek)}`
+              : `${chapter.start_week} · ${t("chapter.weeksCount", { n: chapter.duration_weeks })}`}
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div className="chapter-header__actions">
           {score && (
-            <div style={{ textAlign: "right" }}>
-              <div
-                style={{
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: score.score >= 0.85 ? "var(--c-ok)" : "var(--c-teal)",
-                }}
-              >
+            <div className="chapter-score">
+              <div className={`chapter-score__pct chapter-score__pct--${score.score >= 0.85 ? "ok" : "teal"}`}>
                 {Math.round(score.score * 100)}%
               </div>
-              <div style={{ fontSize: 11, color: "var(--c-dim)" }}>
-                Execution Score · {score.passed}/{score.total} недель
+              <div className="chapter-score__meta">
+                {score.passed}/{score.total} {t("chapter.weeksShort")}
               </div>
             </div>
           )}
-          <button
-            className="btn-ghost"
-            onClick={() => onDelete(chapter.id)}
-            style={{ color: "var(--c-missed)" }}
-          >
+
+          <button className="btn-primary btn--icon" onClick={openNewTarget}>
+            <Plus size={14} /> {t("chapter.addTargetBtn")}
+          </button>
+
+          <button className="btn-ghost btn-ghost--danger" onClick={() => onDelete(chapter.id)}>
             <Trash2 size={16} />
           </button>
         </div>
       </div>
 
-      {/* Карточки ориентиров */}
+      {weekPct != null && (
+        <div className={`chapter-week-progress chapter-week-progress--${progressVariant}`}>
+          <div className="chapter-week-progress__bar">
+            <div className="chapter-week-progress__bar-label">
+              {selectedWeek === currentWeek
+                ? t("chapter.progress.title")
+                : t("chapter.progress.titleWeek", { week: selectedWeek })}
+            </div>
+            <div className="progress-track progress-track--thick">
+              <div
+                className={`progress-fill progress-fill--${progressVariant}`}
+                style={{ width: `${weekPct}%` }}
+              />
+            </div>
+          </div>
+          <div className="chapter-week-progress__right">
+            <div className={`chapter-week-progress__pct chapter-week-progress__pct--${progressVariant}`}>
+              {weekPct}%
+            </div>
+            <div className="chapter-week-progress__hint">
+              {weekPassed
+                ? t("chapter.progress.passed")
+                : t("chapter.progress.needed", { pct: 85 - weekPct })}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${Math.min(targets.length, 3)}, 1fr)`,
-          gap: 12,
-          marginBottom: 24,
-        }}
+        className="chapter-targets-grid"
+        style={{ gridTemplateColumns: `repeat(${Math.min(targets.length, 3)}, 1fr)` }}
       >
         {targets.map((target) => (
           <TargetCard
@@ -255,61 +136,41 @@ export default function ChapterDetail({ chapter, tasks, onBack, onDelete }) {
             target={target}
             tactics={tactics}
             tasks={tasks}
-            currentWeek={currentWeek}
+            checkpoints={checkpoints}
+            currentWeek={selectedWeek}
+            goals={goals}
+            onEdit={() => setEditingTarget(target)}
           />
         ))}
       </div>
 
-      {/* 12-недельный таймлайн */}
-      <div
-        style={{
-          background: "var(--c-white)",
-          border: "1px solid var(--c-border)",
-          borderRadius: "var(--r-lg)",
-          padding: 16,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            color: "var(--c-dim)",
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            marginBottom: 12,
-          }}
-        >
-          Timeline · {chapter.duration_weeks} недель
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 4,
-            flexWrap: "nowrap",
-            overflowX: "auto",
-          }}
-        >
-          {weeks.map((weekId, i) => {
-            const isPast = weekId < currentWeek;
-            const isCurrent = weekId === currentWeek;
-            const weekTasks = tasks.filter((t) => t.week === weekId);
-            const weekScore = isPast ? calcWeekScore(tactics, weekTasks) : null;
+      <WeekTimeline
+        weeks={weeks}
+        tasks={tasks}
+        tactics={tactics}
+        checkpoints={checkpoints}
+        currentWeek={currentWeek}
+        duration={chapter.duration_weeks}
+        targets={targets}
+        goals={goals}
+      />
 
-            return (
-              <WeekBlock
-                key={weekId}
-                weekId={weekId}
-                weekNum={i + 1}
-                score={weekScore}
-                checkpoints={checkpoints}
-                isCurrent={isCurrent}
-                isPast={isPast}
-                onNavigate={() => {}}
-              />
-            );
-          })}
-        </div>
-      </div>
+      {editingTarget && (
+        <TargetModal
+          target={editingTarget}
+          tactics={tactics.filter((tac) => tac.target_id === editingTarget.id)}
+          checkpoints={checkpoints.filter((c) => c.target_id === editingTarget.id)}
+          goals={goals}
+          chapterId={chapter.id}
+          isNew={!targets.some((tg) => tg.id === editingTarget.id)}
+          onSaveTarget={saveTarget}
+          onSaveTactic={saveTactic}
+          onRemoveTactic={removeTactic}
+          onSaveCheckpoint={saveCheckpoint}
+          onRemoveCheckpoint={removeCheckpoint}
+          onClose={() => setEditingTarget(null)}
+        />
+      )}
     </div>
   );
 }

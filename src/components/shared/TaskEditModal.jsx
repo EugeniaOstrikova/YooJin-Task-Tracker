@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useCategories } from "../../context/CategoriesContext";
-import { X } from "lucide-react";
 import Checkbox from "@mui/material/Checkbox";
+import Modal from "./Modal";
+import { loadTactics, loadChapters } from "../../lib/chaptersStorage";
 
 export default function TaskEditModal({
   task = null,
@@ -17,15 +18,25 @@ export default function TaskEditModal({
   const { t } = useTranslation();
   const [form, setForm] = useState({
     text: task?.text ?? "",
-    cat: task?.cat ?? "other",
+    cat: task?.cat ?? Object.keys(cats)[0] ?? "other",
     day: task?.day ?? defaultDay,
     duration: task?.duration ?? "",
-    important: task?.important ?? false,
     urgent: task?.urgent ?? false,
+    effort: task?.effort ?? null,
     deadline: task?.deadline ?? false,
+    tactic_id: task?.tactic_id ?? null,
   });
 
   const set = (key, val) => setForm((p) => ({ ...p, [key]: val }));
+
+  const [allTactics, setAllTactics] = useState([]);
+
+  useEffect(() => {
+    loadChapters()
+      .then((chapters) => Promise.all(chapters.map((ch) => loadTactics(ch.id))))
+      .then((results) => setAllTactics(results.flat()))
+      .catch(console.error);
+  }, []);
 
   async function handleSave() {
     const updates = {
@@ -55,149 +66,155 @@ export default function TaskEditModal({
   ];
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div
-        className="modal-container task-edit-modal"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <span className="modal-title">
-            {isEditing ? t("taskEdit.title") : t("taskEdit.createTitle")}
-          </span>
-          <button className="btn-ghost" onClick={onClose}>
-            <X size={16} />
-          </button>
+    <Modal
+      title={isEditing ? t("taskEdit.title") : t("taskEdit.createTitle")}
+      onClose={onClose}
+      maxWidth={480}
+    >
+      <div className="field task-edit-grid--full">
+        <label className="field-label">{t("taskEdit.textLabel")}</label>
+        <textarea
+          className="textarea"
+          rows={2}
+          value={form.text}
+          onChange={(e) => set("text", e.target.value)}
+        />
+      </div>
+
+      <div className="task-edit-grid">
+        <div className="field">
+          <label className="field-label">{t("taskEdit.categoryLabel")}</label>
+          <select
+            className="select"
+            value={form.cat}
+            onChange={(e) => set("cat", e.target.value)}
+          >
+            {Object.entries(cats).map(([id, c]) => (
+              <option key={id} value={id}>
+                {c.label}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="field task-edit-grid--full">
-          <label className="field-label">{t("taskEdit.textLabel")}</label>
-          <textarea
-            className="textarea"
-            rows={2}
-            value={form.text}
-            onChange={(e) => set("text", e.target.value)}
+        <div className="field">
+          <label className="field-label">Тактика</label>
+          <select
+            className="select"
+            value={form.tactic_id ?? ""}
+            onChange={(e) => set("tactic_id", e.target.value || null)}
+          >
+            <option value="">— без тактики —</option>
+            {allTactics.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.text}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field">
+          <label className="field-label">{t("taskEdit.dayLabel")}</label>
+          <input
+            className="input"
+            type="date"
+            value={form.day}
+            onChange={(e) => set("day", e.target.value)}
           />
         </div>
 
-        <div className="task-edit-grid">
-          <div className="field">
-            <label className="field-label">{t("taskEdit.categoryLabel")}</label>
-            <select
-              className="select"
-              value={form.cat}
-              onChange={(e) => set("cat", e.target.value)}
-            >
-              {Object.entries(cats).map(([id, c]) => (
-                <option key={id} value={id}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="field">
-            <label className="field-label">{t("taskEdit.dayLabel")}</label>
-            <input
-              className="input"
-              type="date"
-              value={form.day}
-              onChange={(e) => set("day", e.target.value)}
-            />
-          </div>
-
-          <div className="field">
-            <label className="field-label">{t("taskEdit.durationLabel")}</label>
-            <input
-              className="input"
-              type="number"
-              step="0.5"
-              min="0"
-              value={form.duration}
-              onChange={(e) => set("duration", e.target.value)}
-              placeholder="2"
-            />
-          </div>
-        </div>
-
-        {/* Срочно */}
         <div className="field">
-          <label className="field-label">Срочно</label>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              marginTop: 4,
-            }}
-          >
-            <input
-              type="checkbox"
-              id="urgent-cb"
-              checked={form.urgent}
-              onChange={(e) => set("urgent", e.target.checked)}
-              style={{
-                width: 16,
-                height: 16,
-                accentColor: "var(--c-priority-urgent)",
-              }}
-            />
-            <label
-              htmlFor="urgent-cb"
-              style={{ fontSize: 13, color: "var(--c-ink)" }}
-            >
-              Критичный дедлайн
-            </label>
-          </div>
+          <label className="field-label">{t("taskEdit.durationLabel")}</label>
+          <input
+            className="input"
+            type="number"
+            step="0.5"
+            min="0"
+            value={form.duration}
+            onChange={(e) => set("duration", e.target.value)}
+            placeholder="2"
+          />
         </div>
+      </div>
 
-        {/* Тип усилия */}
-        <div className="field">
-          <label className="field-label">Тип задачи</label>
-          <div className="priority-grid">
-            {[
-              { value: null, label: "Обычная" },
-              { value: "heavy", label: "🔥 Тяжёлая" },
-              { value: "light", label: "⚡ Лёгкая" },
-            ].map((p) => (
-              <button
-                key={String(p.value)}
-                className={`priority-btn${form.effort === p.value ? " is-active" : ""}`}
-                onClick={() => set("effort", p.value)}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
+      {/* Срочно */}
+      <div className="field">
+        <label className="field-label">Срочно</label>
         <div
-          className="field"
-          style={{ display: "flex", alignItems: "center", gap: 10 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginTop: 4,
+          }}
         >
-          <Checkbox
-            checked={form.deadline}
-            onChange={(e) => set("deadline", e.target.checked)}
-            size="small"
-            id="deadline-cb"
-            sx={{
-              padding: 0,
-              color: "var(--c-border)",
-              "&.Mui-checked": { color: "var(--c-accent)" },
+          <input
+            type="checkbox"
+            id="urgent-cb"
+            checked={form.urgent}
+            onChange={(e) => set("urgent", e.target.checked)}
+            style={{
+              width: 16,
+              height: 16,
+              accentColor: "var(--c-priority-urgent)",
             }}
           />
           <label
-            htmlFor="deadline-cb"
-            className="field-label"
-            style={{ margin: 0 }}
+            htmlFor="urgent-cb"
+            style={{ fontSize: 13, color: "var(--c-ink)" }}
           >
-            {t("taskEdit.deadlineLabel")}
+            Критичный дедлайн
           </label>
         </div>
-
-        <button className="btn-full btn-full--teal" onClick={handleSave}>
-          {isEditing ? t("taskEdit.save") : t("taskEdit.add")}
-        </button>
       </div>
-    </div>
+
+      {/* Тип усилия */}
+      <div className="field">
+        <label className="field-label">Тип задачи</label>
+        <div className="priority-grid">
+          {[
+            { value: null, label: "Обычная" },
+            { value: "heavy", label: "🔥 Тяжёлая" },
+            { value: "light", label: "⚡ Лёгкая" },
+          ].map((p) => (
+            <button
+              key={String(p.value)}
+              className={`priority-btn${form.effort === p.value ? " is-active" : ""}`}
+              onClick={() => set("effort", p.value)}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div
+        className="field"
+        style={{ display: "flex", alignItems: "center", gap: 10 }}
+      >
+        <Checkbox
+          checked={form.deadline}
+          onChange={(e) => set("deadline", e.target.checked)}
+          size="small"
+          id="deadline-cb"
+          sx={{
+            padding: 0,
+            color: "var(--c-border)",
+            "&.Mui-checked": { color: "var(--c-accent)" },
+          }}
+        />
+        <label
+          htmlFor="deadline-cb"
+          className="field-label"
+          style={{ margin: 0 }}
+        >
+          {t("taskEdit.deadlineLabel")}
+        </label>
+      </div>
+
+      <button className="btn-full btn-full--teal" onClick={handleSave}>
+        {isEditing ? t("taskEdit.save") : t("taskEdit.add")}
+      </button>
+    </Modal>
   );
 }

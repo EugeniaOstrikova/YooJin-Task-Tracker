@@ -1666,3 +1666,178 @@ select {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--c-ink);
+}
+.dropdown-item:hover {
+  background: var(--c-teal-bg);
+  color: var(--c-accent);
+}
+
+/* ── 30. Chapter View ─────────────────────── */
+
+/* Utilities */
+.section-title--dim { color: var(--c-dim); }
+.progress-fill--ok { background: var(--c-ok); }
+.progress-fill--warning { background: var(--c-late); }
+.progress-fill--missed { background: var(--c-missed); }
+.btn--icon { display: flex; align-items: center; gap: 6px; }
+.btn-back { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; color: var(--c-mid); }
+.btn-ghost--danger { color: var(--c-missed); }
+.modal-section { margin-bottom: 16px; }
+.modal-section--spaced { margin: 20px 0 16px; }
+.checkpoint-row { display: flex; gap: 8px; margin-bottom: 8px; }
+
+/* Chapter list (index.jsx) */
+.chapter-view { padding: 20px 20px 40px; max-width: 800px; margin: 0 auto; }
+.chapter-view__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.chapter-view__title { font-size: 20px; font-weight: 700; color: var(--c-ink); }
+.chapter-view__subtitle { font-size: 13px; color: var(--c-dim); margin-top: 2px; }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.chapter-card__title { font-size: 15px; font-weight: 700; color: var(--c-ink); margin-bottom: 4px; }
+.chapter-card__meta { font-size: 12px; color: var(--c-dim); margin-bottom: 12px; }
+.chapter-card__meta-active { color: var(--c-teal); font-weight: 600; }
+.chapter-card__score-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.chapter-card__score-label { font-size: 11px; color: var(--c-dim); }
+.chapter-card__score-value { font-size: 11px; font-weight: 700; color: var(--c-teal); }
+
+/* Chapter detail */
+.chapter-detail { padding: 20px 20px 40px; }
+.chapter-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+.chapter-title { margin: 0; font-size: 22px; font-weight: 700; color: var(--c-ink); }
+.chapter-subtitle { font-size: 13px; color: var(--c-dim); margin-top: 4px; }
+.chapter-header__actions { display: flex; align-items: center; gap: 12px; }
+.chapter-score { text-align: right; }
+.chapter-score__pct { font-size: 24px; font-weight: 700; }
+.chapter-score__pct--ok { color: var(--c-ok); }
+.chapter-score__pct--teal { color: var(--c-teal); }
+.chapter-score__meta { font-size: 11px; color: var(--c-dim); }
+.chapter-week-progress {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: var(--r-md); margin-bottom: 16px;
+}
+.chapter-week-progress--ok { background: var(--c-ok-bg); border: 1px solid var(--c-ok-bd); }
+.chapter-week-progress--warning { background: var(--c-late-bg); border: 1px solid var(--c-late-bd); }
+.chapter-week-progress--missed { background: var(--c-missed-bg); border: 1px solid var(--c-missed); }
+.chapter-week-progress__bar { flex: 1; }
+.chapter-week-progress__bar-label { font-size: 12px; font-weight: 700; color: var(--c-ink); margin-bottom: 4px; }
+.chapter-week-progress__right { text-align: right; flex-shrink: 0; }
+.chapter-week-progress__pct { font-size: 22px; font-weight: 800; }
+.chapter-week-progress__pct--ok { color: var(--c-ok); }
+.chapter-week-progress__pct--warning { color: var(--c-late); }
+.chapter-week-progress__pct--missed { color: var(--c-missed); }
+.chapter-week-progress__hint { font-size: 10px; color: var(--c-dim); }
+.chapter-targets-grid { display: grid; gap: 12px; margin-bottom: 24px; }
+
+/* TargetCard */
+.target-card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.target-card__info { flex: 1; }
+.target-card__title { font-size: 14px; font-weight: 700; color: var(--c-ink); }
+.target-card__week-score {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 3px; font-size: 11px; font-weight: 700;
+}
+.target-card__week-score--ok { color: var(--c-ok); }
+.target-card__week-score--warning { color: var(--c-late); }
+.target-card__week-score--missed { color: var(--c-missed); }
+.target-card__actions { display: flex; gap: 4px; }
+.target-score-track {
+  width: 40px; height: 3px; border-radius: 2px;
+  background: var(--c-border); display: inline-block; vertical-align: middle;
+}
+
+/* Tactic rows (TargetCard) */
+.tactic-row { margin-bottom: 10px; }
+.tactic-row__header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.tactic-row__info { flex: 1; }
+.tactic-row__name { font-size: 12px; font-weight: 600; color: var(--c-ink); }
+.tactic-progress { font-size: 10px; color: var(--c-dim); }
+.tactic-row__bar { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.tactic-row__track { width: 50px; height: 3px; background: var(--c-border); border-radius: 2px; }
+.tactic-row__fill { height: 100%; border-radius: 2px; }
+.tactic-row__fill--ok { background: var(--c-ok); }
+.tactic-row__fill--teal { background: var(--c-teal); }
+.tactic-row__pct { font-size: 11px; font-weight: 700; min-width: 28px; text-align: right; }
+.tactic-row__pct--ok { color: var(--c-ok); }
+.tactic-row__pct--mid { color: var(--c-mid); }
+.tactic-task {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 8px; margin-bottom: 2px;
+  border-radius: var(--r-sm); font-size: 11px;
+}
+.tactic-task--done { background: var(--c-teal-bg); color: var(--c-accent); }
+.tactic-task--pending { background: var(--c-bg); color: var(--c-mid); }
+.tactic-task__text--done { text-decoration: line-through; }
+.tactic-task__dur { margin-left: auto; font-size: 10px; color: var(--c-dim); }
+.tactic-row__divider { height: 1px; background: var(--c-border); margin-top: 6px; }
+
+/* Target checkpoints (TargetCard) */
+.target-checkpoint-item { display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 4px; }
+.target-checkpoint-item--done { color: var(--c-ok); }
+.target-checkpoint-item--pending { color: var(--c-mid); }
+.target-checkpoint-item__week { margin-left: auto; font-size: 10px; color: var(--c-dim); }
+
+/* TacticForm */
+.tactic-form { background: var(--c-bg); border-radius: var(--r-md); padding: 10px 12px; margin-bottom: 8px; }
+.tactic-form__row { display: flex; gap: 8px; margin-bottom: 8px; }
+.tactic-form__controls { display: flex; gap: 8px; }
+
+/* CreateChapterModal */
+.chapter-modal__steps { display: flex; gap: 6px; margin-bottom: 20px; }
+.chapter-modal__step { flex: 1; height: 3px; border-radius: 3px; background: var(--c-border); }
+.chapter-modal__step--active { background: var(--c-teal); }
+.chapter-modal__grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.chapter-modal__week-preview { font-size: 11px; color: var(--c-teal); margin-top: 4px; }
+.chapter-modal__target-block { margin-bottom: 12px; }
+.chapter-modal__target-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.chapter-modal__footer { display: flex; gap: 8px; }
+
+/* WeekTimeline */
+.timeline__scroll { display: flex; gap: 4px; align-items: flex-start; overflow-x: auto; }
+.week-compact {
+  min-width: 100px; min-height: 48px; padding: 6px 4px;
+  border-radius: var(--r-md); text-align: center;
+  cursor: pointer; flex-shrink: 0; position: relative; border: 1px solid;
+}
+.week-compact--empty { background: var(--c-bg); border-color: var(--c-border); }
+.week-compact--ok { background: var(--c-ok-bg); border-color: var(--c-ok-bd); }
+.week-compact--warning { background: var(--c-late-bg); border-color: var(--c-late-bd); }
+.week-compact--missed { background: var(--c-missed-bg); border-color: var(--c-missed); }
+.week-compact__label { font-size: 9px; font-weight: 700; color: var(--c-dim); margin-bottom: 2px; }
+.week-compact__pct { font-size: 10px; font-weight: 700; }
+.week-compact--ok .week-compact__pct { color: var(--c-ok); }
+.week-compact--warning .week-compact__pct { color: var(--c-late); }
+.week-compact--missed .week-compact__pct { color: var(--c-missed); }
+.week-compact--empty .week-compact__pct { color: var(--c-dim); }
+.week-compact__dots { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 3px; }
+.week-expanded {
+  width: 120px; flex-shrink: 0; padding: 8px 10px;
+  border-radius: var(--r-md); border: 1px solid;
+}
+.week-expanded--current { background: var(--c-teal-bg); border: 2px solid var(--c-teal-bd); }
+.week-expanded--next { background: var(--c-bg); border-color: var(--c-border); }
+.week-expanded__label { font-size: 10px; font-weight: 700; margin-bottom: 6px; }
+.week-expanded--current .week-expanded__label { color: var(--c-teal); }
+.week-expanded--next .week-expanded__label { color: var(--c-mid); }
+.week-expanded__empty { font-size: 10px; color: var(--c-dim); }
+.timeline-checkpoint { display: flex; align-items: flex-start; gap: 5px; margin-bottom: 4px; }
+.timeline-checkpoint__text { font-size: 10px; color: var(--c-ink); line-height: 1.3; }
+.week-tooltip {
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: var(--c-white); border: 1px solid var(--c-border);
+  border-radius: var(--r-md); padding: 8px 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 20;
+  min-width: 160px; white-space: nowrap;
+}
+.week-tooltip__title { font-size: 11px; font-weight: 700; color: var(--c-ink); margin-bottom: 4px; }
+.week-tooltip__pct { font-size: 11px; }
+.week-tooltip__empty { font-size: 11px; color: var(--c-dim); }

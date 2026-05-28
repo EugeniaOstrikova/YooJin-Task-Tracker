@@ -146,5 +146,74 @@
   },
   "label": {
     "other": "Other"
+  },
+  "chapter": {
+    "listTitle": "Chapters",
+    "listSubtitle": "12-week focus blocks",
+    "listEmpty": "No chapters.",
+    "listEmptyHint": "Create your first 12-week chapter.",
+    "weekOf": "Week {{num}} of {{total}}",
+    "weeksCount": "{{n}} weeks",
+    "weeksShort": "weeks",
+    "executionScore": "Execution Score",
+    "addTargetBtn": "Target",
+    "thisWeek": "% this week",
+    "backBtn": "All chapters",
+    "progress": {
+      "title": "Current week progress",
+      "titleWeek": "Progress {{week}}",
+      "passed": "✓ passed",
+      "needed": "{{pct}}% more needed"
+    },
+    "target": {
+      "noTactics": "No tactics",
+      "editTitle": "Edit target",
+      "newTitle": "New target",
+      "fieldName": "Name",
+      "fieldNamePlaceholder": "E.g.: Release a track",
+      "fieldDirection": "Life Direction",
+      "noDirection": "— no direction —",
+      "sectionTactics": "Tactics",
+      "sectionCheckpoints": "Checkpoints",
+      "addCheckpoint": "Add checkpoint",
+      "checkpointPlaceholder": "Name",
+      "saveBtn": "Save",
+      "addBtn": "Add target"
+    },
+    "tactic": {
+      "addBtn": "Add tactic",
+      "placeholder": "Tactic name",
+      "type_sessions_hours": "Sessions + hours",
+      "type_hours": "Hours",
+      "type_count": "Count",
+      "ph_sessions": "sessions",
+      "ph_hours": "hours",
+      "ph_hours_week": "hours/week",
+      "ph_count": "times/week",
+      "prog_sessions": "{{actual}}/{{target}} sessions · {{hours}}/{{targetHours}} h",
+      "prog_hours": "{{hours}}/{{targetHours}} h",
+      "prog_count": "{{count}}/{{target}} times"
+    },
+    "create": {
+      "newBtn": "New chapter",
+      "titleStep1": "New chapter",
+      "titleStep2": "Targets & tactics",
+      "fieldTitle": "Chapter name",
+      "fieldTitlePlaceholder": "E.g.: Spring 2026",
+      "fieldStart": "Start (pick a date)",
+      "fieldDuration": "Duration (weeks)",
+      "nextBtn": "Next →",
+      "backBtn": "← Back",
+      "createBtn": "Create chapter",
+      "targetPlaceholder": "Target {{num}}",
+      "addTargetBtn": "Add target"
+    },
+    "timeline": {
+      "title": "Timeline · {{weeks}} wks",
+      "current": "W{{num}} · Now",
+      "next": "W{{num}} · Next",
+      "noData": "No data",
+      "execution": "Execution: {{pct}}%"
+    }
   }
 }
