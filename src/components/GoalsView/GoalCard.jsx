@@ -1,6 +1,7 @@
 import { useCategories } from "../../context/CategoriesContext";
 import { getCatCardStyle } from "../../lib/categoryStyles";
 import { Calendar } from "lucide-react";
+import ProgressBar from "../shared/ProgressBar";
 
 const STATUS_COLORS = {
   Idea: { color: "var(--c-dim)", bg: "#F8FAFC" },
@@ -82,26 +83,14 @@ export default function GoalCard({ goal, taskCount, doneCount, onClick }) {
 
       {/* Прогресс */}
       {taskCount > 0 && (
-        <div style={{ marginBottom: 8 }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: 4,
-            }}
-          >
-            <span style={{ fontSize: 11, color: "var(--c-dim)" }}>
-              Progress
-            </span>
-            <span
-              style={{ fontSize: 11, color: "var(--c-mid)", fontWeight: 600 }}
-            >
+        <div className="goal-progress">
+          <div className="goal-progress__row">
+            <span className="goal-progress__label">Progress</span>
+            <span className="goal-progress__value">
               {doneCount}/{taskCount} · {pct}%
             </span>
           </div>
-          <div className="progress-track">
-            <div className="progress-fill" style={{ width: `${pct}%` }} />
-          </div>
+          <ProgressBar pct={pct} />
         </div>
       )}
 

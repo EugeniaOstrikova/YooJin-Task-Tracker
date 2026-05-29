@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import DayColumn from "./DayColumn";
 import TaskCard from "../shared/TaskCard";
+import ProgressBar from "../shared/ProgressBar";
 import {
   getWeekDays,
   formatWeekRange,
@@ -129,12 +130,7 @@ export default function WeekView({
                 {done}/{total} · {pct}%
               </span>
             </div>
-            <div className="progress-track">
-              <div
-                className={`progress-fill${pct === 100 ? " progress-fill--done" : ""}`}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
+            <ProgressBar pct={pct} variant={pct === 100 ? "done" : undefined} />
           </div>
         </div>
 

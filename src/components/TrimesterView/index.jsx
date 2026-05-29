@@ -4,6 +4,7 @@ import WeekBlock from "./WeekBlock";
 import { TRIMESTERS, getTrimesterForWeek } from "../../config/trimesters";
 import { getWeeksBetween, getTrimesterTasks } from "../../lib/weekUtils";
 import TrimesterSelector from "../shared/TrimesterSelector";
+import ProgressBar from "../shared/ProgressBar";
 
 export default function TrimesterView({
   tasks,
@@ -39,12 +40,7 @@ export default function TrimesterView({
             {trimDone}/{trimTotal} · {trimPct}%
           </span>
         </div>
-        <div className="progress-track progress-track--thick">
-          <div
-            className={`progress-fill${trimPct === 100 ? " progress-fill--done" : ""}`}
-            style={{ width: `${trimPct}%` }}
-          />
-        </div>
+        <ProgressBar pct={trimPct} variant={trimPct === 100 ? "done" : undefined} size="thick" />
       </div>
 
       <div className="trim-grid">

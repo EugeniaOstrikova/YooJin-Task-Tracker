@@ -5,6 +5,7 @@ import { useChapterDetail } from "../../hooks/useChapter";
 import WeekTimeline from "./WeekTimeline";
 import TargetCard from "./TargetCard";
 import TargetModal from "./TargetModal";
+import ProgressBar from "../shared/ProgressBar";
 import {
   calcWeekScore,
   calcExecutionScore,
@@ -106,12 +107,7 @@ export default function ChapterDetail({ chapter, tasks, onBack, onDelete }) {
                 ? t("chapter.progress.title")
                 : t("chapter.progress.titleWeek", { week: selectedWeek })}
             </div>
-            <div className="progress-track progress-track--thick">
-              <div
-                className={`progress-fill progress-fill--${progressVariant}`}
-                style={{ width: `${weekPct}%` }}
-              />
-            </div>
+            <ProgressBar pct={weekPct} variant={progressVariant} size="thick" />
           </div>
           <div className="chapter-week-progress__right">
             <div className={`chapter-week-progress__pct chapter-week-progress__pct--${progressVariant}`}>

@@ -497,6 +497,9 @@ select {
 .progress-track--thick {
   height: 6px;
 }
+.progress-track--thin {
+  height: 3px;
+}
 .progress-fill {
   height: 100%;
   border-radius: 4px;
@@ -1841,3 +1844,9 @@ select {
 .week-tooltip__title { font-size: 11px; font-weight: 700; color: var(--c-ink); margin-bottom: 4px; }
 .week-tooltip__pct { font-size: 11px; }
 .week-tooltip__empty { font-size: 11px; color: var(--c-dim); }
+
+/* ── GoalCard progress ───────────────────── */
+.goal-progress { margin-bottom: 8px; }
+.goal-progress__row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.goal-progress__label { font-size: 11px; color: var(--c-dim); }
+.goal-progress__value { font-size: 11px; color: var(--c-mid); font-weight: 600; }

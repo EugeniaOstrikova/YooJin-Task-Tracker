@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { useChapters } from "../../hooks/useChapter";
 import { upsertTarget, upsertTactic } from "../../lib/chaptersStorage";
+import ProgressBar from "../shared/ProgressBar";
 import { useTasks } from "../../hooks/useTasks";
 import {
   calcExecutionScore,
@@ -53,12 +54,7 @@ function ChapterCard({ chapter, tasks, onClick }) {
               {t("chapter.weeksShort")}
             </span>
           </div>
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${score.score * 100}%` }}
-            />
-          </div>
+          <ProgressBar pct={Math.round(score.score * 100)} />
         </div>
       )}
     </div>

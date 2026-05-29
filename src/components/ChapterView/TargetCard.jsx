@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Pencil } from "lucide-react";
 import { useCategories } from "../../context/CategoriesContext";
 import { calcTacticScore, calcWeekScore } from "../../lib/executionScore";
+import ProgressBar from "../shared/ProgressBar";
 
 function TacticProgress({ tactic, weekTasks }) {
   const { t } = useTranslation();
@@ -47,8 +48,6 @@ function TacticRow({ tactic, weekTasks }) {
   const score = calcTacticScore(tactic, weekTasks);
   const pct = Math.round(score * 100);
   const tagTasks = weekTasks.filter((t) => t.tactic_id === tactic.id);
-  const fillClass =
-    pct >= 85 ? "tactic-row__fill--ok" : pct > 0 ? "tactic-row__fill--teal" : "";
   const pctClass = pct >= 85 ? "tactic-row__pct--ok" : "tactic-row__pct--mid";
 
   return (
@@ -61,7 +60,7 @@ function TacticRow({ tactic, weekTasks }) {
 
         <div className="tactic-row__bar">
           <div className="tactic-row__track">
-            <div className={`tactic-row__fill ${fillClass}`} style={{ width: `${pct}%` }} />
+            <ProgressBar pct={pct} variant={pct >= 85 ? "ok" : undefined} size="thin" />
           </div>
           <span className={`tactic-row__pct ${pctClass}`}>{pct}%</span>
         </div>
@@ -122,10 +121,7 @@ export default function TargetCard({
           {targetScore != null && (
             <div className={`target-card__week-score target-card__week-score--${variant}`}>
               <div className="target-score-track">
-                <div
-                  className={`tactic-row__fill tactic-row__fill--${variant === "ok" ? "ok" : "teal"}`}
-                  style={{ width: `${targetScore}%` }}
-                />
+                <ProgressBar pct={targetScore} variant={variant === "ok" ? "ok" : undefined} size="thin" />
               </div>
               {targetScore}{t("chapter.thisWeek")}
             </div>
