@@ -23,9 +23,15 @@ export async function loadWeekGoals(week) {
 
 export async function saveWeekGoals(week, goals, goals_done) {
   if (supabase) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { error } = await supabase
       .from("week_goals")
-      .upsert({ week, goals, goals_done }, { onConflict: "week" });
+      .upsert(
+        { week, goals, goals_done, user_id: user?.id },
+        { onConflict: "week" }
+      );
     if (error) throw new Error(error.message);
     return;
   }

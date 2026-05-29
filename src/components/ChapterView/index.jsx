@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
 import { useChapters } from "../../hooks/useChapter";
@@ -8,10 +8,7 @@ import {
   calcExecutionScore,
   getChapterEndWeek,
 } from "../../lib/executionScore";
-import {
-  getCurrentWeekId,
-  getWeeksBetween,
-} from "../../lib/weekUtils";
+import { getCurrentWeekId, getWeeksBetween } from "../../lib/weekUtils";
 import CreateChapterModal from "./CreateChapterModal";
 import ChapterDetail from "./ChapterDetail";
 
@@ -31,10 +28,16 @@ function ChapterCard({ chapter, tasks, onClick }) {
     >
       <div className="chapter-card__title">{chapter.title}</div>
       <div className="chapter-card__meta">
-        {chapter.start_week} · {t("chapter.weeksCount", { n: chapter.duration_weeks })}
+        {chapter.start_week} ·{" "}
+        {t("chapter.weeksCount", { n: chapter.duration_weeks })}
         {isActive && (
           <span className="chapter-card__meta-active">
-            {" "}· {t("chapter.weekOf", { num: weekNum, total: chapter.duration_weeks })}
+            {" "}
+            ·{" "}
+            {t("chapter.weekOf", {
+              num: weekNum,
+              total: chapter.duration_weeks,
+            })}
           </span>
         )}
       </div>
@@ -42,14 +45,19 @@ function ChapterCard({ chapter, tasks, onClick }) {
       {score && (
         <div>
           <div className="chapter-card__score-row">
-            <span className="chapter-card__score-label">{t("chapter.executionScore")}</span>
+            <span className="chapter-card__score-label">
+              {t("chapter.executionScore")}
+            </span>
             <span className="chapter-card__score-value">
               {Math.round(score.score * 100)}% · {score.passed}/{score.total}{" "}
               {t("chapter.weeksShort")}
             </span>
           </div>
           <div className="progress-track">
-            <div className="progress-fill" style={{ width: `${score.score * 100}%` }} />
+            <div
+              className="progress-fill"
+              style={{ width: `${score.score * 100}%` }}
+            />
           </div>
         </div>
       )}
@@ -57,7 +65,7 @@ function ChapterCard({ chapter, tasks, onClick }) {
   );
 }
 
-export default function ChapterView() {
+export default function ChapterView({ activeChapterId, onClearActiveChapter }) {
   const { t } = useTranslation();
   const { chapters, loading, saveChapter, removeChapter } = useChapters();
   const { tasks } = useTasks();
@@ -70,7 +78,18 @@ export default function ChapterView() {
     for (const tac of tactics) await upsertTactic(tac);
   }
 
-  if (loading) return <div className="screen-loading">{t("review.loading")}</div>;
+  useEffect(() => {
+    if (activeChapterId && chapters.length > 0) {
+      const chapter = chapters.find((ch) => ch.id === activeChapterId);
+      if (chapter) {
+        setSelected(chapter);
+        onClearActiveChapter?.();
+      }
+    }
+  }, [activeChapterId, chapters]);
+
+  if (loading)
+    return <div className="screen-loading">{t("review.loading")}</div>;
 
   if (selected) {
     return (
@@ -91,9 +110,14 @@ export default function ChapterView() {
       <div className="chapter-view__header">
         <div>
           <div className="chapter-view__title">{t("chapter.listTitle")}</div>
-          <div className="chapter-view__subtitle">{t("chapter.listSubtitle")}</div>
+          <div className="chapter-view__subtitle">
+            {t("chapter.listSubtitle")}
+          </div>
         </div>
-        <button className="btn-primary btn--icon" onClick={() => setCreating(true)}>
+        <button
+          className="btn-primary btn--icon"
+          onClick={() => setCreating(true)}
+        >
           <Plus size={14} /> {t("chapter.create.newBtn")}
         </button>
       </div>

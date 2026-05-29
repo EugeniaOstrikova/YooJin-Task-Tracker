@@ -22,7 +22,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { Plus, ArrowRight, ArrowLeft } from "lucide-react";
+import { Plus, ArrowRight, ArrowLeft, BookOpen } from "lucide-react";
 import TaskEditModal from "../shared/TaskEditModal";
 
 export default function WeekView({
@@ -32,6 +32,8 @@ export default function WeekView({
   onToggle,
   onUpdateTask,
   onAddTask,
+  currentChapter,
+  onNavigateToChapter,
 }) {
   const [creating, setCreating] = useState(null);
   const { t, i18n } = useTranslation();
@@ -55,6 +57,7 @@ export default function WeekView({
     })
   );
   const [activeTask, setActiveTask] = useState(null);
+  const [editingTask, setEditingTask] = useState(null);
 
   function handleDragStart({ active }) {
     const task = tasks.find((t) => t.id === active.id);
@@ -135,6 +138,23 @@ export default function WeekView({
           </div>
         </div>
 
+        {currentChapter && (
+          <button
+            className="btn-secondary"
+            onClick={() => onNavigateToChapter(currentChapter)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontSize: 12,
+            }}
+            title="Перейти к текущей главе"
+          >
+            <BookOpen size={14} />
+            {currentChapter.title}
+          </button>
+        )}
+
         {!isCurrentWeek && (
           <button
             onClick={() => onWeekChange(getCurrentWeekId())}
@@ -187,7 +207,13 @@ export default function WeekView({
               <div className="empty">—</div>
             ) : (
               unscheduled.map((task) => (
-                <TaskCard key={task.id} task={task} onToggle={onToggle} />
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onToggle={onToggle}
+                  onEdit={setEditingTask}
+                  onSave={onUpdateTask}
+                />
               ))
             )}
           </div>
@@ -249,6 +275,14 @@ export default function WeekView({
           weekId={weekId}
           onAdd={onAddTask}
           onClose={() => setCreating(null)}
+        />
+      )}
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onSave={onUpdateTask}
+          onClose={() => setEditingTask(null)}
         />
       )}
     </div>

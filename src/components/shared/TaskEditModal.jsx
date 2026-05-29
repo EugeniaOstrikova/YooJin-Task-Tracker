@@ -4,6 +4,7 @@ import { useCategories } from "../../context/CategoriesContext";
 import Checkbox from "@mui/material/Checkbox";
 import Modal from "./Modal";
 import { loadTactics, loadChapters } from "../../lib/chaptersStorage";
+import { weekIdForDate } from "../../lib/weekUtils";
 
 export default function TaskEditModal({
   task = null,
@@ -43,14 +44,19 @@ export default function TaskEditModal({
       ...form,
       duration: form.duration !== "" ? parseFloat(form.duration) : null,
     };
+
+    // Пересчитать week если изменился day
+    if (form.day) {
+      updates.week = weekIdForDate(new Date(form.day));
+    }
+
     if (isEditing) {
       await onSave(task.id, updates);
     } else {
       await onAdd([
         {
           id: `task_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-          week: weekId,
-          done: false,
+          week: updates.week ?? weekId,
           ...updates,
         },
       ]);

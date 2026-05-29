@@ -13,6 +13,8 @@ import { useAuth } from "./hooks/useAuth";
 import LoginScreen from "./components/Auth/LoginScreen";
 import { signOut } from "./lib/auth";
 import GoalsView from "./components/GoalsView";
+import { useChapters } from "./hooks/useChapter";
+import { getChapterEndWeek } from "./lib/executionScore";
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
@@ -31,10 +33,22 @@ export default function App() {
   const [view, setView] = useState("week");
   const [weekId, setWeekId] = useState(getCurrentWeekId);
   const [showImport, setShowImport] = useState(false);
+  const { chapters } = useChapters();
+  const [activeChapterId, setActiveChapterId] = useState(null);
 
   function handleNavigateWeek(id) {
     setWeekId(id);
     setView("week");
+  }
+
+  const currentChapter = chapters.find((ch) => {
+    const end = getChapterEndWeek(ch);
+    return weekId >= ch.start_week && weekId <= end;
+  });
+
+  function handleNavigateToChapter(chapter) {
+    setActiveChapterId(chapter.id);
+    setView("chapter");
   }
 
   if (authLoading)
@@ -63,17 +77,16 @@ export default function App() {
             onToggle={toggleDone}
             onUpdateTask={saveTask}
             onAddTask={importTasks}
+            currentChapter={currentChapter}
+            onNavigateToChapter={handleNavigateToChapter}
           />
         )}
-        {/* {view === "trimester" &&
-          <TrimesterView
-            tasks={tasks}
-            onToggle={toggleDone}
-            onNavigateWeek={handleNavigateWeek}
-            currentWeekId={weekId}
+        {view === "chapter" && (
+          <ChapterView
+            activeChapterId={activeChapterId}
+            onClearActiveChapter={() => setActiveChapterId(null)}
           />
-        } */}
-        {view === "chapter" && <ChapterView />}
+        )}
         {view === "stats" && <StatsView tasks={tasks} currentWeekId={weekId} />}
         {view === "review" && (
           <ReviewView tasks={tasks} onTaskUpdate={updateTaskLocally} />
