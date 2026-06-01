@@ -206,7 +206,7 @@ export default function WeekView({
         </button>
       </div>
 
-      {isCycle && (
+      {/* {isCycle && (
         <div className="cycle-warning">{t("weekView.cycleWarning")}</div>
       )}
 
@@ -217,10 +217,22 @@ export default function WeekView({
           weekId={weekId}
           onNavigate={() => onNavigateToChapter(currentChapter)}
         />
-      )}
+      )} */}
 
       <div className="week-meta-row">
         <div className="week-meta-row__content">
+          {isCycle && (
+            <div className="cycle-warning">{t("weekView.cycleWarning")}</div>
+          )}
+
+          {currentChapter && (
+            <ChapterWeekBanner
+              chapter={currentChapter}
+              tasks={tasks}
+              weekId={weekId}
+              onNavigate={() => onNavigateToChapter(currentChapter)}
+            />
+          )}
           <WeekGoals weekId={weekId} />
         </div>
         <div className="week-meta-row__content">

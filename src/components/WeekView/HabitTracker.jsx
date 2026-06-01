@@ -24,12 +24,12 @@ export default function HabitTracker({ weekId }) {
 
   return (
     <div className="habit-wrap">
-      <div className="habit-head">
+      {/* <div className="habit-head">
         <h3 className="habit-head__title">{t("habitTracker.title")}</h3>
         <button className="btn-icon-nav">
           <Settings2 onClick={() => setAdding((v) => !v)} size={14} />
         </button>
-      </div>
+      </div> */}
 
       {adding && (
         <div className="habit-add-row">
@@ -54,7 +54,9 @@ export default function HabitTracker({ weekId }) {
       {habits.length > 0 && (
         <div className="habit-table">
           <div className="habit-table__header">
-            <div />
+            <div className="habit-row__header">
+              <span>매일 1,5시간</span>
+            </div>
             {days.map((d) => (
               <div
                 key={d.iso}
@@ -73,13 +75,13 @@ export default function HabitTracker({ weekId }) {
                 <div className="habit-row__name">
                   <span className="habit-row__text">{habit.text}</span>
                   <span className="habit-row__count">{doneCount}/7</span>
-                  <button
+                  {/* <button
                     onClick={() => removeHabit(habit.id)}
                     className="habit-row__del"
                     title={t("habitTracker.deleteTitle")}
                   >
                     <X size={12} />
-                  </button>
+                  </button> */}
                 </div>
 
                 {dayLogs.map((checked, di) => (

@@ -953,7 +953,7 @@ select {
 .habit-table__header {
   display: grid;
   grid-template-columns: 1fr repeat(7, 36px);
-  gap: 4px;
+  gap: 2px;
   padding: 8px 12px;
   background: var(--c-teal-bg);
 }
@@ -971,8 +971,8 @@ select {
 .habit-row {
   display: grid;
   grid-template-columns: 1fr repeat(7, 36px);
-  gap: 4px;
-  padding: 8px 12px;
+  gap: 2px;
+  padding: 3px 12px;
   align-items: center;
   border-bottom: 1px solid var(--c-teal-bg);
 }
@@ -985,6 +985,7 @@ select {
   align-items: center;
   gap: 8px;
   min-width: 0;
+  justify-content: space-between;
 }
 .habit-row__text {
   font-size: 13px;
@@ -993,6 +994,14 @@ select {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.habit-row__header {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 10px;
+  color: var(--c-dim);
+  justify-content: end;
 }
 .habit-row__count {
   font-size: 10px;

@@ -21,7 +21,7 @@ export default function WeekGoals({ weekId }) {
 
   return (
     <div className="week-goals">
-      <h3 className="week-goals__title">{t("weekGoals.title")}</h3>
+      {/* <h3 className="week-goals__title">{t("weekGoals.title")}</h3> */}
 
       <div className="week-goals__list">
         {goals.map((goal, i) => (
