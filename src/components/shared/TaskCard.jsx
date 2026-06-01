@@ -3,7 +3,7 @@ import PriorityIcon from "./PriorityIcon";
 import CategoryTag from "./CategoryTag";
 import { useCategories } from "../../context/CategoriesContext";
 import { formatDuration } from "../../lib/weekUtils";
-import { Link2, X } from "lucide-react";
+import { Link2, X, Target } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import Checkbox from "@mui/material/Checkbox";
@@ -80,6 +80,13 @@ export default function TaskCard({
       <div className="task-card__body">
         <div className="task-card__row">
           <PriorityIcon urgent={task.urgent} effort={task.effort} size={14} />
+          {task.tactic_id && (
+            <Target
+              size={10}
+              color="var(--c-teal)"
+              style={{ flexShrink: 0, opacity: 0.7 }}
+            />
+          )}
           <span
             onClick={(e) => {
               e.stopPropagation();

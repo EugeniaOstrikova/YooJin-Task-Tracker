@@ -207,3 +207,15 @@ export function getTrimesterTasks(tasks, trimester) {
       : 0,
   };
 }
+
+export function formatShortDate(weekId) {
+  const start = getWeekStart(weekId).toLocaleDateString("ru", {
+    day: "numeric",
+    month: "short",
+  });
+  const end = getWeekEnd(weekId).toLocaleDateString("ru", {
+    day: "numeric",
+    month: "short",
+  });
+  return start + " - " + end;
+}

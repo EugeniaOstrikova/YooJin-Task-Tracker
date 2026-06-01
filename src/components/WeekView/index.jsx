@@ -25,6 +25,9 @@ import {
 } from "@dnd-kit/core";
 import { Plus, ArrowRight, ArrowLeft, BookOpen } from "lucide-react";
 import TaskEditModal from "../shared/TaskEditModal";
+import { ChapterWeekBanner } from "./ChapterWeekBanner";
+import { loadCheckpoints } from "../../lib/chaptersStorage";
+import { loadWeekGoals, saveWeekGoals } from "../../lib/weekGoalsStorage";
 
 export default function WeekView({
   weekId,
@@ -59,6 +62,39 @@ export default function WeekView({
   );
   const [activeTask, setActiveTask] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
+
+  useEffect(() => {
+    if (!currentChapter) return;
+
+    async function syncCheckpoints() {
+      const checkpoints = await loadCheckpoints(currentChapter.id);
+      const weekCheckpoints = checkpoints.filter(
+        (cp) => cp.target_week === weekId && !cp.done
+      );
+      if (!weekCheckpoints.length) return;
+
+      // Загрузить текущие цели недели
+      const current = await loadWeekGoals(weekId); // функция из weekGoalsStorage
+      const existingGoals = current?.goals ?? [];
+
+      // Добавить только новые чекпоинты
+      const newGoals = weekCheckpoints
+        .map((cp) => cp.title)
+        .filter((title) => !existingGoals.includes(title));
+
+      if (!newGoals.length) return;
+
+      const merged = [...existingGoals, ...newGoals];
+      const mergedDone = [
+        ...(current?.goals_done ?? []),
+        ...newGoals.map(() => false),
+      ];
+
+      await saveWeekGoals(weekId, merged, mergedDone);
+    }
+
+    syncCheckpoints().catch(console.error);
+  }, [weekId, currentChapter]);
 
   function handleDragStart({ active }) {
     const task = tasks.find((t) => t.id === active.id);
@@ -134,7 +170,7 @@ export default function WeekView({
           </div>
         </div>
 
-        {currentChapter && (
+        {/* {currentChapter && (
           <button
             className="btn-secondary"
             onClick={() => onNavigateToChapter(currentChapter)}
@@ -149,7 +185,7 @@ export default function WeekView({
             <BookOpen size={14} />
             {currentChapter.title}
           </button>
-        )}
+        )} */}
 
         {!isCurrentWeek && (
           <button
@@ -172,6 +208,15 @@ export default function WeekView({
 
       {isCycle && (
         <div className="cycle-warning">{t("weekView.cycleWarning")}</div>
+      )}
+
+      {currentChapter && (
+        <ChapterWeekBanner
+          chapter={currentChapter}
+          tasks={tasks}
+          weekId={weekId}
+          onNavigate={() => onNavigateToChapter(currentChapter)}
+        />
       )}
 
       <div className="week-meta-row">
